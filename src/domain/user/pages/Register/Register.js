@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Card, Typography, Form, Input, Button, Alert } from 'antd';
-import { UserOutlined, LockOutlined, IdcardOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  LockOutlined,
+  IdcardOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+} from '@ant-design/icons';
 
 import 'antd/dist/antd.css';
 import './Register.css';
@@ -95,12 +101,25 @@ const Register = (props) => {
                 required: true,
                 message: 'Please input your Password!',
               },
+              {
+                pattern: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*/,
+                message:
+                  'Password must contain 1 uppercase, 1 number, 1 lowercase',
+              },
+              {
+                min: 6,
+                max: 32,
+                message:
+                  'Password must be at least 6 characters long and lower than 32 characters',
+              },
             ]}
           >
-            <Input
+            <Input.Password
               prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
               placeholder="Your Password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
             />
           </Form.Item>
 
