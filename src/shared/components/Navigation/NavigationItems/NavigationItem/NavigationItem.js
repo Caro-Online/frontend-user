@@ -17,15 +17,6 @@ const NavigationItem = (props) => {
         {props.children}
       </NavLink>
     </Menu.Item>
-    // <Menu.Item key={props.key}>
-    //   <NavLink
-    //     to={props.link}
-    //     exact={props.exact}
-    //     // activeClassName={classes.active}
-    //   >
-    //     {props.children}
-    //   </NavLink>
-    // </Menu.Item>
   );
 };
 

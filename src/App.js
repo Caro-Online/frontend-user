@@ -26,9 +26,11 @@ const App = () => {
       <Layout>
         <MainHeader />
         <Suspense fallback={<LoadingOutlined style={{ fontSize: 100 }} spin />}>
-          <Content style={{ marginTop: '64px' }}>{routes}</Content>
+          <Content style={{ marginTop: '64px', backgroundColor: 'white' }}>
+            {routes}
+          </Content>
         </Suspense>
-        <Footer>Footer</Footer>
+        <Footer style={{ backgroundColor: 'white' }}>Footer</Footer>
       </Layout>
     </>
   );
