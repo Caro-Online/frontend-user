@@ -1,9 +1,10 @@
-import './App.css';
 import React, { Suspense, lazy } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { Layout } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
+import 'antd/dist/antd.css';
+import './App.css';
 import MainHeader from './shared/components/MainHeader/MainHeader';
 
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
@@ -25,7 +26,7 @@ const App = () => {
       <Layout>
         <MainHeader />
         <Suspense fallback={<LoadingOutlined style={{ fontSize: 100 }} spin />}>
-          <Content>{routes}</Content>
+          <Content style={{ marginTop: '64px' }}>{routes}</Content>
         </Suspense>
         <Footer>Footer</Footer>
       </Layout>
