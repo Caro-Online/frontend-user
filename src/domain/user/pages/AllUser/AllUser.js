@@ -1,57 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { List, Avatar, Tooltip, Spin } from 'antd';
 import { SmileTwoTone, FrownTwoTone, LoadingOutlined } from '@ant-design/icons';
-import io from 'socket.io-client';
 import _ from 'lodash';
 
 import 'antd/dist/antd.css';
 import './AllUser.css';
+import { getSocket } from '../../../../shared/utils/socket.io-client';
 
 let socket;
+
+const modifyUsersStatus = (response, data, setUsers, isOnline) => {
+  const modifyUsers = _.cloneDeep(response.users);
+  const index = modifyUsers.findIndex(
+    (user) => user._id.toString() === data.userId.toString()
+  );
+  const modifyUser = _.cloneDeep(modifyUsers[index]);
+  modifyUser.isOnline = isOnline;
+  modifyUsers[index] = modifyUser;
+  setUsers(modifyUsers);
+};
 
 const AllUser = (props) => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    async function doFetchAllUsers() {
-      setIsLoading(true);
-      try {
-        const res = await fetch('http://localhost:4000/user', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        const response = await res.json();
+    setIsLoading(true);
+    fetch('http://localhost:4000/user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((response) => {
         if (!response.success) {
           setIsLoading(false);
         } else {
           setIsLoading(false);
           setUsers(response.users);
-          socket = io('http://localhost:4000');
+          socket = getSocket();
           socket.on('user-online', (data) => {
-            const modifyUsers = _.cloneDeep(response.users);
-            const index = modifyUsers.findIndex(
-              (user) => user._id.toString() === data.userId.toString()
-            );
-            const modifyUser = _.cloneDeep(modifyUsers[index]);
-            modifyUser.isOnline = true;
-            modifyUsers[index] = modifyUser;
-            setUsers(modifyUsers);
+            modifyUsersStatus(response, data, setUsers, true);
+          });
+          socket.on('user-offline', (data) => {
+            console.log('Processing user offline event');
+            modifyUsersStatus(response, data, setUsers, false);
           });
         }
-      } catch (error) {
+      })
+      .catch((error) => {
         console.log(error);
         setIsLoading(false);
-      }
-
-      return () => {
-        socket.disconnect();
-      };
-    }
-
-    doFetchAllUsers();
+      });
   }, []);
 
   return (

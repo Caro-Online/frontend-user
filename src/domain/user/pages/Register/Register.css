@@ -48,3 +48,9 @@
 .SwitchToRegister a {
   text-decoration: none;
 }
+
+.center {
+  margin: 0 auto;
+  margin-top: 16px;
+  width: 100%;
+}

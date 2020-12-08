@@ -11,7 +11,7 @@ const NavigationItem = (props) => {
       key={props.key}
       className="navigation-item"
       style={{ textAlign: 'center' }}
-    >
+      >
       <NavLink to={props.link} exact activeClassName="active">
         {props.children}
       </NavLink>

@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
+import configureAuthStore from './hooks-store/auth-store';
+
+configureAuthStore();
 
 ReactDOM.render(
   // <React.StrictMode>

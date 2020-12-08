@@ -44,15 +44,23 @@
   align-items: center;
   justify-content: center;
   background-color: #cd5441 !important;
+  color: white;
 }
 
 .google-login:hover,
 .google-login:active {
   cursor: pointer;
   background-color: #cd5441cb !important;
-  color: black;
+  color: white;
 }
 
 .redirect-to-register {
   margin-top: 15px;
 }
+
+.center {
+  margin: 0 auto;
+  margin-top: 16px;
+  width: 100%;
+}
+

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Form, Input, Button, Alert, Spin } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import { Card, Typography } from 'antd';
@@ -16,6 +16,7 @@ import {
 
 import { login, signinWithGoogle, signinWithFacebook } from '../../apiUser';
 import './Login.css';
+import { useStore } from '../../../../hooks-store/store';
 
 const { Title } = Typography;
 
@@ -38,45 +39,34 @@ const Login = () => {
   const [authError, setAuthError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
+  const dispatch = useStore(false)[1];
 
-  const onFinish = (values) => {
-    const { email, password } = values;
-    setIsLoading(true);
-    login({ email, password })
-      .then((res) => {
-        setIsLoading(false);
-        console.log(res.data);
-        if (res.data) {
-          history.push('/');
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsLoading(false);
-        setAuthError(error.message);
-      });
-    // fetch('http://localhost:4000/user/auth/login', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ email, password }),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((response) => {
-    //     if (response.success) {
-    //       history.push('/');
-    //     } else {
-    //       setAuthError(response.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     setAuthError(error.message);
-    //   });
-  };
+  const onFinish = useCallback(
+    (values) => {
+      const { email, password } = values;
+      setIsLoading(true);
+      login({ email, password })
+        .then((res) => {
+          setIsLoading(false);
+          console.log(res.data);
+          if (res.data) {
+            dispatch('AUTH_SUCCESS', {
+              userId: res.data.userId,
+              token: res.data.accessToken,
+            });
+            history.push('/all-user');
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+          setAuthError(error.message);
+        });
+    },
+    [history, dispatch]
+  );
 
-  const responseSuccessGoogle = (response) => {
+  const responseSuccessGoogle = useCallback((response) => {
     const { tokenId } = response;
 
     signinWithGoogle(tokenId)
@@ -86,9 +76,9 @@ const Login = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
+  }, []);
 
-  const responseFacebook = (response) => {
+  const responseFacebook = useCallback((response) => {
     const { userID, accessToken } = response;
     signinWithFacebook(userID, accessToken)
       .then((res) => {
@@ -97,7 +87,11 @@ const Login = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, []);
+
+  const onCloseAlert = useCallback((e) => {
+    setAuthError(null);
+  }, []);
 
   return (
     <>
@@ -117,6 +111,7 @@ const Login = () => {
             type="error"
             closable
             showIcon
+            onClose={onCloseAlert}
             style={{ marginBottom: '16px' }}
           />
         ) : null}
@@ -204,3 +199,23 @@ const Login = () => {
 };
 
 export default Login;
+
+// fetch('http://localhost:4000/user/auth/login', {
+//   method: 'POST',
+//   body: JSON.stringify({ email, password }),
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// })
+//   .then((res) => res.json())
+//   .then((response) => {
+//     if (response.success) {
+//       history.push('/');
+//     } else {
+//       setAuthError(response.message);
+//     }
+//   })
+//   .catch((error) => {
+//     console.log(error);
+//     setAuthError(error.message);
+//   });
