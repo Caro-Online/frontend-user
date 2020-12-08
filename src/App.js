@@ -9,6 +9,7 @@ import MainHeader from './shared/components/MainHeader/MainHeader';
 
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
+const AllUser = lazy(() => import('./domain/user/pages/AllUser/AllUser'));
 
 const { Content, Footer } = Layout;
 
@@ -17,6 +18,7 @@ const App = () => {
     <Switch>
       <Route path="/register" exact component={Register} />
       <Route path="/login" exact component={Login} />
+      <Route path="/all-user" exact component={AllUser} />
       <Redirect to="/" />
     </Switch>
   );
