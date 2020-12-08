@@ -1,0 +1,33 @@
+.card {
+  width: 400px !important;
+  margin: auto;
+  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-button button {
+  width: 100%;
+}
+
+.ant-card-head-title {
+  text-align: center;
+  font-size: 32px;
+}
+
+.facebook-login{
+    height: 45px;
+    width:100%;
+    background-color: #4267B2;
+    color: white;
+    margin-top: 15px;
+}
+.google-login {
+    height: 45px;
+    width:100%;
+    margin-top: 15px;
+    display: flex;
+    justify-content:center;
+}
+
+.redirect-to-register{
+  margin-top: 15px;
+}

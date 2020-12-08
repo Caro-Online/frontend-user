@@ -40,11 +40,11 @@
   margin: 0;
 }
 
-.SwitchToLogin {
+.SwitchToRegiter {
   text-align: center;
   margin-top: 8px;
 }
 
-.SwitchToLogin a {
+.SwitchToRegister a {
   text-decoration: none;
 }
