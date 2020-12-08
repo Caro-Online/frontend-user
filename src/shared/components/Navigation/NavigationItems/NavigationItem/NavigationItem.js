@@ -2,30 +2,20 @@ import React from 'react';
 import { Menu } from 'antd';
 import { NavLink } from 'react-router-dom';
 
-// import 'antd/dist/antd.css';
-import classes from './NavigationItem.module.css';
+import './NavigationItem.css';
 
 const NavigationItem = (props) => {
-  //className={classes.NavigationItem}
   return (
-    <Menu.Item {...props} key={props.key} className={classes.NavigationItem}>
-      <NavLink
-        to={props.link}
-        exact
-        activeClassName={classes.active}
-      >
+    <Menu.Item
+      {...props}
+      key={props.key}
+      className="navigation-item"
+      style={{ textAlign: 'center' }}
+    >
+      <NavLink to={props.link} exact activeClassName="active">
         {props.children}
       </NavLink>
     </Menu.Item>
-    // <Menu.Item key={props.key}>
-    //   <NavLink
-    //     to={props.link}
-    //     exact={props.exact}
-    //     // activeClassName={classes.active}
-    //   >
-    //     {props.children}
-    //   </NavLink>
-    // </Menu.Item>
   );
 };
 

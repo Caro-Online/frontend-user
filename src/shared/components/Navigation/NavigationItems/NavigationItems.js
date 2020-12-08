@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Menu } from 'antd';
 
 import NavigationItem from './NavigationItem/NavigationItem';
-import classes from './NavigationItems.module.css';
+import './NavigationItems.css';
 
 
 const NavigationItems = (props) => {
@@ -13,16 +13,16 @@ const NavigationItems = (props) => {
     setCurrent(e.key);
   };
 
-  let content = (
-    <>
+  // let content = (
+  //   <>
 
-      {/* <NavigationItem link="/test" key="test" exact>
-        Test
-      </NavigationItem>  */}
-    </>
-  );
+  //     {/* <NavigationItem link="/test" key="test" exact>
+  //       Test
+  //     </NavigationItem>  */}
+  //   </>
+  // );
   return (
-    <Menu mode="horizontal" onClick={handleClick} selectedKeys={[current]} className={classes.NavigationItems}>
+    <Menu mode="horizontal" onClick={handleClick} selectedKeys={[current]} className='navigation-items'>
       <NavigationItem link="/login" key="login">
         Login
       </NavigationItem>

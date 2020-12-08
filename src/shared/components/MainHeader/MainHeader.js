@@ -5,15 +5,15 @@ import { Link } from 'react-router-dom';
 import NavigationItems from '../Navigation/NavigationItems/NavigationItems';
 import caroLogo from '../../assets/images/caro.jpg';
 import 'antd/dist/antd.css';
-import classes from './MainHeader.module.css';
+import './MainHeader.css';
 
 const { Header } = Layout;
 
 const MainHeader = (props) => {
   return (
-    <Header className={classes.MainHeader}>
-      <Link to="/" className={classes.ContainerLogo}>
-        <Avatar src={caroLogo} className={classes.Logo} />
+    <Header className='main-header'>
+      <Link to="/" className='container-logo'>
+        <Avatar src={caroLogo} className='logo' />
         CaroOnline
       </Link>
       <NavigationItems />

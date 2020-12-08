@@ -4,6 +4,15 @@
   box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.1);
 }
 
+.caro-online {
+  text-align: center;
+  text-decoration: none;
+}
+
+.caro-online h1 {
+  color: rgb(85, 85, 85);
+}
+
 .login-form-button button {
   width: 100%;
 }
@@ -13,21 +22,37 @@
   font-size: 32px;
 }
 
-.facebook-login{
-    height: 45px;
-    width:100%;
-    background-color: #4267B2;
-    color: white;
-    margin-top: 15px;
-}
-.google-login {
-    height: 45px;
-    width:100%;
-    margin-top: 15px;
-    display: flex;
-    justify-content:center;
+.facebook-login {
+  height: 45px;
+  width: 100%;
+  background-color: #4267b2;
+  color: white;
+  margin-top: 15px;
 }
 
-.redirect-to-register{
+.facebook-login:hover,
+.facebook-login:active {
+  background-color: #4267b2b2;
+  cursor: pointer;
+}
+
+.google-login {
+  height: 45px;
+  width: 100%;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #cd5441 !important;
+}
+
+.google-login:hover,
+.google-login:active {
+  cursor: pointer;
+  background-color: #cd5441cb !important;
+  color: black;
+}
+
+.redirect-to-register {
   margin-top: 15px;
 }
