@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
+import { connect } from 'react-redux';
 import { Form, Input, Button, Alert, Spin } from 'antd';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Card, Typography } from 'antd';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
@@ -14,9 +15,9 @@ import {
   FacebookOutlined,
 } from '@ant-design/icons';
 
-import { login, signinWithGoogle, signinWithFacebook } from '../../apiUser';
+import { signinWithGoogle, signinWithFacebook } from '../../apiUser';
 import './Login.css';
-import { useStore } from '../../../../hooks-store/store';
+import * as actions from '../../../../store/actions';
 
 const { Title } = Typography;
 
@@ -34,36 +35,22 @@ const tailLayout = {
   },
 };
 
-const Login = () => {
+const Login = (props) => {
   const [form] = Form.useForm();
-  const [authError, setAuthError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const history = useHistory();
-  const dispatch = useStore(false)[1];
+
+  const {
+    onLoginWithEmailAndPassword,
+    onClearError,
+    authError,
+    loading,
+  } = props;
 
   const onFinish = useCallback(
     (values) => {
       const { email, password } = values;
-      setIsLoading(true);
-      login({ email, password })
-        .then((res) => {
-          setIsLoading(false);
-          console.log(res.data);
-          if (res.data) {
-            dispatch('AUTH_SUCCESS', {
-              userId: res.data.userId,
-              token: res.data.accessToken,
-            });
-            history.push('/all-user');
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          setIsLoading(false);
-          setAuthError(error.message);
-        });
+      onLoginWithEmailAndPassword(email, password);
     },
-    [history, dispatch]
+    [onLoginWithEmailAndPassword]
   );
 
   const responseSuccessGoogle = useCallback((response) => {
@@ -89,12 +76,23 @@ const Login = () => {
       });
   }, []);
 
-  const onCloseAlert = useCallback((e) => {
-    setAuthError(null);
-  }, []);
+  const onCloseAlert = useCallback(
+    (e) => {
+      onClearError();
+    },
+    [onClearError]
+  );
+
+  // let authRedirect;
+  // console.log(props.isAuthenticated);
+  // if (props.isAuthenticated) {
+  //   // console.log(props.isAuthenticated);
+  //   authRedirect = <Redirect to="/" />;
+  // }
 
   return (
     <>
+      {/* {authRedirect} */}
       <Link to="/" className="caro-online">
         <Title>CaroOnline</Title>
       </Link>
@@ -115,7 +113,7 @@ const Login = () => {
             style={{ marginBottom: '16px' }}
           />
         ) : null}
-        {isLoading ? (
+        {loading ? (
           <Spin
             indicator={<LoadingOutlined style={{ fontSize: 80 }} spin />}
             className="center"
@@ -198,24 +196,20 @@ const Login = () => {
   );
 };
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.token !== null,
+    loading: state.auth.loading,
+    authError: state.auth.error,
+  };
+};
 
-// fetch('http://localhost:4000/user/auth/login', {
-//   method: 'POST',
-//   body: JSON.stringify({ email, password }),
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// })
-//   .then((res) => res.json())
-//   .then((response) => {
-//     if (response.success) {
-//       history.push('/');
-//     } else {
-//       setAuthError(response.message);
-//     }
-//   })
-//   .catch((error) => {
-//     console.log(error);
-//     setAuthError(error.message);
-//   });
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLoginWithEmailAndPassword: (email, password) =>
+      dispatch(actions.authWithEmailAndPassword(email, password)),
+    onClearError: () => dispatch(actions.authClearError()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

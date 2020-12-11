@@ -1,13 +1,14 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { Layout } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import { connect } from 'react-redux';
 
 import 'antd/dist/antd.css';
 import './App.css';
 import MainHeader from './shared/components/MainHeader/MainHeader';
-import { useStore } from './hooks-store/store';
 import { initSocket } from './shared/utils/socket.io-client';
+import * as actions from './store/actions';
 
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
@@ -16,24 +17,24 @@ const AllUser = lazy(() => import('./domain/user/pages/AllUser/AllUser'));
 
 const { Content, Footer } = Layout;
 
-const App = () => {
-  const [globalState, dispatch] = useStore();
-  const isAuthenticated = globalState.auth.token !== null;
+const App = (props) => {
+  const history = useHistory();
+  const { onTryAutoLogin } = props;
 
   useEffect(() => {
-    dispatch('AUTH_AUTO_LOGIN');
-  }, [dispatch]);
+    onTryAutoLogin();
+  }, [onTryAutoLogin]);
 
   useEffect(() => {
-    console.log(isAuthenticated);
     let socket;
-    if (isAuthenticated) {
+    if (props.isAuthenticated) {
       socket = initSocket(localStorage.getItem('userId'));
+      history.push('/');
       return () => {
         socket.disconnect();
       };
     }
-  }, [isAuthenticated]);
+  }, [props.isAuthenticated, history]);
 
   let routes = (
     <Switch>
@@ -43,7 +44,7 @@ const App = () => {
     </Switch>
   );
 
-  if (isAuthenticated) {
+  if (props.isAuthenticated) {
     routes = (
       <Switch>
         <Route path="/all-user" exact component={AllUser} />
@@ -68,4 +69,16 @@ const App = () => {
   );
 };
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.token !== null,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onTryAutoLogin: () => dispatch(actions.authCheckState()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
