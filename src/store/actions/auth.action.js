@@ -1,4 +1,4 @@
-import { login } from '../../domain/user/apiUser';
+import { login, updateStatusToOnline } from '../../domain/user/apiUser';
 import * as actionTypes from './actionTypes';
 
 // export const setAuthRedirectPath = () => {
@@ -90,6 +90,11 @@ export const authCheckState = () => {
             (expirationDate.getTime() - new Date().getTime()) / 1000
           )
         );
+        updateStatusToOnline(userId)
+          .then((response) => {
+            console.log('Updated status');
+          })
+          .catch((error) => console.log(error));
       }
     }
   };
