@@ -1,0 +1,104 @@
+body {
+  /* font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px; */
+   font-family: "Sofia";
+      font-size: 22px;
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.board-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    background-color: blue;
+}
+.board{
+    
+}
+.board-row{
+ display: table;
+
+}
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 28px;
+  width: 28px;
+  padding: 0;
+  text-align: center;
+  
+}
+
+.square:focus {
+  outline: none;
+}
+
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+.location-x{
+  height: 34px;
+  width: 102px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.location-y{
+  margin-top: 34px;
+  width: 34px;
+  height:102px; 
+  display: flex;
+  flex-direction: column ;
+  justify-content: space-around;
+}
+
+.game-display{
+  display: flex;
+}
+
+.location-move{
+  display:flex;
+}
+
+.button-sort{
+  margin-top: 32px;
+  margin-left: 20px;;
+}
+
+.winner {
+  color: red;
+  animation: mymove 0.5s infinite;
+}
+
+@keyframes mymove {
+  from {color: red;}
+  to {color: blue;}
+}
