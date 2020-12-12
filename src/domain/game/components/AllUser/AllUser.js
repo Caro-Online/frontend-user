@@ -64,7 +64,7 @@ const AllUser = (props) => {
         />
       ) : (
           <List
-            style={{ width: '30%', margin: '0 auto' }}
+            style={{ width: '100%', margin: '0 auto' }}
             itemLayout="horizontal"
             dataSource={users}
             renderItem={(user) => (

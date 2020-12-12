@@ -15,7 +15,6 @@ import GamePage from './domain/game/pages/GamePage'
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
-const AllUser = lazy(() => import('./domain/user/pages/AllUser/AllUser'));
 
 const { Content, Footer } = Layout;
 
@@ -50,7 +49,6 @@ const App = (props) => {
   if (props.isAuthenticated) {
     routes = (
       <Switch>
-        <Route path="/all-user" exact component={AllUser} />
         <Route path="/logout" exact component={Logout} />
         {/* <Redirect to="/" /> */}
       </Switch>

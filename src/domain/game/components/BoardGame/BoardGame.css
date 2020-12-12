@@ -16,9 +16,7 @@ ol, ul {
     height: 90vh;
     background-color: blue;
 }
-.board{
-    
-}
+
 .board-row{
  display: table;
 
