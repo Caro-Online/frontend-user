@@ -10,6 +10,8 @@ import MainHeader from './shared/components/MainHeader/MainHeader';
 import { initSocket } from './shared/utils/socket.io-client';
 import * as actions from './store/actions';
 
+import Home from './domain/home/pages/Home';
+import GamePage from './domain/game/pages/GamePage'
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
@@ -40,7 +42,8 @@ const App = (props) => {
     <Switch>
       <Route path="/register" exact component={Register} />
       <Route path="/login" exact component={Login} />
-      <Redirect to="/" />
+      <Route path="/" exact component={Home} />
+      <Route path="/game" exact component={GamePage} />
     </Switch>
   );
 
