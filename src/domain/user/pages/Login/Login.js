@@ -15,7 +15,6 @@ import {
   FacebookOutlined,
 } from '@ant-design/icons';
 
-import { signinWithGoogle, signinWithFacebook } from '../../apiUser';
 import './Login.css';
 import * as actions from '../../../../store/actions';
 
@@ -40,6 +39,8 @@ const Login = (props) => {
 
   const {
     onLoginWithEmailAndPassword,
+    onLoginWithFacebook,
+    onLoginWithGoogle,
     onClearError,
     authError,
     loading,
@@ -53,28 +54,22 @@ const Login = (props) => {
     [onLoginWithEmailAndPassword]
   );
 
-  const responseSuccessGoogle = useCallback((response) => {
-    const { tokenId } = response;
+  const responseSuccessGoogle = useCallback(
+    (response) => {
+      const { tokenId } = response;
+      console.log(response.tokenId);
+      onLoginWithGoogle(tokenId);
+    },
+    [onLoginWithGoogle]
+  );
 
-    signinWithGoogle(tokenId)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  const responseFacebook = useCallback((response) => {
-    const { userID, accessToken } = response;
-    signinWithFacebook(userID, accessToken)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  const responseFacebook = useCallback(
+    (response) => {
+      const { userID, accessToken } = response;
+      onLoginWithFacebook(userID, accessToken);
+    },
+    [onLoginWithFacebook]
+  );
 
   const onCloseAlert = useCallback(
     (e) => {
@@ -82,13 +77,6 @@ const Login = (props) => {
     },
     [onClearError]
   );
-
-  // let authRedirect;
-  // console.log(props.isAuthenticated);
-  // if (props.isAuthenticated) {
-  //   // console.log(props.isAuthenticated);
-  //   authRedirect = <Redirect to="/" />;
-  // }
 
   return (
     <>
@@ -208,6 +196,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onLoginWithEmailAndPassword: (email, password) =>
       dispatch(actions.authWithEmailAndPassword(email, password)),
+    onLoginWithFacebook: (userId, accessToken) =>
+      dispatch(actions.authWithFacebook(userId, accessToken)),
+    onLoginWithGoogle: (tokenId) => dispatch(actions.authWithGoogle(tokenId)),
     onClearError: () => dispatch(actions.authClearError()),
   };
 };

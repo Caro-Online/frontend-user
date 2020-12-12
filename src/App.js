@@ -11,7 +11,7 @@ import { initSocket } from './shared/utils/socket.io-client';
 import * as actions from './store/actions';
 
 import Home from './domain/home/pages/Home';
-import GamePage from './domain/game/pages/GamePage'
+import GamePage from './domain/game/pages/GamePage';
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
@@ -31,7 +31,7 @@ const App = (props) => {
     let socket;
     if (props.isAuthenticated) {
       socket = initSocket(localStorage.getItem('userId'));
-      history.push('/');
+      // history.push('/');
       return () => {
         socket.disconnect();
       };
@@ -42,16 +42,17 @@ const App = (props) => {
     <Switch>
       <Route path="/register" exact component={Register} />
       <Route path="/login" exact component={Login} />
-      <Route path="/" exact component={Home} />
       <Route path="/game" exact component={GamePage} />
+      <Route path="/" exact component={Home} />
     </Switch>
   );
 
   if (props.isAuthenticated) {
     routes = (
       <Switch>
-        <Route path="/all-user" exact component={AllUser} />
         <Route path="/logout" exact component={Logout} />
+        <Route path="/game" exact component={GamePage} />
+        <Route path="/" exact component={Home} />
         {/* <Redirect to="/" /> */}
       </Switch>
     );

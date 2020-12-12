@@ -1,5 +1,26 @@
-import { login, updateStatusToOnline } from '../../domain/user/apiUser';
+import {
+  login,
+  updateStatusToOnline,
+  signinWithGoogle,
+  signinWithFacebook,
+} from '../../domain/user/apiUser';
 import * as actionTypes from './actionTypes';
+
+const processResponseWhenLoginSuccess = (dispatch, response) => {
+  if (response.data) {
+    const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+    localStorage.setItem('token', response.data.accessToken);
+    localStorage.setItem('expirationDate', expirationDate);
+    localStorage.setItem('userId', response.data.userId);
+    dispatch(authSuccess(response.data.accessToken, response.data.userId));
+    dispatch(checkAuthTimeout(3600));
+  }
+};
+
+const processErrWhenLoginFail = (dispatch, err) => {
+  console.log(err);
+  dispatch(authFail(err.response.data.message));
+};
 
 // export const setAuthRedirectPath = () => {
 //   return {
@@ -56,19 +77,36 @@ export const authWithEmailAndPassword = (email, password) => {
     dispatch(authStart());
     login({ email, password })
       .then((response) => {
-        if (response.data) {
-          const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-          localStorage.setItem('token', response.data.accessToken);
-          localStorage.setItem('expirationDate', expirationDate);
-          localStorage.setItem('userId', response.data.userId);
-          dispatch(
-            authSuccess(response.data.accessToken, response.data.userId)
-          );
-          dispatch(checkAuthTimeout(3600));
-        }
+        processResponseWhenLoginSuccess(dispatch, response);
       })
       .catch((err) => {
-        dispatch(authFail(err.response.data.message));
+        processErrWhenLoginFail(dispatch, err);
+      });
+  };
+};
+
+export const authWithGoogle = (idToken) => {
+  return (dispatch) => {
+    dispatch(authStart());
+    signinWithGoogle(idToken)
+      .then((response) => {
+        processResponseWhenLoginSuccess(dispatch, response);
+      })
+      .catch((err) => {
+        processErrWhenLoginFail(dispatch, err);
+      });
+  };
+};
+
+export const authWithFacebook = (userId, accessToken) => {
+  return (dispatch) => {
+    dispatch(authStart());
+    signinWithFacebook(userId, accessToken)
+      .then((response) => {
+        processResponseWhenLoginSuccess(dispatch, response);
+      })
+      .catch((err) => {
+        processErrWhenLoginFail(dispatch, err);
       });
   };
 };

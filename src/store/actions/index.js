@@ -1,6 +1,8 @@
 export {
   authWithEmailAndPassword,
+  authWithFacebook,
+  authWithGoogle,
   logout,
   authCheckState,
-  authClearError
+  authClearError,
 } from './auth.action';
