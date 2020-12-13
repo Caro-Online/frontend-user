@@ -12,6 +12,7 @@ const processResponseWhenLoginSuccess = (dispatch, response) => {
     localStorage.setItem('token', response.data.accessToken);
     localStorage.setItem('expirationDate', expirationDate);
     localStorage.setItem('userId', response.data.userId);
+    localStorage.setItem('userName', response.data.userName);
     dispatch(authSuccess(response.data.accessToken, response.data.userId));
     dispatch(checkAuthTimeout(3600));
   }

@@ -4,7 +4,7 @@ import { Layout } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 
-import 'antd/dist/antd.css';
+// import 'antd/dist/antd.css';
 import './App.css';
 import MainHeader from './shared/components/MainHeader/MainHeader';
 import { initSocket } from './shared/utils/socket.io-client';
@@ -15,7 +15,9 @@ import GamePage from './domain/game/pages/GamePage';
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
-const AllUser = lazy(() => import('./domain/user/pages/AllUser/AllUser'));
+const Test = lazy(() => import('./domain/user/pages/Test/Test'));
+const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
+const Room = lazy(() => import('./domain/game/pages/Room/Room'));
 
 const { Content, Footer } = Layout;
 
@@ -52,6 +54,9 @@ const App = (props) => {
       <Switch>
         <Route path="/logout" exact component={Logout} />
         <Route path="/game" exact component={GamePage} />
+        {/* <Route path="/test" exact component={Test} /> */}
+        <Route path="/rooms" exact component={Rooms} />
+        <Route path="/room/:roomId" exact component={Room} />
         <Route path="/" exact component={Home} />
         {/* <Redirect to="/" /> */}
       </Switch>
@@ -67,7 +72,7 @@ const App = (props) => {
             {routes}
           </Content>
         </Suspense>
-        <Footer style={{ backgroundColor: 'white' }}>Footer</Footer>
+        {/* <Footer style={{ backgroundColor: 'white' }}>Footer</Footer> */}
       </Layout>
     </>
   );

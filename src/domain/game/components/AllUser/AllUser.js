@@ -1,10 +1,13 @@
+//Library
 import React, { useState, useEffect } from 'react';
 import { List, Avatar, Tooltip, Spin } from 'antd';
 import { SmileTwoTone, FrownTwoTone, LoadingOutlined } from '@ant-design/icons';
 import _ from 'lodash';
-import { API } from '../../../../config'
+
+//Others
 import 'antd/dist/antd.css';
 import './AllUser.css';
+import { API } from '../../../../config';
 import { getSocket } from '../../../../shared/utils/socket.io-client';
 
 let socket;
@@ -63,37 +66,36 @@ const AllUser = (props) => {
           className="center"
         />
       ) : (
-          <List
-            style={{ width: '30%', margin: '0 auto' }}
-            itemLayout="horizontal"
-            dataSource={users}
-            renderItem={(user) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={
-                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                  }
-                  title={<a href="https://ant.design">{user.name}</a>}
-                />
-                {user.isOnline ? (
-                  <Tooltip title="Online">
-                    <SmileTwoTone
-                      className="online-offline-status"
-                      twoToneColor="#52c41a"
-                    />
-                  </Tooltip>
-                ) : (
-                    <Tooltip title="Offline">
-                      <FrownTwoTone
-                        className="online-offline-status"
-                        twoToneColor="red"
-                      />
-                    </Tooltip>
-                  )}
-              </List.Item>
-            )}
-          />
-        )}
+        <List
+          itemLayout="horizontal"
+          dataSource={users}
+          renderItem={(user) => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={
+                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                }
+                title={<div onClick={() => {}}>{user.name}</div>}
+              />
+              {user.isOnline ? (
+                <Tooltip title="Online">
+                  <SmileTwoTone
+                    className="online-offline-status"
+                    twoToneColor="#52c41a"
+                  />
+                </Tooltip>
+              ) : (
+                <Tooltip title="Offline">
+                  <FrownTwoTone
+                    className="online-offline-status"
+                    twoToneColor="red"
+                  />
+                </Tooltip>
+              )}
+            </List.Item>
+          )}
+        />
+      )}
     </>
   );
 };
