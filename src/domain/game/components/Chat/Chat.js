@@ -11,6 +11,7 @@ import Messages from './Messages/Messages';
 import './Chat.css';
 import { getSocket } from '../../../../shared/utils/socket.io-client';
 import { useLocation } from 'react-router-dom';
+import { API } from '../../../../config';
 
 let socket;
 
@@ -20,11 +21,7 @@ export default function Chat({ room }) {
   const location = useLocation();
 
   useEffect(() => {
-    // const roomId = location.pathname.split('/')[2];
-    // setRoom(roomId);
-
     socket = getSocket();
-
     socket.emit(
       'join',
       { userId: localStorage.getItem('userId'), roomId: room.roomId },
@@ -37,6 +34,16 @@ export default function Chat({ room }) {
   }, [location, room]);
 
   useEffect(() => {
+    socket = getSocket();
+    const responseMessages = room.chat.map((chat) => {
+      return {
+        userId: chat.user._id,
+        userName: chat.user.name,
+        text: chat.content,
+      };
+    });
+    setMessages([...responseMessages]);
+
     socket.on('message', (message) => {
       setMessages((messages) => [...messages, message]);
     });
@@ -44,7 +51,7 @@ export default function Chat({ room }) {
     // socket.on('roomData', ({ users }) => {
     //   setUsers(users);
     // });
-  }, []);
+  }, [room]);
 
   const sendMessage = (event) => {
     event.preventDefault();
