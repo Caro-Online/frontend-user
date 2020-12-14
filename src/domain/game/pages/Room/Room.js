@@ -7,6 +7,7 @@ import BoardGame from '../../../game/components/BoardGame/BoardGame';
 import UserInfo from '../../../game/components/UserInfo/UserInfo';
 import History from '../../../game/components/History/History';
 import Chat from '../../../game/components/Chat/Chat';
+import { initSocket } from '../../../../shared/utils/socket.io-client';
 import AllUser from '../../../game/components/AllUser/AllUser';
 
 //Others
@@ -21,6 +22,10 @@ const Room = (props) => {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
+    let socket;
+    socket = initSocket(localStorage.getItem('userId'));
+    // history.push('/');
+
     const { roomId } = params;
     setIsLoading(true);
     fetch(`${API}/game/${roomId}`, {
@@ -43,6 +48,10 @@ const Room = (props) => {
         console.log(error);
         setIsLoading(false);
       });
+
+    return () => {
+      socket.disconnect();
+    };
   }, [params]);
 
   let content = (
@@ -56,7 +65,9 @@ const Room = (props) => {
           <History />
           {room ? <Chat room={room} /> : null}
         </div>
-        <div className="col-lg-2 col-md-2">{/* <AllUser /> */}</div>
+        <div className="col-lg-2 col-md-2">
+          <AllUser />
+        </div>
       </div>
     </div>
   );
