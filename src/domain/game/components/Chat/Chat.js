@@ -1,18 +1,64 @@
 //Library
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
-import { MessageFilled, UserOutlined } from '@ant-design/icons';
+import { MessageFilled } from '@ant-design/icons';
 
 //Components
+import InfoBar from './InfoBar/InfoBar';
+import InputMessage from './InputMessage/InputMessage';
+import Messages from './Messages/Messages';
 //Others
 import './Chat.css';
+import { getSocket } from '../../../../shared/utils/socket.io-client';
+import { useLocation } from 'react-router-dom';
 
-export default function Chat() {
-  const [form] = Form.useForm();
+let socket;
 
-  const onFinish = useCallback((values) => {
-    const { message } = values;
+export default function Chat({ room }) {
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState('');
+  const location = useLocation();
+
+  useEffect(() => {
+    // const roomId = location.pathname.split('/')[2];
+    // setRoom(roomId);
+
+    socket = getSocket();
+
+    socket.emit(
+      'join',
+      { userId: localStorage.getItem('userId'), roomId: room.roomId },
+      (error) => {
+        if (error) {
+          alert(error);
+        }
+      }
+    );
+  }, [location, room]);
+
+  useEffect(() => {
+    socket.on('message', (message) => {
+      setMessages((messages) => [...messages, message]);
+    });
+
+    // socket.on('roomData', ({ users }) => {
+    //   setUsers(users);
+    // });
   }, []);
+
+  const sendMessage = (event) => {
+    event.preventDefault();
+
+    socket = getSocket();
+
+    if (message) {
+      socket.emit(
+        'sendMessage',
+        { message, userId: localStorage.getItem('userId') },
+        () => setMessage('')
+      );
+    }
+  };
 
   return (
     <div className="chat-container">
@@ -22,39 +68,18 @@ export default function Chat() {
       </div>
       <div className="chat-container__body">
         <div className="chat-container__chatbox">
-          <ul className="chat-container__nav-tabs">
-            <li className="active">
-              <UserOutlined style={{ color: 'blue', fontSize: '16px' }} />
-            </li>
-          </ul>
-          <div className="chat-container__tab-content"></div>
-        </div>
-        <div className="chat-container__send-message">
-          <Form
-            form={form}
-            className="message-form"
-            name="control-hooks"
-            onFinish={onFinish}
-          >
-            <Form.Item
-              name="message"
-              rules={[
-                { required: true, message: 'Please input your message!' },
-              ]}
-            >
-              <Input
-                // prefix={<MailOutlined className="site-form-item-icon" />}
-                type="text"
-                placeholder="Aa"
-              />
-            </Form.Item>
-
-            <Form.Item className="send-message-button">
-              <Button type="primary" htmlType="submit">
-                Send
-              </Button>
-            </Form.Item>
-          </Form>
+          <div className="chat-container__tab-content">
+            <InfoBar room={room} />
+            <Messages
+              messages={messages}
+              name={localStorage.getItem('userName')}
+            />
+            <InputMessage
+              message={message}
+              setMessage={setMessage}
+              sendMessage={sendMessage}
+            />
+          </div>
         </div>
       </div>
     </div>

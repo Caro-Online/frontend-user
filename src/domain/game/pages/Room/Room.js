@@ -54,7 +54,7 @@ const Room = (props) => {
         <div className="col-lg-4 col-md-4 d-flex flex-column justify-content-between">
           <UserInfo />
           <History />
-          <Chat />
+          {room ? <Chat room={room} /> : null}
         </div>
         <div className="col-lg-2 col-md-2">{/* <AllUser /> */}</div>
       </div>

@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import { Layout } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
@@ -15,7 +15,6 @@ import GamePage from './domain/game/pages/GamePage';
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
-const Test = lazy(() => import('./domain/user/pages/Test/Test'));
 const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 const Room = lazy(() => import('./domain/game/pages/Room/Room'));
 
