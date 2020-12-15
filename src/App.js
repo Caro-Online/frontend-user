@@ -14,8 +14,10 @@ import GamePage from './domain/game/pages/GamePage';
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
+
 const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 const Room = lazy(() => import('./domain/game/pages/Room/Room'));
+
 
 const { Content, Footer } = Layout;
 
