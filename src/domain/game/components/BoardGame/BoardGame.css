@@ -1,21 +1,7 @@
-body {
-  /* font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px; */
-   font-family: "Sofia";
-      font-size: 22px;
+.board{
+    table-layout:fixed
 }
 
-ol, ul {
-  padding-left: 30px;
-}
-
-.board-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
-    background-color: blue;
-}
 
 .board-row{
  display: table;
@@ -32,25 +18,27 @@ ol, ul {
 }
 
 .square {
+display:table-cell;
   background: #fff;
   border: 1px solid #999;
-  float: left;
-  font-size: 24px;
+  /* float: left; */
+  font-size: 18px;
   font-weight: bold;
   line-height: 34px;
+  min-height: 28px !important;
+  min-width: 28px !important;
   height: 28px;
   width: 28px;
   padding: 0;
   text-align: center;
-  
+    cursor: pointer;
 }
 
 .square:focus {
   outline: none;
-}
-
-.kbd-navigation .square:focus {
-  background: #ddd;
+   padding: 0;
+     height: 28px;
+  width: 28px;
 }
 
 .game {
@@ -62,41 +50,3 @@ ol, ul {
   margin-left: 20px;
 }
 
-.location-x{
-  height: 34px;
-  width: 102px;
-  display: flex;
-  justify-content: space-around;
-}
-
-.location-y{
-  margin-top: 34px;
-  width: 34px;
-  height:102px; 
-  display: flex;
-  flex-direction: column ;
-  justify-content: space-around;
-}
-
-.game-display{
-  display: flex;
-}
-
-.location-move{
-  display:flex;
-}
-
-.button-sort{
-  margin-top: 32px;
-  margin-left: 20px;;
-}
-
-.winner {
-  color: red;
-  animation: mymove 0.5s infinite;
-}
-
-@keyframes mymove {
-  from {color: red;}
-  to {color: blue;}
-}

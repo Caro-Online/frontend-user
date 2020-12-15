@@ -1,9 +1,8 @@
-
+//Library
 import React, { useState, useEffect } from 'react';
 import { List, Avatar, Tooltip, Spin } from 'antd';
 import { SmileTwoTone, FrownTwoTone, LoadingOutlined } from '@ant-design/icons';
 import _ from 'lodash';
-
 
 //Others
 import 'antd/dist/antd.css';
@@ -13,7 +12,6 @@ import { getSocket } from '../../../../shared/utils/socket.io-client';
 
 let socket;
 // const abortController = new AbortController();
-
 
 const modifyUsersStatus = (response, data, setUsers, isOnline) => {
   const modifyUsers = _.cloneDeep(response.users);
@@ -27,9 +25,7 @@ const modifyUsersStatus = (response, data, setUsers, isOnline) => {
 };
 
 const AllUser = (props) => {
-
   const [users, setUsers] = useState(null);
-
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -39,9 +35,7 @@ const AllUser = (props) => {
       headers: {
         'Content-Type': 'application/json',
       },
-
       // signal: abortController.signal,
-
     })
       .then((res) => res.json())
       .then((response) => {

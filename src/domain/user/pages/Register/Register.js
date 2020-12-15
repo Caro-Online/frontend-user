@@ -70,84 +70,84 @@ const Register = (props) => {
             className="center"
           />
         ) : (
-            <Form
-              name="normal_register"
-              className="register-form"
-              onFinish={onFinish}
+          <Form
+            name="normal_register"
+            className="register-form"
+            onFinish={onFinish}
+          >
+            <Form.Item
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Name!',
+                },
+              ]}
             >
-              <Form.Item
-                name="name"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your Name!',
-                  },
-                ]}
-              >
-                <Input
-                  prefix={<IdcardOutlined className="site-form-item-icon" />}
-                  type="text"
-                  placeholder="Your Name"
-                />
-              </Form.Item>
-              <Form.Item
-                name="email"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your Email!',
-                  },
-                ]}
-              >
-                <Input
-                  prefix={<UserOutlined className="site-form-item-icon" />}
-                  type="email"
-                  placeholder="Your Email"
-                />
-              </Form.Item>
-              <Form.Item
-                name="password"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your Password!',
-                  },
-                  {
-                    pattern: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*/,
-                    message:
-                      'Password must contain 1 uppercase, 1 number, 1 lowercase',
-                  },
-                  {
-                    min: 6,
-                    max: 32,
-                    message:
-                      'Password must be at least 6 characters long and lower than 32 characters',
-                  },
-                ]}
-              >
-                <Input.Password
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  placeholder="Your Password"
-                  iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
-                />
-              </Form.Item>
+              <Input
+                prefix={<IdcardOutlined className="site-form-item-icon" />}
+                type="text"
+                placeholder="Your Name"
+              />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Email!',
+                },
+              ]}
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                type="email"
+                placeholder="Your Email"
+              />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Password!',
+                },
+                {
+                  pattern: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*/,
+                  message:
+                    'Password must contain 1 uppercase, 1 number, 1 lowercase',
+                },
+                {
+                  min: 6,
+                  max: 32,
+                  message:
+                    'Password must be at least 6 characters long and lower than 32 characters',
+                },
+              ]}
+            >
+              <Input.Password
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                placeholder="Your Password"
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
+              />
+            </Form.Item>
 
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="register-form-button"
-                >
-                  Register
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="register-form-button"
+              >
+                Register
               </Button>
-                <div style={{ textAlign: 'center' }}>
-                  Or <Link to="/login">Login now!</Link>
-                </div>
-              </Form.Item>
-            </Form>
-          )}
+              <div style={{ textAlign: 'center' }}>
+                Or <Link to="/login">Login now!</Link>
+              </div>
+            </Form.Item>
+          </Form>
+        )}
       </Card>
     </>
   );

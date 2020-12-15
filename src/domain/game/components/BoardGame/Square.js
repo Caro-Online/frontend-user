@@ -3,8 +3,8 @@ import './BoardGame.css'
 export default function Square(props) {
 
     return (
-        <button className="square" onClick={props.onClick} style={{}}>
+        <td className="square" onClick={props.onClick} >
             {props.value}
-        </button>
+        </td>
     );
 }
