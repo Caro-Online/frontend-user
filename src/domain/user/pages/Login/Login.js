@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { Redirect, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Alert, Spin } from 'antd';
 import { Link } from 'react-router-dom';
@@ -42,7 +43,10 @@ const Login = (props) => {
     onLoginWithFacebook,
     onLoginWithGoogle,
     onClearError,
+    onSetRedirectPath,
+    onResetAuthRedirectPath,
     authError,
+    authRedirectPath,
     loading,
   } = props;
 
@@ -50,8 +54,9 @@ const Login = (props) => {
     (values) => {
       const { email, password } = values;
       onLoginWithEmailAndPassword(email, password);
+      onSetRedirectPath();
     },
-    [onLoginWithEmailAndPassword]
+    [onLoginWithEmailAndPassword, onSetRedirectPath]
   );
 
   const responseSuccessGoogle = useCallback(
@@ -59,16 +64,18 @@ const Login = (props) => {
       const { tokenId } = response;
       console.log(response.tokenId);
       onLoginWithGoogle(tokenId);
+      onSetRedirectPath();
     },
-    [onLoginWithGoogle]
+    [onLoginWithGoogle, onSetRedirectPath]
   );
 
   const responseFacebook = useCallback(
     (response) => {
       const { userID, accessToken } = response;
       onLoginWithFacebook(userID, accessToken);
+      onSetRedirectPath();
     },
-    [onLoginWithFacebook]
+    [onLoginWithFacebook, onSetRedirectPath]
   );
 
   const onCloseAlert = useCallback(
@@ -77,10 +84,15 @@ const Login = (props) => {
     },
     [onClearError]
   );
+  let redirect = null;
+  if (authRedirectPath) {
+    redirect = <Redirect to={authRedirectPath} />;
+    onResetAuthRedirectPath();
+  }
 
   return (
     <>
-      {/* {authRedirect} */}
+      {redirect}
       <Link to="/" className="caro-online">
         <Title>CaroOnline</Title>
       </Link>
@@ -189,6 +201,7 @@ const mapStateToProps = (state) => {
     isAuthenticated: state.auth.token !== null,
     loading: state.auth.loading,
     authError: state.auth.error,
+    authRedirectPath: state.auth.authRedirectPath,
   };
 };
 
@@ -200,6 +213,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.authWithFacebook(userId, accessToken)),
     onLoginWithGoogle: (tokenId) => dispatch(actions.authWithGoogle(tokenId)),
     onClearError: () => dispatch(actions.authClearError()),
+    onSetRedirectPath: () => dispatch(actions.setAuthRedirectPath()),
+    onResetAuthRedirectPath: () => dispatch(actions.resetAuthRedirectPath()),
   };
 };
 

@@ -138,3 +138,15 @@ export const authCheckState = () => {
     }
   };
 };
+
+export const setAuthRedirectPath = () => {
+  return {
+    type: actionTypes.SET_AUTH_REDIRECT_PATH,
+  };
+};
+
+export const resetAuthRedirectPath = () => {
+  return {
+    type: actionTypes.RESET_AUTH_REDIRECT_PATH,
+  };
+};

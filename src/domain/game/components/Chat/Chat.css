@@ -49,7 +49,12 @@
 
 .chat-container__tab-content {
   border: 1px solid black;
-  height: calc(100% - 24px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 8px;
 }
 
 .message-form {
