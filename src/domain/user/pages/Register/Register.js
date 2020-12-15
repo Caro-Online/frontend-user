@@ -12,6 +12,7 @@ import {
 
 import 'antd/dist/antd.css';
 import './Register.css';
+import { API } from '../../../../config';
 
 const { Title } = Typography;
 
@@ -25,7 +26,7 @@ const Register = (props) => {
 
     try {
       setIsLoading(true);
-      const res = await fetch('http://localhost:4000/user/auth/register', {
+      const res = await fetch(`${API}/user/auth/register`, {
         method: 'POST',
         body: JSON.stringify({ name, email, password }),
         headers: {

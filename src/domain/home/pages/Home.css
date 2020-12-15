@@ -1,0 +1,173 @@
+.home-container {
+  margin: 0 auto;
+  margin-top: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+:root {
+  --background: #e5ffb3;
+  --background-accent: #dbf8a3;
+  --background-accent-2: #bde66e;
+  --light: #92de34;
+  --dark: #69bc22;
+  --text: #025600;
+}
+
+.home-button-auth {
+  margin: 0;
+  padding: 0;
+  display: block;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background-color: var(--light);
+  width: 400px;
+  height: 70px;
+  border-radius: 30px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  background-size: 100% 100%;
+  box-shadow: 0 0 0 7px var(--light) inset;
+  margin-bottom: 15px;
+}
+
+.home-button-auth:hover {
+  background-image: linear-gradient(
+    145deg,
+    transparent 10%,
+    var(--dark) 10% 20%,
+    transparent 20% 30%,
+    var(--dark) 30% 40%,
+    transparent 40% 50%,
+    var(--dark) 50% 60%,
+    transparent 60% 70%,
+    var(--dark) 70% 80%,
+    transparent 80% 90%,
+    var(--dark) 90% 100%
+  );
+  animation: background 3s linear infinite;
+}
+
+@keyframes background {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+.login-btn {
+  font-family: Hack, monospace;
+  background: #bbff00;
+  color: #1d1d1d;
+  cursor: pointer;
+  font-size: 2em;
+  padding: 1.5rem;
+  border: 0;
+  transition: all 0.5s;
+  border-radius: 10px;
+  width: auto;
+  position: relative;
+  outline: none;
+  min-width: 250px;
+}
+
+.login-btn:active {
+  outline: none;
+}
+
+.login-btn::after {
+  content: '\f2f6';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 80%;
+  top: 54%;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+
+.login-btn:hover {
+  background: #2b2bff;
+  transition: all 0.5s;
+  border-radius: 10px;
+  box-shadow: 0px 6px 15px #0000ff61;
+  padding: 1.5rem 3rem 1.5rem 1.5rem;
+  color: #ffffff;
+}
+
+.login-btn:hover::after {
+  opacity: 1;
+  transition: all 0.5s;
+  color: #ffffff;
+}
+
+.register-btn {
+  font-family: Hack, monospace;
+  background: #d3d3d3;
+  color: #2c2c2c;
+  cursor: pointer;
+  font-size: 2em;
+  padding: 1.5rem;
+  border: 0;
+  transition: all 0.5s;
+  border-radius: 10px;
+  width: auto;
+  position: relative;
+  min-width: 250px;
+  outline: none;
+}
+
+.register-btn:active {
+  outline: none;
+}
+
+.register-btn::after {
+  content: '\f234';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 80%;
+  top: 54%;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+
+.register-btn:hover {
+  background: #2b2bff;
+  transition: all 0.5s;
+  border-radius: 10px;
+  box-shadow: 0px 6px 15px #0000ff61;
+  padding: 1.5rem 3rem 1.5rem 1.5rem;
+  color: #ffffff;
+}
+
+.register-btn:hover::after {
+  opacity: 1;
+  transition: all 0.5s;
+  color: #ffffff;
+}
+
+.create-room-header {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.create-room-button,
+.abort-create-room-button {
+  float: left;
+}
+
+.abort-create-room-button {
+  margin-left: 8px;
+}

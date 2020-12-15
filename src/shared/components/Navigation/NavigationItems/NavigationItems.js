@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Menu } from 'antd';
+import { connect } from 'react-redux';
 
 import NavigationItem from './NavigationItem/NavigationItem';
 import './NavigationItems.css';
-import { useStore } from '../../../../hooks-store/store';
 
 const NavigationItems = (props) => {
   const [current, setCurrent] = useState('login');
-  const globalState = useStore()[0];
-  const isAuthenticated = globalState.auth.token !== null;
+  const { isAuthenticated } = props;
 
   const handleClick = (e) => {
     setCurrent(e.key);
@@ -49,4 +48,10 @@ const NavigationItems = (props) => {
   );
 };
 
-export default NavigationItems;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.token !== null,
+  };
+};
+
+export default connect(mapStateToProps, null)(NavigationItems);

@@ -1,10 +1,13 @@
+//Library
 import React, { useState, useEffect } from 'react';
 import { List, Avatar, Tooltip, Spin } from 'antd';
 import { SmileTwoTone, FrownTwoTone, LoadingOutlined } from '@ant-design/icons';
 import _ from 'lodash';
 
+//Others
 import 'antd/dist/antd.css';
 import './AllUser.css';
+import { API } from '../../../../config';
 import { getSocket } from '../../../../shared/utils/socket.io-client';
 
 let socket;
@@ -26,7 +29,7 @@ const AllUser = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch('http://localhost:4000/user', {
+    fetch(`${API}/user`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +67,6 @@ const AllUser = (props) => {
         />
       ) : (
         <List
-          style={{ width: '30%', margin: '0 auto' }}
           itemLayout="horizontal"
           dataSource={users}
           renderItem={(user) => (
@@ -73,7 +75,7 @@ const AllUser = (props) => {
                 avatar={
                   <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                 }
-                title={<a href="https://ant.design">{user.name}</a>}
+                title={<div onClick={() => {}}>{user.name}</div>}
               />
               {user.isOnline ? (
                 <Tooltip title="Online">
