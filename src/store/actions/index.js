@@ -1,6 +1,10 @@
 export {
   authWithEmailAndPassword,
+  authWithFacebook,
+  authWithGoogle,
+  setAuthRedirectPath,
+  resetAuthRedirectPath,
   logout,
   authCheckState,
-  authClearError
+  authClearError,
 } from './auth.action';

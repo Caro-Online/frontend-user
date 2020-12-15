@@ -3,7 +3,6 @@ import io from 'socket.io-client';
 let socket;
 
 export const initSocket = (userId) => {
-  console.log(userId);
   socket = io('http://localhost:4000', { query: { userId } });
   return socket;
 };

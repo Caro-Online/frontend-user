@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { Redirect, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Alert, Spin } from 'antd';
 import { Link } from 'react-router-dom';
@@ -15,7 +16,6 @@ import {
   FacebookOutlined,
 } from '@ant-design/icons';
 
-import { signinWithGoogle, signinWithFacebook } from '../../apiUser';
 import './Login.css';
 import * as actions from '../../../../store/actions';
 
@@ -40,8 +40,13 @@ const Login = (props) => {
 
   const {
     onLoginWithEmailAndPassword,
+    onLoginWithFacebook,
+    onLoginWithGoogle,
     onClearError,
+    onSetRedirectPath,
+    onResetAuthRedirectPath,
     authError,
+    authRedirectPath,
     loading,
   } = props;
 
@@ -49,32 +54,29 @@ const Login = (props) => {
     (values) => {
       const { email, password } = values;
       onLoginWithEmailAndPassword(email, password);
+      onSetRedirectPath();
     },
-    [onLoginWithEmailAndPassword]
+    [onLoginWithEmailAndPassword, onSetRedirectPath]
   );
 
-  const responseSuccessGoogle = useCallback((response) => {
-    const { tokenId } = response;
+  const responseSuccessGoogle = useCallback(
+    (response) => {
+      const { tokenId } = response;
+      console.log(response.tokenId);
+      onLoginWithGoogle(tokenId);
+      onSetRedirectPath();
+    },
+    [onLoginWithGoogle, onSetRedirectPath]
+  );
 
-    signinWithGoogle(tokenId)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  const responseFacebook = useCallback((response) => {
-    const { userID, accessToken } = response;
-    signinWithFacebook(userID, accessToken)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  const responseFacebook = useCallback(
+    (response) => {
+      const { userID, accessToken } = response;
+      onLoginWithFacebook(userID, accessToken);
+      onSetRedirectPath();
+    },
+    [onLoginWithFacebook, onSetRedirectPath]
+  );
 
   const onCloseAlert = useCallback(
     (e) => {
@@ -82,17 +84,15 @@ const Login = (props) => {
     },
     [onClearError]
   );
-
-  // let authRedirect;
-  // console.log(props.isAuthenticated);
-  // if (props.isAuthenticated) {
-  //   // console.log(props.isAuthenticated);
-  //   authRedirect = <Redirect to="/" />;
-  // }
+  let redirect = null;
+  if (authRedirectPath) {
+    redirect = <Redirect to={authRedirectPath} />;
+    onResetAuthRedirectPath();
+  }
 
   return (
     <>
-      {/* {authRedirect} */}
+      {redirect}
       <Link to="/" className="caro-online">
         <Title>CaroOnline</Title>
       </Link>
@@ -201,6 +201,7 @@ const mapStateToProps = (state) => {
     isAuthenticated: state.auth.token !== null,
     loading: state.auth.loading,
     authError: state.auth.error,
+    authRedirectPath: state.auth.authRedirectPath,
   };
 };
 
@@ -208,7 +209,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onLoginWithEmailAndPassword: (email, password) =>
       dispatch(actions.authWithEmailAndPassword(email, password)),
+    onLoginWithFacebook: (userId, accessToken) =>
+      dispatch(actions.authWithFacebook(userId, accessToken)),
+    onLoginWithGoogle: (tokenId) => dispatch(actions.authWithGoogle(tokenId)),
     onClearError: () => dispatch(actions.authClearError()),
+    onSetRedirectPath: () => dispatch(actions.setAuthRedirectPath()),
+    onResetAuthRedirectPath: () => dispatch(actions.resetAuthRedirectPath()),
   };
 };
 

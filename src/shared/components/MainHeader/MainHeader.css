@@ -8,8 +8,11 @@
   align-items: center;
   background-color: #dc3545 !important;
   padding: 0 20px;
-  z-index: 90;
+
   height: 10vh;
+
+  z-index: 5;
+
   color: white;
 }
 
