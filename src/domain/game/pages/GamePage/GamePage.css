@@ -1,0 +1,28 @@
+.main-content{
+    padding:0;
+    width: 100;
+    display:flex;
+    flex:row;
+}
+
+.game-page__board{
+    width: 800px;
+    height: 800px;
+    display:flex;
+    justify-content: center;
+    left: 0px;
+   
+    padding-top: 10px;
+}
+
+.game-page__info{
+   width: 300px;
+    min-width: 0px ;
+}
+
+.game-page__all-user{
+    width: 200px;
+    float: right;
+    min-width: 0px;
+}
+

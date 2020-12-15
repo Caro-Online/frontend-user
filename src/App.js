@@ -10,12 +10,11 @@ import MainHeader from './shared/components/MainHeader/MainHeader';
 import * as actions from './store/actions';
 
 import Home from './domain/home/pages/Home';
-import GamePage from './domain/game/pages/GamePage';
+import GamePage from './domain/game/pages/GamePage/GamePage';
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
 const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
-const Room = lazy(() => import('./domain/game/pages/Room/Room'));
 
 const { Content, Footer } = Layout;
 
@@ -41,7 +40,6 @@ const App = (props) => {
     <Switch>
       <Route path="/register" exact component={Register} />
       <Route path="/login" exact component={Login} />
-      <Route path="/game" exact component={GamePage} />
       <Route path="/" exact component={Home} />
     </Switch>
   );
@@ -53,7 +51,7 @@ const App = (props) => {
         <Route path="/game" exact component={GamePage} />
         {/* <Route path="/test" exact component={Test} /> */}
         <Route path="/rooms" exact component={Rooms} />
-        <Route path="/room/:roomId" exact component={Room} />
+        <Route path="/room/:roomId" exact component={GamePage} />
         <Route path="/" exact component={Home} />
         {/* <Redirect to="/" /> */}
       </Switch>
