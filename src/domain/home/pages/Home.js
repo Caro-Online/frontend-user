@@ -28,7 +28,7 @@ const Home = (props) => {
     history.push('/register');
   };
 
-  const onClickPlayNowButtonHandler = () => {};
+  const onClickPlayNowButtonHandler = () => { };
 
   const onClickFindRoomsHandler = () => {
     history.push('/rooms');
@@ -66,6 +66,7 @@ const Home = (props) => {
     })
       .then((res) => res.json())
       .then((response) => {
+        history.push(`/room/${response.room.roomId}`);
         setIsLoading(false);
         console.log(response);
       })
@@ -137,57 +138,57 @@ const Home = (props) => {
         {isLoading ? (
           <Spin style={{ fontSize: '64px' }} />
         ) : (
-          <Form
-            name="normal_register"
-            className="create-room-form"
-            onFinish={onSubmitCreateRoomHandler}
-          >
-            <Form.Item
-              label="Tên phòng"
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: 'Tên phòng không được bỏ trống',
-                },
-              ]}
+            <Form
+              name="normal_register"
+              className="create-room-form"
+              onFinish={onSubmitCreateRoomHandler}
             >
-              <Input
-                type="text"
-                placeholder="Phòng của tui"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-            <Form.Item name="rule" label="Luật chơi">
-              <Select
-                style={{
-                  width: 240,
-                }}
-                defaultValue="BLOCK_TWO_SIDE"
+              <Form.Item
+                label="Tên phòng"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Tên phòng không được bỏ trống',
+                  },
+                ]}
               >
-                <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
-                <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="create-room-button"
-              >
-                Tạo
+                <Input
+                  type="text"
+                  placeholder="Phòng của tui"
+                  style={{ width: '100%' }}
+                />
+              </Form.Item>
+              <Form.Item name="rule" label="Luật chơi">
+                <Select
+                  style={{
+                    width: 240,
+                  }}
+                  defaultValue="BLOCK_TWO_SIDE"
+                >
+                  <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
+                  <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="create-room-button"
+                >
+                  Tạo
               </Button>
-              <Button
-                type="danger"
-                htmlType="button"
-                onClick={closeCreateRoomModal}
-                className="abort-create-room-button"
-              >
-                Hủy
+                <Button
+                  type="danger"
+                  htmlType="button"
+                  onClick={closeCreateRoomModal}
+                  className="abort-create-room-button"
+                >
+                  Hủy
               </Button>
-            </Form.Item>
-          </Form>
-        )}
+              </Form.Item>
+            </Form>
+          )}
       </Modal>
       <Modal show={openInputRoomIdModal} modalClosed={closeInputRoomIdModal}>
         <h1 className="create-room-header">Nhập id phòng</h1>

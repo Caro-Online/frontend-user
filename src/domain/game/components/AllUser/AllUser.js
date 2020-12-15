@@ -11,6 +11,7 @@ import { API } from '../../../../config';
 import { getSocket } from '../../../../shared/utils/socket.io-client';
 
 let socket;
+// const abortController = new AbortController();
 
 const modifyUsersStatus = (response, data, setUsers, isOnline) => {
   const modifyUsers = _.cloneDeep(response.users);
@@ -24,7 +25,7 @@ const modifyUsersStatus = (response, data, setUsers, isOnline) => {
 };
 
 const AllUser = (props) => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -34,6 +35,7 @@ const AllUser = (props) => {
       headers: {
         'Content-Type': 'application/json',
       },
+      // signal: abortController.signal,
     })
       .then((res) => res.json())
       .then((response) => {
@@ -56,48 +58,56 @@ const AllUser = (props) => {
         console.log(error);
         setIsLoading(false);
       });
+    // return () => {
+    //   abortController.abort();
+    // };
   }, []);
 
-  return (
-    <>
-      {isLoading ? (
-        <Spin
-          indicator={<LoadingOutlined style={{ fontSize: 80 }} spin />}
-          className="center"
-        />
-      ) : (
-        <List
-          itemLayout="horizontal"
-          dataSource={users}
-          renderItem={(user) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                }
-                title={<div onClick={() => {}}>{user.name}</div>}
-              />
-              {user.isOnline ? (
-                <Tooltip title="Online">
-                  <SmileTwoTone
-                    className="online-offline-status"
-                    twoToneColor="#52c41a"
-                  />
-                </Tooltip>
-              ) : (
-                <Tooltip title="Offline">
-                  <FrownTwoTone
-                    className="online-offline-status"
-                    twoToneColor="red"
-                  />
-                </Tooltip>
-              )}
-            </List.Item>
-          )}
-        />
-      )}
-    </>
-  );
+  let content = null;
+  if (users) {
+    content = (
+      <List
+        itemLayout="horizontal"
+        dataSource={users}
+        renderItem={(user) => (
+          <List.Item>
+            <List.Item.Meta
+              avatar={
+                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+              }
+              title={<div onClick={() => {}}>{user.name}</div>}
+            />
+            {user.isOnline ? (
+              <Tooltip title="Online">
+                <SmileTwoTone
+                  className="online-offline-status"
+                  twoToneColor="#52c41a"
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip title="Offline">
+                <FrownTwoTone
+                  className="online-offline-status"
+                  twoToneColor="red"
+                />
+              </Tooltip>
+            )}
+          </List.Item>
+        )}
+      />
+    );
+  }
+
+  if (isLoading) {
+    content = (
+      <Spin
+        indicator={<LoadingOutlined style={{ fontSize: 80 }} spin />}
+        className="center"
+      />
+    );
+  }
+
+  return content;
 };
 
 export default AllUser;
