@@ -26,17 +26,6 @@ const App = (props) => {
     onTryAutoLogin();
   }, [onTryAutoLogin]);
 
-  // useEffect(() => {
-  //   let socket;
-  //   if (props.isAuthenticated) {
-  //     socket = initSocket(localStorage.getItem('userId'));
-  //     // history.push('/');
-  //     return () => {
-  //       socket.disconnect();
-  //     };
-  //   }
-  // }, [props.isAuthenticated, history]);
-
   let routes = (
     <Switch>
       <Route path="/register" exact component={Register} />
