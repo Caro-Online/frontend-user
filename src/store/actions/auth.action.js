@@ -79,6 +79,7 @@ export const authWithEmailAndPassword = (email, password) => {
     login({ email, password })
       .then((response) => {
         processResponseWhenLoginSuccess(dispatch, response);
+        dispatch(setAuthRedirectPath());
       })
       .catch((err) => {
         processErrWhenLoginFail(dispatch, err);
@@ -92,6 +93,7 @@ export const authWithGoogle = (idToken) => {
     signinWithGoogle(idToken)
       .then((response) => {
         processResponseWhenLoginSuccess(dispatch, response);
+        dispatch(setAuthRedirectPath());
       })
       .catch((err) => {
         processErrWhenLoginFail(dispatch, err);
@@ -105,6 +107,7 @@ export const authWithFacebook = (userId, accessToken) => {
     signinWithFacebook(userId, accessToken)
       .then((response) => {
         processResponseWhenLoginSuccess(dispatch, response);
+        dispatch(setAuthRedirectPath());
       })
       .catch((err) => {
         processErrWhenLoginFail(dispatch, err);

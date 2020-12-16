@@ -28,7 +28,7 @@ const Home = (props) => {
     history.push('/register');
   };
 
-  const onClickPlayNowButtonHandler = () => { };
+  const onClickPlayNowButtonHandler = () => {};
 
   const onClickFindRoomsHandler = () => {
     history.push('/rooms');
@@ -50,31 +50,34 @@ const Home = (props) => {
     setOpenInputRoomIdModal(false);
   };
 
-  const onSubmitCreateRoomHandler = useCallback((values) => {
-    const { name, rule } = values;
-    setIsLoading(true);
-    fetch(`${API}/game`, {
-      method: 'POST',
-      body: JSON.stringify({
-        name,
-        rule,
-        userId: localStorage.getItem('userId'),
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        history.push(`/room/${response.room.roomId}`);
-        setIsLoading(false);
-        console.log(response);
+  const onSubmitCreateRoomHandler = useCallback(
+    (values) => {
+      const { name, rule } = values;
+      setIsLoading(true);
+      fetch(`${API}/game`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name,
+          rule,
+          userId: localStorage.getItem('userId'),
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
-      .catch((error) => {
-        console.log(error);
-        setIsLoading(false);
-      });
-  }, []);
+        .then((res) => res.json())
+        .then((response) => {
+          history.push(`/room/${response.room.roomId}`);
+          setIsLoading(false);
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+        });
+    },
+    [history]
+  );
 
   const onSubmitJoinRoomHandler = useCallback(
     (values) => {
@@ -138,57 +141,57 @@ const Home = (props) => {
         {isLoading ? (
           <Spin style={{ fontSize: '64px' }} />
         ) : (
-            <Form
-              name="normal_register"
-              className="create-room-form"
-              onFinish={onSubmitCreateRoomHandler}
+          <Form
+            name="normal_register"
+            className="create-room-form"
+            onFinish={onSubmitCreateRoomHandler}
+          >
+            <Form.Item
+              label="Tên phòng"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: 'Tên phòng không được bỏ trống',
+                },
+              ]}
             >
-              <Form.Item
-                label="Tên phòng"
-                name="name"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Tên phòng không được bỏ trống',
-                  },
-                ]}
+              <Input
+                type="text"
+                placeholder="Phòng của tui"
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+            <Form.Item name="rule" label="Luật chơi">
+              <Select
+                style={{
+                  width: 240,
+                }}
+                defaultValue="BLOCK_TWO_SIDE"
               >
-                <Input
-                  type="text"
-                  placeholder="Phòng của tui"
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-              <Form.Item name="rule" label="Luật chơi">
-                <Select
-                  style={{
-                    width: 240,
-                  }}
-                  defaultValue="BLOCK_TWO_SIDE"
-                >
-                  <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
-                  <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="create-room-button"
-                >
-                  Tạo
+                <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
+                <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="create-room-button"
+              >
+                Tạo
               </Button>
-                <Button
-                  type="danger"
-                  htmlType="button"
-                  onClick={closeCreateRoomModal}
-                  className="abort-create-room-button"
-                >
-                  Hủy
+              <Button
+                type="danger"
+                htmlType="button"
+                onClick={closeCreateRoomModal}
+                className="abort-create-room-button"
+              >
+                Hủy
               </Button>
-              </Form.Item>
-            </Form>
-          )}
+            </Form.Item>
+          </Form>
+        )}
       </Modal>
       <Modal show={openInputRoomIdModal} modalClosed={closeInputRoomIdModal}>
         <h1 className="create-room-header">Nhập id phòng</h1>

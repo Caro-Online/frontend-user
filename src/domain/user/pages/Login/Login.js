@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Alert, Spin } from 'antd';
 import { Link } from 'react-router-dom';
@@ -54,9 +54,9 @@ const Login = (props) => {
     (values) => {
       const { email, password } = values;
       onLoginWithEmailAndPassword(email, password);
-      onSetRedirectPath();
+      // onSetRedirectPath();
     },
-    [onLoginWithEmailAndPassword, onSetRedirectPath]
+    [onLoginWithEmailAndPassword]
   );
 
   const responseSuccessGoogle = useCallback(
@@ -213,7 +213,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.authWithFacebook(userId, accessToken)),
     onLoginWithGoogle: (tokenId) => dispatch(actions.authWithGoogle(tokenId)),
     onClearError: () => dispatch(actions.authClearError()),
-    onSetRedirectPath: () => dispatch(actions.setAuthRedirectPath()),
+    // onSetRedirectPath: () => dispatch(actions.setAuthRedirectPath()),
     onResetAuthRedirectPath: () => dispatch(actions.resetAuthRedirectPath()),
   };
 };
