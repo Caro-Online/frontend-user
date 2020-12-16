@@ -3,7 +3,7 @@ import { Switch, Route, useHistory } from 'react-router-dom';
 import { Layout } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
-
+import PrivateRoute from './shared/components/PrivateRoute/PrivatetRoute'
 // import 'antd/dist/antd.css';
 import './App.css';
 import MainHeader from './shared/components/MainHeader/MainHeader';
@@ -15,6 +15,7 @@ const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
 const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
+
 
 const { Content, Footer } = Layout;
 
@@ -41,22 +42,11 @@ const App = (props) => {
       <Route path="/register" exact component={Register} />
       <Route path="/login" exact component={Login} />
       <Route path="/" exact component={Home} />
+      <PrivateRoute path="/logout" exact >  <Logout /> </PrivateRoute>
+      <PrivateRoute path="/rooms" exact ><Rooms /></PrivateRoute>
+      <PrivateRoute path="/room/:roomId" exact > <GamePage /> </PrivateRoute>
     </Switch>
   );
-
-  if (props.isAuthenticated) {
-    routes = (
-      <Switch>
-        <Route path="/logout" exact component={Logout} />
-        <Route path="/game" exact component={GamePage} />
-        {/* <Route path="/test" exact component={Test} /> */}
-        <Route path="/rooms" exact component={Rooms} />
-        <Route path="/room/:roomId" exact component={GamePage} />
-        <Route path="/" exact component={Home} />
-        {/* <Redirect to="/" /> */}
-      </Switch>
-    );
-  }
 
   return (
     <>
