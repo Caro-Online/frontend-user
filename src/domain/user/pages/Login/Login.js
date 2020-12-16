@@ -54,7 +54,6 @@ const Login = (props) => {
     (values) => {
       const { email, password } = values;
       onLoginWithEmailAndPassword(email, password);
-      // onSetRedirectPath();
     },
     [onLoginWithEmailAndPassword]
   );
@@ -64,18 +63,16 @@ const Login = (props) => {
       const { tokenId } = response;
       console.log(response.tokenId);
       onLoginWithGoogle(tokenId);
-      onSetRedirectPath();
     },
-    [onLoginWithGoogle, onSetRedirectPath]
+    [onLoginWithGoogle]
   );
 
   const responseFacebook = useCallback(
     (response) => {
       const { userID, accessToken } = response;
       onLoginWithFacebook(userID, accessToken);
-      onSetRedirectPath();
     },
-    [onLoginWithFacebook, onSetRedirectPath]
+    [onLoginWithFacebook]
   );
 
   const onCloseAlert = useCallback(
