@@ -1,52 +1,56 @@
-.board{
-    table-layout:fixed
+.board {
+    table-layout: fixed
 }
 
-
-.board-row{
- display: table;
-
+.board-row {
+    display: table;
 }
+
 .board-row:after {
-  clear: both;
-  content: "";
-  display: table;
+    clear: both;
+    content: "";
+    display: table;
 }
 
 .status {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .square {
-display:table-cell;
-  background: #fff;
-  border: 1px solid #999;
-  /* float: left; */
-  font-size: 18px;
-  font-weight: bold;
-  line-height: 34px;
-  min-height: 28px !important;
-  min-width: 28px !important;
-  height: 28px;
-  width: 28px;
-  padding: 0;
-  text-align: center;
-    cursor: pointer;
+    /* display: table-cell;
+    background: #fff;
+    border: 1px solid #999;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 34px;
+    min-height: 28px !important;
+    min-width: 28px !important;
+    height: 28px;
+    width: 28px;
+    padding: 0;
+    text-align: center;
+    cursor: pointer; */
+    width: 2.2rem;
+    height: 2.2rem;
+    border: 1.7px solid #999;
+    text-align: center;
+    font-family: 'Poppins';
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
 .square:focus {
-  outline: none;
-   padding: 0;
-     height: 28px;
-  width: 28px;
+    outline: none;
+    padding: 0;
+    height: 28px;
+    width: 28px;
 }
 
 .game {
-  display: flex;
-  flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 .game-info {
-  margin-left: 20px;
+    margin-left: 20px;
 }
-

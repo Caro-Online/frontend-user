@@ -76,10 +76,11 @@ const GamePage = (props) => {
           {room ? <Chat room={room} /> : null}
         </div>
       </Col>
-      <Col flex="0 1 300px">
-        <div className="game-page__all-user">
-          <AllUser />
-        </div>
+      <Col flex="0 1 250px" style={{ padding: "4px 8px" }}>
+        Online user
+        <AllUser />
+        {/* <div className="game-page__all-user">
+        </div> */}
       </Col>
     </Row>
   );

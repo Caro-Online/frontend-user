@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { List, message, Spin } from "antd";
-import reqwest from "reqwest";
+// import reqwest from "reqwest";
 
-import InfiniteScroll from "react-infinite-scroller";
+// import InfiniteScroll from "react-infinite-scroller";
 import { Divider } from "antd";
 import { Typography } from "antd";
 
@@ -16,9 +16,8 @@ const History = ({ history, jumpTo }) => {
   };
   return (
     <div className="demo-infinite-container">
-      <Divider orientation="left">
-        <Title level={5}> Step history</Title>
-      </Divider>
+      {/* <Divider orientation="left"></Divider> */}
+      <Title level={5}>Step history</Title>
       {history && (
         <List
           dataSource={history}
