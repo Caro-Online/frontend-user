@@ -1,28 +1,31 @@
-.main-content{
-    padding:0;
+.main-content {
+    position: relative;
+    padding: 0;
     width: 100;
-    display:flex;
-    flex:row;
+    display: flex;
+    flex: row;
+    justify-content: space-between;
 }
 
-.game-page__board{
+.game-page__board {
     width: 800px;
     height: 800px;
-    display:flex;
+    display: flex;
     justify-content: center;
     left: 0px;
-   
     padding-top: 10px;
 }
 
-.game-page__info{
-   width: 300px;
-    min-width: 0px ;
+.game-page__info {
+    width: 300px;
+    min-width: 0px;
 }
 
-.game-page__all-user{
+.game-page__all-user {
+    position: fixed;
+    right: 0;
+    top: 64px;
     width: 200px;
     float: right;
     min-width: 0px;
 }
-
