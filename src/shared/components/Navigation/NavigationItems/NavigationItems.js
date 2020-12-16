@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Menu, Button, Dropdown, Avatar, Image } from 'antd';
+import { Menu, Button, Dropdown, Avatar } from 'antd';
 import { CaretDownOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import './NavigationItems.css';
-import NavigationItem from './NavigationItem/NavigationItem';
 
 const menu = (
   <Menu>
@@ -22,12 +21,7 @@ const menu = (
   </Menu>
 );
 const NavigationItems = (props) => {
-  const [current, setCurrent] = useState('login');
   const { isAuthenticated } = props;
-
-  const handleClick = (e) => {
-    setCurrent(e.key);
-  };
 
   let content = (
     <>

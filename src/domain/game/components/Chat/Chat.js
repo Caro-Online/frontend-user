@@ -1,6 +1,5 @@
 //Library
 import React, { useCallback, useState, useEffect } from 'react';
-import { Form, Input, Button } from 'antd';
 import { MessageFilled } from '@ant-design/icons';
 
 //Components
@@ -11,7 +10,6 @@ import Messages from './Messages/Messages';
 import './Chat.css';
 import { getSocket } from '../../../../shared/utils/socket.io-client';
 import { useLocation } from 'react-router-dom';
-import { API } from '../../../../config';
 
 let socket;
 
@@ -49,19 +47,22 @@ export default function Chat({ room }) {
     });
   }, [room]);
 
-  const sendMessage = (event) => {
-    event.preventDefault();
+  const sendMessage = useCallback(
+    (event) => {
+      event.preventDefault();
 
-    socket = getSocket();
+      socket = getSocket();
 
-    if (message) {
-      socket.emit(
-        'sendMessage',
-        { message, userId: localStorage.getItem('userId') },
-        () => setMessage('')
-      );
-    }
-  };
+      if (message) {
+        socket.emit(
+          'sendMessage',
+          { message, userId: localStorage.getItem('userId') },
+          () => setMessage('')
+        );
+      }
+    },
+    [message]
+  );
 
   return (
     <div className="chat-container">

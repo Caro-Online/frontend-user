@@ -43,7 +43,6 @@ const Login = (props) => {
     onLoginWithFacebook,
     onLoginWithGoogle,
     onClearError,
-    onSetRedirectPath,
     onResetAuthRedirectPath,
     authError,
     authRedirectPath,
@@ -210,7 +209,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.authWithFacebook(userId, accessToken)),
     onLoginWithGoogle: (tokenId) => dispatch(actions.authWithGoogle(tokenId)),
     onClearError: () => dispatch(actions.authClearError()),
-    // onSetRedirectPath: () => dispatch(actions.setAuthRedirectPath()),
     onResetAuthRedirectPath: () => dispatch(actions.resetAuthRedirectPath()),
   };
 };
