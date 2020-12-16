@@ -72,8 +72,8 @@ export default function BoardGame({ emitHistory, locationToJump }) {
   };
 
   const handleSquareClick = (i) => {
-    const newHistory = history.slice(0, history.length);
-    const current = newHistory[history.length - 1];
+    const newHistory = history.slice(0, stepNumber + 1);
+    const current = newHistory[newHistory.length - 1];
     const squares = current.squares.slice();
     squares[i] = squares[i] ? squares[i] : xIsNext ? "X" : "O";
     setHistory(newHistory.concat([{ squares: squares, location: i }]));

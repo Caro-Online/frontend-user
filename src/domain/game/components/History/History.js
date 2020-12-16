@@ -33,7 +33,6 @@ const History = ({ history, jumpTo }) => {
                       curLocation(step.location)
                     : "Go to game start"
                 }
-                description={move}
               />
               <div>X - O</div>
             </List.Item>
