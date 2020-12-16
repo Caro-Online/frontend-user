@@ -3,62 +3,39 @@ import { List, message, Spin } from "antd";
 import reqwest from "reqwest";
 
 import InfiniteScroll from "react-infinite-scroller";
+import { Divider } from "antd";
+import { Typography } from "antd";
 
 import "./History.css";
-const fakeDataUrl =
-  "https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo";
-
-const History = () => {
-  const [data, setData] = useState([]);
+const { Title } = Typography;
+const History = ({ history, jumpTo }) => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  useEffect(() => {
-    fetchData((res) => {
-      setData(res.results);
-    });
-  }, []);
-  const fetchData = (callback) => {
-    reqwest({
-      url: fakeDataUrl,
-      type: "json",
-      method: "get",
-      contentType: "application/json",
-      success: (res) => {
-        callback(res);
-      },
-    });
-  };
-  const handleInfiniteOnLoad = () => {
-    setLoading(true);
-    if (data.length > 14) {
-      message.warning("Infinite List loaded all");
-      setHasMore(false);
-      setLoading(false);
-      return;
-    }
-    fetchData((res) => {
-      setData(data.concat(res.results));
-      setLoading(false);
-    });
+  const curLocation = (i) => {
+    return `(${1 + (i % 20)}, ${1 + Math.floor(i / 20)})`;
   };
   return (
     <div className="demo-infinite-container">
-      <InfiniteScroll
-        initialLoad={false}
-        pageStart={0}
-        loadMore={handleInfiniteOnLoad}
-        hasMore={!loading && hasMore}
-        useWindow={false}
-      >
+      <Divider orientation="left">
+        <Title level={5}> Step history</Title>
+      </Divider>
+      {history && (
         <List
-          dataSource={data}
-          renderItem={(item) => (
-            <List.Item key={item.id}>
+          dataSource={history}
+          renderItem={(step, move) => (
+            <List.Item key={move} onClick={() => jumpTo(move)}>
               <List.Item.Meta
-                title={<a href="https://ant.design">{item.name.last}</a>}
-                description={item.email}
+                title={
+                  move
+                    ? "Go to move #" +
+                      move +
+                      " - location: " +
+                      curLocation(step.location)
+                    : "Go to game start"
+                }
+                description={move}
               />
-              <div>Win</div>
+              <div>X - O</div>
             </List.Item>
           )}
         >
@@ -68,7 +45,7 @@ const History = () => {
             </div>
           )}
         </List>
-      </InfiniteScroll>
+      )}
     </div>
   );
 };
