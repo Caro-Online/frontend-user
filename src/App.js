@@ -1,21 +1,21 @@
-import React, { Suspense, lazy, useEffect } from "react";
-import { Switch, Route, useHistory } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from 'react';
+import { Switch, Route, useHistory } from 'react-router-dom';
 
-import { Layout, Menu, Breadcrumb } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
-import { connect } from "react-redux";
-import PrivateRoute from "./shared/components/PrivateRoute/PrivatetRoute";
+import { Layout, Menu, Breadcrumb } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { connect } from 'react-redux';
+import PrivateRoute from './shared/components/PrivateRoute/PrivatetRoute';
 // import 'antd/dist/antd.css';
-import "./App.css";
-import MainHeader from "./shared/components/MainHeader/MainHeader";
-import * as actions from "./store/actions";
+import './App.css';
+import MainHeader from './shared/components/MainHeader/MainHeader';
+import * as actions from './store/actions';
 
-import Home from "./domain/home/pages/Home";
-import GamePage from "./domain/game/pages/GamePage/GamePage";
-const Logout = lazy(() => import("./domain/user/pages/Logout/Logout"));
-const Register = lazy(() => import("./domain/user/pages/Register/Register"));
-const Login = lazy(() => import("./domain/user/pages/Login/Login"));
-const Rooms = lazy(() => import("./domain/game/pages/Rooms/Rooms"));
+import Home from './domain/home/pages/Home';
+import GamePage from './domain/game/pages/GamePage/GamePage';
+const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
+const Register = lazy(() => import('./domain/user/pages/Register/Register'));
+const Login = lazy(() => import('./domain/user/pages/Login/Login'));
+const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 
 const { Header, Content, Footer } = Layout;
 const App = (props) => {
@@ -29,17 +29,16 @@ const App = (props) => {
     <Switch>
       <Route path="/register" exact component={Register} />
       <Route path="/login" exact component={Login} />
+      <Route path="/reset-password" exact component={Login} />
       <Route path="/" exact component={Home} />
       <PrivateRoute path="/logout" exact>
-        {" "}
-        <Logout />{" "}
+        <Logout />
       </PrivateRoute>
       <PrivateRoute path="/rooms" exact>
         <Rooms />
       </PrivateRoute>
       <PrivateRoute path="/room/:roomId" exact>
-        {" "}
-        <GamePage />{" "}
+        <GamePage />
       </PrivateRoute>
     </Switch>
   );
@@ -48,7 +47,7 @@ const App = (props) => {
     <Layout>
       <MainHeader />
       <Suspense fallback={<LoadingOutlined style={{ fontSize: 100 }} spin />}>
-        <Content style={{ backgroundColor: "white" }}>{routes}</Content>
+        <Content style={{ backgroundColor: 'white' }}>{routes}</Content>
       </Suspense>
       {/* <Footer
         style={{

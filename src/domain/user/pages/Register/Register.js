@@ -53,7 +53,7 @@ const Register = (props) => {
       <Link to="/" className="caro-online">
         <Title>CaroOnline</Title>
       </Link>
-      <Card className="card" title="Register">
+      <Card className="card" title="Đăng ký">
         {authError ? (
           <Alert
             message="Register Error"
@@ -80,14 +80,14 @@ const Register = (props) => {
               rules={[
                 {
                   required: true,
-                  message: 'Please input your Name!',
+                  message: 'Tên không được bỏ trống!',
                 },
               ]}
             >
               <Input
                 prefix={<IdcardOutlined className="site-form-item-icon" />}
                 type="text"
-                placeholder="Your Name"
+                placeholder="Tên"
               />
             </Form.Item>
             <Form.Item
@@ -95,14 +95,14 @@ const Register = (props) => {
               rules={[
                 {
                   required: true,
-                  message: 'Please input your Email!',
+                  message: 'Email không được bỏ trống!',
                 },
               ]}
             >
               <Input
                 prefix={<UserOutlined className="site-form-item-icon" />}
                 type="email"
-                placeholder="Your Email"
+                placeholder="Email"
               />
             </Form.Item>
             <Form.Item
@@ -110,24 +110,24 @@ const Register = (props) => {
               rules={[
                 {
                   required: true,
-                  message: 'Please input your Password!',
+                  message: 'Password không được bỏ trống!',
                 },
                 {
                   pattern: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*/,
                   message:
-                    'Password must contain 1 uppercase, 1 number, 1 lowercase',
+                    'Password phải bao gồm 1 chữ thường, 1 số và 1 chữ hoa!',
                 },
                 {
                   min: 6,
                   max: 32,
                   message:
-                    'Password must be at least 6 characters long and lower than 32 characters',
+                    'Password phải từ 6 đến 32 ký tự!',
                 },
               ]}
             >
               <Input.Password
                 prefix={<LockOutlined className="site-form-item-icon" />}
-                placeholder="Your Password"
+                placeholder="Mật khẩu"
                 iconRender={(visible) =>
                   visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                 }
@@ -140,10 +140,10 @@ const Register = (props) => {
                 htmlType="submit"
                 className="register-form-button"
               >
-                Register
+                Đăng ký
               </Button>
               <div style={{ textAlign: 'center' }}>
-                Or <Link to="/login">Login now!</Link>
+                Hoặc <Link to="/login">Đăng nhập!</Link>
               </div>
             </Form.Item>
           </Form>

@@ -94,7 +94,7 @@ const Login = (props) => {
       </Link>
       <Card
         className="card"
-        title="Login"
+        title="Đăng Nhập"
         bordered={false}
         style={{ width: 300 }}
       >
@@ -123,7 +123,9 @@ const Login = (props) => {
           >
             <Form.Item
               name="email"
-              rules={[{ required: true, message: 'Please input your email!' }]}
+              rules={[
+                { required: true, message: 'Email không được bỏ trống!' },
+              ]}
             >
               <Input
                 prefix={<MailOutlined className="site-form-item-icon" />}
@@ -135,12 +137,12 @@ const Login = (props) => {
             <Form.Item
               name="password"
               rules={[
-                { required: true, message: 'Please input your password!' },
+                { required: true, message: 'Mật khẩu không được bỏ trống!' },
               ]}
             >
               <Input.Password
                 prefix={<LockOutlined className="site-form-item-icon" />}
-                placeholder="Your Password"
+                placeholder="Mật khẩu"
                 iconRender={(visible) =>
                   visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                 }
@@ -149,7 +151,7 @@ const Login = (props) => {
 
             <Form.Item {...tailLayout} className="login-form-button">
               <Button type="primary" htmlType="submit">
-                Submit
+                Đăng nhập
               </Button>
 
               <GoogleLogin
@@ -161,7 +163,7 @@ const Login = (props) => {
                     disabled={renderProps.disabled}
                     className="google-login mt-2"
                   >
-                    Sign in with Google
+                    Đăng nhập bằng Google
                   </Button>
                 )}
                 onSuccess={responseSuccessGoogle}
@@ -174,7 +176,7 @@ const Login = (props) => {
                 callback={responseFacebook}
                 cssClass="facebook-login"
                 icon={<FacebookOutlined />}
-                textButton="&nbsp;&nbsp;Sign In with Facebook"
+                textButton="&nbsp;&nbsp;Đăng nhập bằng Facebook"
               />
               <Button
                 className="redirect-to-register"
@@ -182,7 +184,7 @@ const Login = (props) => {
                 htmlType="button"
                 onClick
               >
-                Don't have an account? Register
+                Bạn chưa có tài khoản? Đăng ký ngay!
               </Button>
             </Form.Item>
           </Form>

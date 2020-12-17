@@ -15,7 +15,7 @@ const menu = (
         href="/logout"
       >
         <LogoutOutlined />
-        Logout
+        Đăng xuất
       </a>
     </Menu.Item>
   </Menu>
@@ -32,12 +32,12 @@ const NavigationItems = (props) => {
             marginRight: '4px',
           }}
         >
-          Login
+          Đăng nhập
         </Button>
       </Link>
       <Link to="/register">
         <Button type="primary" ghost>
-          Register
+          Đăng ký
         </Button>
       </Link>
     </>

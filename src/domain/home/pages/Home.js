@@ -100,10 +100,10 @@ const Home = (props) => {
         style={{ marginBottom: '16px' }}
         onClick={onClickLoginButtonHandler}
       >
-        Login
+        Đăng nhập
       </button>
       <button className="register-btn" onClick={onClickRegisterButtonHandler}>
-        Register
+        Đăng ký
       </button>
     </div>
   );
