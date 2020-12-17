@@ -184,7 +184,14 @@ const Login = (props) => {
                 htmlType="button"
                 onClick
               >
-                Bạn chưa có tài khoản? Đăng ký ngay!
+                <Link to="/register">Bạn chưa có tài khoản? Đăng ký ngay!</Link>
+              </Button>
+              <Button
+                className="redirect-to-register"
+                type="link"
+                htmlType="button"
+              >
+                <Link to="/reset-password">Quên mật khẩu?</Link>
               </Button>
             </Form.Item>
           </Form>
