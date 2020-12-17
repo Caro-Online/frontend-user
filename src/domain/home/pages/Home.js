@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { SiHappycow } from 'react-icons/si';
-import { useHistory } from 'react-router-dom';
-import { Form, Input, Button, Select, Spin } from 'antd';
+import { useHistory, useLocation } from 'react-router-dom';
+import { Form, Input, Button, Select, Spin, message } from 'antd';
 
 import Modal from '../../../shared/components/Modal/Modal';
 
@@ -13,12 +13,22 @@ const { Option } = Select;
 
 const Home = (props) => {
   const { isAuthenticated } = props;
+  const location = useLocation();
+  const history = useHistory();
 
   const [openCreateRoomModal, setOpenCreateRoomModal] = useState(false);
   const [openInputRoomIdModal, setOpenInputRoomIdModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const history = useHistory();
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.returnFromResetPassword)
+        message.success('Email đặt lại mật khẩu đã được gửi đi!');
+      else if (location.state.returnFromUpdatePassword) {
+        message.success('Mật khẩu của bạn đã được thay đổi!');
+      }
+    }
+  }, [location]);
 
   const onClickLoginButtonHandler = () => {
     history.push('/login');
@@ -63,6 +73,7 @@ const Home = (props) => {
         }),
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
         .then((res) => res.json())
@@ -162,12 +173,15 @@ const Home = (props) => {
                 style={{ width: '100%' }}
               />
             </Form.Item>
-            <Form.Item name="rule" label="Luật chơi">
+            <Form.Item
+              name="rule"
+              label="Luật chơi"
+              initialValue="BLOCK_TWO_SIDE"
+            >
               <Select
                 style={{
                   width: 240,
                 }}
-                defaultValue="BLOCK_TWO_SIDE"
               >
                 <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
                 <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>

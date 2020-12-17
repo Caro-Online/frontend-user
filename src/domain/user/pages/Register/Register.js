@@ -56,7 +56,7 @@ const Register = (props) => {
       <Card className="card" title="Đăng ký">
         {authError ? (
           <Alert
-            message="Register Error"
+            message="Lỗi đăng ký"
             description={authError}
             type="error"
             closable
@@ -110,18 +110,17 @@ const Register = (props) => {
               rules={[
                 {
                   required: true,
-                  message: 'Password không được bỏ trống!',
+                  message: 'Mật khẩu không được bỏ trống!',
                 },
                 {
                   pattern: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*/,
                   message:
-                    'Password phải bao gồm 1 chữ thường, 1 số và 1 chữ hoa!',
+                    'Mật khẩu phải bao gồm 1 chữ thường, 1 số và 1 chữ hoa!',
                 },
                 {
                   min: 6,
                   max: 32,
-                  message:
-                    'Password phải từ 6 đến 32 ký tự!',
+                  message: 'Mật khẩu phải từ 6 đến 32 ký tự!',
                 },
               ]}
             >

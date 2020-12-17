@@ -15,6 +15,12 @@ import GamePage from './domain/game/pages/GamePage/GamePage';
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
+const ResetPassword = lazy(() =>
+  import('./domain/user/pages/ResetPassword/ResetPassword')
+);
+const UpdatePassword = lazy(() =>
+  import('./domain/user/pages/UpdatePassword/UpdatePassword')
+);
 const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 
 const { Header, Content, Footer } = Layout;
@@ -29,7 +35,12 @@ const App = (props) => {
     <Switch>
       <Route path="/register" exact component={Register} />
       <Route path="/login" exact component={Login} />
-      <Route path="/reset-password" exact component={Login} />
+      <Route path="/reset-password" exact component={ResetPassword} />
+      <Route
+        path="/reset-password/:resetToken"
+        exact
+        component={UpdatePassword}
+      />
       <Route path="/" exact component={Home} />
       <PrivateRoute path="/logout" exact>
         <Logout />
