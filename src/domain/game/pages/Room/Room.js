@@ -28,7 +28,7 @@ const Room = (props) => {
 
     const { roomId } = params;
     setIsLoading(true);
-    fetch(`${API}/game/${roomId}`, {
+    fetch(`${API}/room/${roomId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -64,7 +64,7 @@ const Home = (props) => {
     (values) => {
       const { name, rule } = values;
       setIsLoading(true);
-      fetch(`${API}/game`, {
+      fetch(`${API}/room`, {
         method: 'POST',
         body: JSON.stringify({
           name,

@@ -6,7 +6,7 @@ const getAllRoom = () => {
     const config = {
         headers: { Authorization: `Bearer ${token}` }
     };
-    return axios.get(`${API}/game`, config)
+    return axios.get(`${API}/room`, config)
 }
 
 const api = {
