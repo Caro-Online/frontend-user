@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useCallback, useEffect } from 'react';
+import { Redirect, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Form, Input, Button, Alert, Spin } from 'antd';
+import { Form, Input, Button, Alert, Spin, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { Card, Typography } from 'antd';
 import FacebookLogin from 'react-facebook-login';
@@ -37,6 +37,16 @@ const tailLayout = {
 
 const Login = (props) => {
   const [form] = Form.useForm();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.returnFromRegister)
+        message.success(
+          'Email xác nhận đã được gửi đi. Hãy kiểm tra email của bạn!'
+        );
+    }
+  }, [location]);
 
   const {
     onLoginWithEmailAndPassword,
@@ -100,7 +110,7 @@ const Login = (props) => {
       >
         {authError ? (
           <Alert
-            message="Register Error"
+            message="Lỗi đăng nhập"
             description={authError}
             type="error"
             closable
@@ -182,7 +192,6 @@ const Login = (props) => {
                 className="redirect-to-register"
                 type="link"
                 htmlType="button"
-                onClick
               >
                 <Link to="/register">Bạn chưa có tài khoản? Đăng ký ngay!</Link>
               </Button>
