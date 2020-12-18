@@ -14,6 +14,9 @@ import Home from './domain/home/pages/Home';
 import GamePage from './domain/game/pages/GamePage/GamePage';
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
+const ConfirmRegistration = lazy(() =>
+  import('./domain/user/pages/ConfirmRegistration/ConfirmRegistration')
+);
 const Login = lazy(() => import('./domain/user/pages/Login/Login'));
 const ResetPassword = lazy(() =>
   import('./domain/user/pages/ResetPassword/ResetPassword')
@@ -34,6 +37,11 @@ const App = (props) => {
   let routes = (
     <Switch>
       <Route path="/register" exact component={Register} />
+      <Route
+        path="/confirm-registration/:emailVerifyToken"
+        exact
+        component={ConfirmRegistration}
+      />
       <Route path="/login" exact component={Login} />
       <Route path="/reset-password" exact component={ResetPassword} />
       <Route

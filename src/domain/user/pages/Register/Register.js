@@ -39,7 +39,12 @@ const Register = (props) => {
         setAuthError(response.message);
       } else {
         setIsLoading(false);
-        history.push('/login');
+        history.push({
+          pathname: '/login',
+          state: {
+            returnFromRegister: true,
+          },
+        });
       }
     } catch (error) {
       console.log(error);
