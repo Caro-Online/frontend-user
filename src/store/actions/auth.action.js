@@ -8,8 +8,9 @@ import * as actionTypes from './actionTypes';
 
 const processResponseWhenLoginSuccess = (dispatch, response) => {
   if (response.data) {
+    console.log(response.data)
     const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-    localStorage.setItem('token', response.data.accessToken);
+    localStorage.setItem('token', response.data.token);
     localStorage.setItem('expirationDate', expirationDate);
     localStorage.setItem('userId', response.data.userId);
     localStorage.setItem('userName', response.data.userName);
@@ -91,6 +92,7 @@ export const authWithGoogle = (idToken) => {
   return (dispatch) => {
     dispatch(authStart());
     signinWithGoogle(idToken)
+
       .then((response) => {
         processResponseWhenLoginSuccess(dispatch, response);
         dispatch(setAuthRedirectPath());

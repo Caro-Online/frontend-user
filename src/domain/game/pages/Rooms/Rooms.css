@@ -1,0 +1,27 @@
+.card-room{
+    margin: 10px;
+    font-size:12px !important;
+}
+
+.site-page-header-ghost-wrapper {
+  background-color: #f5f5f5;
+  padding: 24px;
+}
+
+.room-status{
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+.room-status div{
+    margin-right: 2px;
+}
+
+.room-status span{
+    display: flex;
+    align-items: center;
+}
+
+.room-name span {
+    font-weight: bold;
+}

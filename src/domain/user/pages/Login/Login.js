@@ -70,7 +70,7 @@ const Login = (props) => {
   const responseSuccessGoogle = useCallback(
     (response) => {
       const { tokenId } = response;
-      console.log(response.tokenId);
+      console.log(response);
       onLoginWithGoogle(tokenId);
     },
     [onLoginWithGoogle]
@@ -192,6 +192,7 @@ const Login = (props) => {
                 className="redirect-to-register"
                 type="link"
                 htmlType="button"
+                onClick
               >
                 <Link to="/register">Bạn chưa có tài khoản? Đăng ký ngay!</Link>
               </Button>

@@ -25,6 +25,7 @@ const UpdatePassword = lazy(() =>
   import('./domain/user/pages/UpdatePassword/UpdatePassword')
 );
 const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
+const Room = lazy(() => import('./domain/game/pages/Room/Room'));
 
 const { Header, Content, Footer } = Layout;
 const App = (props) => {
