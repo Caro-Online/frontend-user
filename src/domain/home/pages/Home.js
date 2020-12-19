@@ -277,7 +277,7 @@ const Home = (props) => {
             <Button
               type="danger"
               htmlType="button"
-              onClick={closeCreateRoomModal}
+              onClick={closeInputRoomIdModal}
               className="abort-create-room-button"
             >
               Hủy

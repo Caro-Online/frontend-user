@@ -8,8 +8,8 @@ export const initSocket = (userId) => {
 };
 
 export const getSocket = () => {
-  if (!socket) {
-    throw new Error('Socket not defined');
-  }
+  // if (!socket) {
+  //   throw new Error('Socket not defined');
+  // }
   return socket;
 };

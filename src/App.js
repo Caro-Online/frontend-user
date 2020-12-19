@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import PrivateRoute from './shared/components/PrivateRoute/PrivatetRoute';
 // import 'antd/dist/antd.css';
 import './App.css';
+import { getSocket, initSocket } from './shared/utils/socket.io-client';
 import MainHeader from './shared/components/MainHeader/MainHeader';
 import * as actions from './store/actions';
 
@@ -29,11 +30,25 @@ const Room = lazy(() => import('./domain/game/pages/Room/Room'));
 
 const { Header, Content, Footer } = Layout;
 const App = (props) => {
-  const { onTryAutoLogin } = props;
+  const { onTryAutoLogin, isAuthenticated } = props;
 
   useEffect(() => {
     onTryAutoLogin();
   }, [onTryAutoLogin]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      let socket;
+      // console.log(socket);
+      // if (!socket) {
+      socket = initSocket(localStorage.getItem('userId'));
+      // }
+      // console.log(socket);
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, [isAuthenticated]);
 
   let routes = (
     <Switch>

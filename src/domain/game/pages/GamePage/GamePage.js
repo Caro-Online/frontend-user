@@ -1,20 +1,20 @@
 //Library
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 // Components
-import BoardGame from "../../components/BoardGame/BoardGame";
-import UserInfo from "../../components/UserInfo/UserInfo";
-import History from "../../components/History/History";
-import Chat from "../../components/Chat/Chat";
-import { initSocket } from "../../../../shared/utils/socket.io-client";
-import AllUser from "../../components/AllUser/AllUser";
+import BoardGame from '../../components/BoardGame/BoardGame';
+import UserInfo from '../../components/UserInfo/UserInfo';
+import History from '../../components/History/History';
+import Chat from '../../components/Chat/Chat';
+import { initSocket } from '../../../../shared/utils/socket.io-client';
+import AllUser from '../../components/AllUser/AllUser';
 
 //Others
-import { API } from "../../../../config";
-import "./GamePage.css";
-import { Row, Col } from "antd";
-import { Spin } from "antd";
+import { API } from '../../../../config';
+import './GamePage.css';
+import { Row, Col } from 'antd';
+import { Spin } from 'antd';
 const GamePage = (props) => {
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -23,16 +23,16 @@ const GamePage = (props) => {
   const [history, setHistory] = useState(null);
   const [locationToJump, setLocationToJump] = useState(1);
   useEffect(() => {
-    let socket;
-    socket = initSocket(localStorage.getItem("userId"));
+    // let socket;
+    // socket = initSocket(localStorage.getItem("userId"));
     // history.push('/');
 
     const { roomId } = params;
     setIsLoading(true);
     fetch(`${API}/room/${roomId}`, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
@@ -51,9 +51,9 @@ const GamePage = (props) => {
         setIsLoading(false);
       });
 
-    return () => {
-      socket.disconnect();
-    };
+    // return () => {
+    //   socket.disconnect();
+    // };
   }, [params]);
   const emitHistory = (history) => {
     console.log(`emitHistory`, history);
@@ -77,7 +77,7 @@ const GamePage = (props) => {
           {room ? <Chat room={room} /> : null}
         </div>
       </Col>
-      <Col flex="0 1 250px" style={{ padding: "4px 8px" }}>
+      <Col flex="0 1 250px" style={{ padding: '4px 8px' }}>
         Online user
         <AllUser />
         {/* <div className="game-page__all-user">
@@ -87,7 +87,7 @@ const GamePage = (props) => {
   );
 
   if (isLoading) {
-    content = <Spin style={{ fontSize: "64px" }} />;
+    content = <Spin style={{ fontSize: '64px' }} />;
   }
 
   if (notFound) {
