@@ -1,7 +1,8 @@
 //Library
 import React, { useState, useEffect } from 'react';
-import { List, Avatar, Tooltip, Spin } from 'antd';
+import { Card, List, Avatar, Tooltip, Spin } from 'antd';
 import { SmileTwoTone, FrownTwoTone, LoadingOutlined } from '@ant-design/icons';
+
 import _ from 'lodash';
 
 //Others
@@ -67,35 +68,38 @@ const AllUser = (props) => {
   let content = null;
   if (users) {
     content = (
-      <List
-        itemLayout="horizontal"
-        dataSource={users}
-        renderItem={(user) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-              }
-              title={<div onClick={() => {}}>{user.name}</div>}
-            />
-            {user.isOnline ? (
-              <Tooltip title="Online">
-                <SmileTwoTone
-                  className="online-offline-status"
-                  twoToneColor="#52c41a"
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip title="Offline">
-                <FrownTwoTone
-                  className="online-offline-status"
-                  twoToneColor="red"
-                />
-              </Tooltip>
-            )}
-          </List.Item>
-        )}
-      />
+      <Card className="card-all-user" bordered={true}>
+        <List
+          itemLayout="horizontal"
+          dataSource={users}
+          style={{ height: "90vh" }}
+          renderItem={(user) => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={
+                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                }
+                title={<div onClick={() => { }}>{user.name}</div>}
+              />
+              {user.isOnline ? (
+                <Tooltip title="Online">
+                  <SmileTwoTone
+                    className="online-offline-status"
+                    twoToneColor="#52c41a"
+                  />
+                </Tooltip>
+              ) : (
+                  <Tooltip title="Offline">
+                    <FrownTwoTone
+                      className="online-offline-status"
+                      twoToneColor="red"
+                    />
+                  </Tooltip>
+                )}
+            </List.Item>
+          )}
+        />
+      </Card>
     );
   }
 

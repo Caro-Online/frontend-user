@@ -9,24 +9,25 @@ import History from "../../components/History/History";
 import Chat from "../../components/Chat/Chat";
 import { initSocket } from "../../../../shared/utils/socket.io-client";
 import AllUser from "../../components/AllUser/AllUser";
-
 //Others
 import { API } from "../../../../config";
 import "./GamePage.css";
 import { Row, Col } from "antd";
 import { Spin } from "antd";
+import api from '../../apiGame'
+
+
 const GamePage = (props) => {
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [room, setRoom] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [history, setHistory] = useState(null);
   const [locationToJump, setLocationToJump] = useState(1);
-  useEffect(() => {
-    let socket;
-    socket = initSocket(localStorage.getItem("userId"));
-    // history.push('/');
+  const [render, setRender] = useState(false);
 
+  const getRoomInfo = () => {
     const { roomId } = params;
     setIsLoading(true);
     fetch(`${API}/room/${roomId}`, {
@@ -42,19 +43,60 @@ const GamePage = (props) => {
         console.log(response);
         if (response.success) {
           setRoom(response.room);
+          console.log(response.room)
+          setIsSuccess(true);
+          addAudience(response.room)
         } else {
           setNotFound(true);
+          setIsSuccess(false);
         }
       })
       .catch((error) => {
         console.log(error);
         setIsLoading(false);
+        setIsSuccess(false);
       });
 
+  }
+
+  const addAudience = (room) => {
+    const userId = localStorage.getItem('userId');
+    const join = () => {
+      api.joinRoom(userId, params.roomId).then(res => {
+        console.log('join success');
+        setRender(!render)
+      })
+    }
+
+    if (room.user.u1.userRef._id !== userId & !room.user.u2) {
+      join();
+    }
+    if (room.user.u2) {
+      if (room.user.u1.userRef._id !== userId && room.user.u2.userRef._id !== userId) {
+        join();
+      }
+    }
+
+  }
+
+  const removeAudience = () => {
+    const userId = localStorage.getItem('userId');
+    api.outRoom(userId, params.roomId).then(res => {
+      console.log('out success');
+    })
+  }
+
+  useEffect(() => {
+    let socket;
+    socket = initSocket(localStorage.getItem("userId"));
+    getRoomInfo();
     return () => {
       socket.disconnect();
+      removeAudience()
     };
   }, [params]);
+
+
   const emitHistory = (history) => {
     console.log(`emitHistory`, history);
     setHistory(history);
@@ -64,24 +106,24 @@ const GamePage = (props) => {
   };
   let content = (
     <Row>
-      <Col flex="1 1 200px" className="main-content">
-        <div className="game-page__board">
-          <BoardGame
-            emitHistory={emitHistory}
-            locationToJump={locationToJump}
-          />
-        </div>
-        <div className="game-page__info">
-          <UserInfo />
-          <History history={history} jumpTo={jumpTo} />
-          {room ? <Chat room={room} /> : null}
-        </div>
+      <Col className="game-board" flex="3 0 500px" >
+        <BoardGame
+          emitHistory={emitHistory}
+          locationToJump={locationToJump} />
       </Col>
-      <Col flex="0 1 250px" style={{ padding: "4px 8px" }}>
+      <Col flex="1 0 200px">
+        <UserInfo
+          roomId={isSuccess ? room.roomId : null}
+          user={isSuccess ? room.user : null}
+          audience={isSuccess ? room.audience : null} />
+      </Col>
+      <Col flex="1 0 200px">
+        <History history={history} jumpTo={jumpTo} />
+        {room ? <Chat room={room} /> : null}
+      </Col>
+      <Col flex="1 0 200px" style={{ padding: "4px 8px" }}>
         Online user
         <AllUser />
-        {/* <div className="game-page__all-user">
-        </div> */}
       </Col>
     </Row>
   );
