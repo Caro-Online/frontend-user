@@ -157,14 +157,14 @@ const AllUser = (props) => {
                                 suffix="%"
                               />
                             ) : (
-                              <Statistic
-                                title="Tỉ lệ thắng"
-                                value={user.matchHaveWon / user.matchHavePlayed}
-                                precision={2}
-                                valueStyle={{ color: '#3f8600' }}
-                                suffix="%"
-                              />
-                            )}
+                                <Statistic
+                                  title="Tỉ lệ thắng"
+                                  value={user.matchHaveWon / user.matchHavePlayed}
+                                  precision={2}
+                                  valueStyle={{ color: '#3f8600' }}
+                                  suffix="%"
+                                />
+                              )}
                           </Col>
                         </Row>
                         <div
@@ -216,137 +216,83 @@ const AllUser = (props) => {
                 />
               </Popover>
             ) : (
-<<<<<<< HEAD
                 <Popover
                   placement="left"
                   content={
                     <div className="popover-container">
                       <Row gutter={8} style={{ width: '100%', height: '100%' }}>
-                        <Col span={8}>
+                        <Col span={6}>
                           <Badge
-                            status="success"
+                            status="danger"
                             offset={[-10, 80]}
                             style={{ width: '12px', height: '12px' }}
                           >
                             <Avatar
                               size={96}
                               style={{
-                                backgroundColor: '#87d068',
+                                display: 'flex',
+                                flexDirection: 'row-reverse',
+                                alignItems: 'center',
                               }}
                               icon={<UserOutlined />}
                             />
                           </Badge>
                         </Col>
-                        <Col span={16} style={{ width: '100%', height: '100%' }}>
+                        <Col span={18} style={{ width: '100%', height: '100%' }}>
                           <h3>{user.name}</h3>
                           <Row>
-                            <Col span={12}>
+                            <Col span={14}>
                               <Statistic
-                                title="Số trận đã chơi"
-                                value={112893}
-                                prefix={<FaGamepad />}
+                                title="Ngày tham gia"
+                                value={Date.now()}
+                                formatter={(value) => (
+                                  <span>{user.createdAt}</span>
+                                )}
+                                prefix={<FaCalendarAlt fontSize={14} />}
                               />
                             </Col>
-                            <Col span={12}>
+                            <Col span={10}>
                               <Statistic
-                                title="Tỉ lệ thắng"
-                                value={11.28}
-                                precision={2}
-                                valueStyle={{ color: '#3f8600' }}
-                                suffix="%"
+                                title="Số cúp"
+                                value={user.cup}
+                                prefix={<FaTrophy />}
                               />
                             </Col>
                           </Row>
+                          <Row>
+                            <Col span={14}>
+                              <Statistic
+                                title="Số trận đã chơi"
+                                value={user.matchHavePlayed}
+                                prefix={<FaGamepad />}
+                              />
+                            </Col>
+                            <Col span={10}>
+                              {user.matchHavePlayed === 0 ? (
+                                <Statistic
+                                  title="Tỉ lệ thắng"
+                                  value={0}
+                                  precision={2}
+                                  valueStyle={{ color: '#3f8600' }}
+                                  suffix="%"
+                                />
+                              ) : (
+                                  <Statistic
+                                    title="Tỉ lệ thắng"
+                                    value={user.matchHaveWon / user.matchHavePlayed}
+                                    precision={2}
+                                    valueStyle={{ color: '#3f8600' }}
+                                    suffix="%"
+                                  />
+                                )}
+                            </Col>
+                          </Row>
                           <div
-=======
-              <Popover
-                placement="left"
-                content={
-                  <div className="popover-container">
-                    <Row gutter={8} style={{ width: '100%', height: '100%' }}>
-                      <Col span={6}>
-                        <Badge
-                          status="danger"
-                          offset={[-10, 80]}
-                          style={{ width: '12px', height: '12px' }}
-                        >
-                          <Avatar
-                            size={96}
->>>>>>> main
                             style={{
                               display: 'flex',
                               flexDirection: 'row-reverse',
                               alignItems: 'center',
                             }}
-<<<<<<< HEAD
-=======
-                            icon={<UserOutlined />}
-                          />
-                        </Badge>
-                      </Col>
-                      <Col span={18} style={{ width: '100%', height: '100%' }}>
-                        <h3>{user.name}</h3>
-                        <Row>
-                          <Col span={14}>
-                            <Statistic
-                              title="Ngày tham gia"
-                              value={Date.now()}
-                              formatter={(value) => (
-                                <span>{user.createdAt}</span>
-                              )}
-                              prefix={<FaCalendarAlt fontSize={14} />}
-                            />
-                          </Col>
-                          <Col span={10}>
-                            <Statistic
-                              title="Số cúp"
-                              value={user.cup}
-                              prefix={<FaTrophy />}
-                            />
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col span={14}>
-                            <Statistic
-                              title="Số trận đã chơi"
-                              value={user.matchHavePlayed}
-                              prefix={<FaGamepad />}
-                            />
-                          </Col>
-                          <Col span={10}>
-                            {user.matchHavePlayed === 0 ? (
-                              <Statistic
-                                title="Tỉ lệ thắng"
-                                value={0}
-                                precision={2}
-                                valueStyle={{ color: '#3f8600' }}
-                                suffix="%"
-                              />
-                            ) : (
-                              <Statistic
-                                title="Tỉ lệ thắng"
-                                value={user.matchHaveWon / user.matchHavePlayed}
-                                precision={2}
-                                valueStyle={{ color: '#3f8600' }}
-                                suffix="%"
-                              />
-                            )}
-                          </Col>
-                        </Row>
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row-reverse',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <Button
-                            type="default"
-                            shape="round"
-                            icon={
-                              <RiFileUserFill style={{ marginRight: '8px' }} />
-                            }
->>>>>>> main
                           >
                             <Button
                               type="default"
