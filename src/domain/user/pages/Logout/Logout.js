@@ -8,6 +8,10 @@ const Logout = (props) => {
   const { onLogout } = props;
 
   useEffect(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
     onLogout();
   }, [onLogout]);
 

@@ -22,3 +22,6 @@ export const updateStatusToOnline = (userId) => {
 export const getUserById = (userId) => {
   return axios.get(`${API}/user/${userId}`);
 }
+// export const updateStatusToOnline = (userId) => {
+//   return axios.put(`${API}/user/${userId}/update-status`);
+// };

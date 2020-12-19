@@ -2,8 +2,13 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { SiHappycow } from 'react-icons/si';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Form, Input, Button, Select, Spin, message } from 'antd';
 import apiGame from '../../game/apiGame'
+import { Form, Input, Button, Select, Spin, message, Switch } from 'antd';
+import {
+  LockOutlined,
+  EyeTwoTone,
+  EyeInvisibleOutlined,
+} from '@ant-design/icons';
 
 import Modal from '../../../shared/components/Modal/Modal';
 
@@ -21,6 +26,7 @@ const Home = (props) => {
   const [openInputRoomIdModal, setOpenInputRoomIdModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [roomNotFound, setRoomNotFound] = useState('')
+  const [havePassword, setHavePassword] = useState(false);
 
   useEffect(() => {
     if (location.state) {
@@ -64,7 +70,7 @@ const Home = (props) => {
 
   const onSubmitCreateRoomHandler = useCallback(
     (values) => {
-      const { name, rule } = values;
+      const { name, rule, roomPassword } = values;
       setIsLoading(true);
       fetch(`${API}/room`, {
         method: 'POST',
@@ -72,6 +78,7 @@ const Home = (props) => {
           name,
           rule,
           userId: localStorage.getItem('userId'),
+          roomPassword,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -109,6 +116,10 @@ const Home = (props) => {
     },
     [history]
   );
+
+  const onSwitchChange = (checked) => {
+    setHavePassword(checked);
+  };
 
   let content = (
     <div className="home-container">
@@ -188,17 +199,56 @@ const Home = (props) => {
               <Form.Item
                 name="rule"
                 label="Luật chơi"
-                initialValue="BLOCK_TWO_SIDE"
-              >
-                <Select
-                  style={{
-                    width: 240,
-                  }}
-                >
+                initialValue="BLOCK_TWO_SIDE">
+                <Select>
                   <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
                   <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
                 </Select>
               </Form.Item>
+
+              <Form.Item
+                name="havePassword"
+                label="Đặt mật khẩu"
+                valuePropName="checked"
+              >
+                <Switch onChange={onSwitchChange} />
+              </Form.Item>
+
+              {havePassword ? (
+                <Form.Item
+                  label="Mật khẩu"
+                  name="roomPassword"
+                  rules={[
+                    { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                  ]}
+                >
+                  <Input.Password
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    placeholder="daylamatkhau"
+                    iconRender={(visible) =>
+                      visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                    }
+                  />
+                </Form.Item>
+              ) : null}
+
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="create-room-button"
+                >
+                  <Select
+                    style={{
+                      width: 240,
+                    }}
+                  >
+                    <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
+                    <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
+                  </Select>
+                </Button>
+              </Form.Item>
+
               <Form.Item>
                 <Button
                   type="primary"
@@ -206,7 +256,7 @@ const Home = (props) => {
                   className="create-room-button"
                 >
                   Tạo
-              </Button>
+                </Button>
                 <Button
                   type="danger"
                   htmlType="button"
@@ -216,9 +266,11 @@ const Home = (props) => {
                   Hủy
               </Button>
               </Form.Item>
+
             </Form>
           )}
       </Modal>
+
       <Modal show={openInputRoomIdModal} modalClosed={closeInputRoomIdModal}>
         <h1 className="create-room-header">Nhập id phòng</h1>
         <Form
@@ -253,7 +305,7 @@ const Home = (props) => {
             <Button
               type="danger"
               htmlType="button"
-              onClick={closeCreateRoomModal}
+              onClick={closeInputRoomIdModal}
               className="abort-create-room-button"
             >
               Hủy
@@ -265,7 +317,7 @@ const Home = (props) => {
             </div>}
         </Form>
       </Modal>
-      {content}
+      { content}
     </>
   );
 };

@@ -1,14 +1,14 @@
 import {
   login,
-  updateStatusToOnline,
   signinWithGoogle,
   signinWithFacebook,
 } from '../../domain/user/apiUser';
 import * as actionTypes from './actionTypes';
+import { initSocket } from '../../shared/utils/socket.io-client';
 
 const processResponseWhenLoginSuccess = (dispatch, response) => {
   if (response.data) {
-    console.log(response.data)
+    console.log(response.data);
     const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
     localStorage.setItem('token', response.data.token);
     localStorage.setItem('expirationDate', expirationDate);
@@ -58,9 +58,6 @@ export const authFail = (error) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('expirationDate');
-  localStorage.removeItem('userId');
   return {
     type: actionTypes.AUTH_LOGOUT,
   };
@@ -92,7 +89,6 @@ export const authWithGoogle = (idToken) => {
   return (dispatch) => {
     dispatch(authStart());
     signinWithGoogle(idToken)
-
       .then((response) => {
         processResponseWhenLoginSuccess(dispatch, response);
         dispatch(setAuthRedirectPath());
@@ -134,11 +130,17 @@ export const authCheckState = () => {
             (expirationDate.getTime() - new Date().getTime()) / 1000
           )
         );
-        updateStatusToOnline(userId)
-          .then((response) => {
-            console.log('Updated status');
-          })
-          .catch((error) => console.log(error));
+        let socket = initSocket(localStorage.getItem('userId'));
+        console.log('Emit user online');
+        socket.emit(
+          'user-online',
+          { userId: localStorage.getItem('userId') },
+          (error) => {
+            if (error) {
+              alert(error);
+            }
+          }
+        );
       }
     }
   };

@@ -1,6 +1,6 @@
 //Library
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 // Components
 import BoardGame from "../../components/BoardGame/BoardGame";
@@ -44,9 +44,9 @@ const GamePage = (props) => {
     const { roomId } = params;
     setIsLoading(true);
     fetch(`${API}/room/${roomId}`, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
@@ -164,7 +164,7 @@ const GamePage = (props) => {
   );
 
   if (isLoading) {
-    content = <Spin style={{ fontSize: "64px" }} />;
+    content = <Spin style={{ fontSize: '64px' }} />;
   }
 
   if (notFound) {

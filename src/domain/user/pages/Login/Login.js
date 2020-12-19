@@ -192,7 +192,6 @@ const Login = (props) => {
                 className="redirect-to-register"
                 type="link"
                 htmlType="button"
-                onClick
               >
                 <Link to="/register">Bạn chưa có tài khoản? Đăng ký ngay!</Link>
               </Button>
