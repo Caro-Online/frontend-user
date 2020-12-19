@@ -1,9 +1,20 @@
 //Library
 import React, { useState, useEffect } from 'react';
-import { List, Avatar, Button, Spin, Badge, Popover } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import {
+  List,
+  Avatar,
+  Button,
+  Spin,
+  Badge,
+  Popover,
+  Row,
+  Col,
+  Statistic,
+} from 'antd';
+import { LoadingOutlined, UserOutlined } from '@ant-design/icons';
 import { ImUserPlus } from 'react-icons/im';
 import { RiFileUserFill } from 'react-icons/ri';
+import { FaGamepad } from 'react-icons/fa';
 import _ from 'lodash';
 
 //Others
@@ -66,52 +77,6 @@ const AllUser = (props) => {
     // };
   }, []);
 
-  const popOverContent1 = (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Button
-        type="primary"
-        shape="round"
-        icon={<ImUserPlus style={{ marginRight: '8px' }} />}
-      >
-        Mời vào chơi
-      </Button>
-      <Button
-        type="default"
-        shape="round"
-        style={{ marginTop: '8px' }}
-        icon={<RiFileUserFill style={{ marginRight: '8px' }} />}
-      >
-        Thông tin chi tiết
-      </Button>
-    </div>
-  );
-
-  const popOverContent2 = (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Button
-        type="default"
-        shape="round"
-        icon={<RiFileUserFill style={{ marginRight: '8px' }} />}
-      >
-        Thông tin chi tiết
-      </Button>
-    </div>
-  );
-
   let content = null;
   if (users) {
     content = (
@@ -128,7 +93,74 @@ const AllUser = (props) => {
             {user.isOnline ? (
               <Popover
                 placement="left"
-                content={popOverContent1}
+                content={
+                  <div className="popover-container">
+                    <Row gutter={8} style={{ width: '100%', height: '100%' }}>
+                      <Col span={8}>
+                        <Badge
+                          status="success"
+                          offset={[-10, 80]}
+                          style={{ width: '12px', height: '12px' }}
+                        >
+                          <Avatar
+                            size={96}
+                            style={{
+                              backgroundColor: '#87d068',
+                            }}
+                            icon={<UserOutlined />}
+                          />
+                        </Badge>
+                      </Col>
+                      <Col span={16} style={{ width: '100%', height: '100%' }}>
+                        <h3>{user.name}</h3>
+                        <Row>
+                          <Col span={12}>
+                            <Statistic
+                              title="Số trận đã chơi"
+                              value={112893}
+                              prefix={<FaGamepad />}
+                            />
+                          </Col>
+                          <Col span={12}>
+                            <Statistic
+                              title="Tỉ lệ thắng"
+                              value={11.28}
+                              precision={2}
+                              valueStyle={{ color: '#3f8600' }}
+                              suffix="%"
+                            />
+                          </Col>
+                        </Row>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginTop: '8px',
+                          }}
+                        >
+                          <Button
+                            type="primary"
+                            shape="round"
+                            style={{ marginRight: '8px' }}
+                            icon={<ImUserPlus style={{ marginRight: '8px' }} />}
+                          >
+                            Mời vào chơi
+                          </Button>
+                          <Button
+                            type="default"
+                            shape="round"
+                            icon={
+                              <RiFileUserFill style={{ marginRight: '8px' }} />
+                            }
+                          >
+                            Thông tin chi tiết
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                  </div>
+                }
                 trigger="hover"
               >
                 <List.Item.Meta
@@ -146,7 +178,65 @@ const AllUser = (props) => {
             ) : (
               <Popover
                 placement="left"
-                content={popOverContent2}
+                content={
+                  <div className="popover-container">
+                    <Row gutter={8} style={{ width: '100%', height: '100%' }}>
+                      <Col span={8}>
+                        <Badge
+                          status="success"
+                          offset={[-10, 80]}
+                          style={{ width: '12px', height: '12px' }}
+                        >
+                          <Avatar
+                            size={96}
+                            style={{
+                              backgroundColor: '#87d068',
+                            }}
+                            icon={<UserOutlined />}
+                          />
+                        </Badge>
+                      </Col>
+                      <Col span={16} style={{ width: '100%', height: '100%' }}>
+                        <h3>{user.name}</h3>
+                        <Row>
+                          <Col span={12}>
+                            <Statistic
+                              title="Số trận đã chơi"
+                              value={112893}
+                              prefix={<FaGamepad />}
+                            />
+                          </Col>
+                          <Col span={12}>
+                            <Statistic
+                              title="Tỉ lệ thắng"
+                              value={11.28}
+                              precision={2}
+                              valueStyle={{ color: '#3f8600' }}
+                              suffix="%"
+                            />
+                          </Col>
+                        </Row>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row-reverse',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Button
+                            type="default"
+                            shape="round"
+                            icon={
+                              <RiFileUserFill style={{ marginRight: '8px' }} />
+                            }
+                          >
+                            Thông tin chi tiết
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                  </div>
+                }
                 trigger="hover"
               >
                 <List.Item.Meta
