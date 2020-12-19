@@ -26,24 +26,20 @@ const UpdatePassword = lazy(() =>
   import('./domain/user/pages/UpdatePassword/UpdatePassword')
 );
 const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
-const Room = lazy(() => import('./domain/game/pages/Room/Room'));
 
 const { Header, Content, Footer } = Layout;
 const App = (props) => {
   const { onTryAutoLogin, isAuthenticated } = props;
 
-  useEffect(() => {
-    onTryAutoLogin();
-  }, [onTryAutoLogin]);
+  // useEffect(() => {
+  //   onTryAutoLogin();
+  // }, [onTryAutoLogin]);
 
   useEffect(() => {
     if (isAuthenticated) {
+      console.log('In here');
       let socket;
-      // console.log(socket);
-      // if (!socket) {
       socket = initSocket(localStorage.getItem('userId'));
-      // }
-      // console.log(socket);
       return () => {
         socket.disconnect();
       };

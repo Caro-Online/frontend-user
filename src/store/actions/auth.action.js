@@ -58,10 +58,6 @@ export const authFail = (error) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('expirationDate');
-  localStorage.removeItem('userId');
-  localStorage.removeItem('userName');
   return {
     type: actionTypes.AUTH_LOGOUT,
   };
@@ -135,6 +131,7 @@ export const authCheckState = () => {
           )
         );
         let socket = initSocket(localStorage.getItem('userId'));
+        console.log('Emit user online');
         socket.emit(
           'user-online',
           { userId: localStorage.getItem('userId') },
@@ -144,11 +141,6 @@ export const authCheckState = () => {
             }
           }
         );
-        // updateStatusToOnline(userId)
-        //   .then((response) => {
-        //     console.log('Updated status');
-        //   })
-        //   .catch((error) => console.log(error));
       }
     }
   };
