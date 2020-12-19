@@ -1,7 +1,9 @@
 //Library
 import React, { useState, useEffect } from 'react';
-import { List, Avatar, Tooltip, Spin } from 'antd';
-import { SmileTwoTone, FrownTwoTone, LoadingOutlined } from '@ant-design/icons';
+import { List, Avatar, Button, Spin, Badge, Popover } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { ImUserPlus } from 'react-icons/im';
+import { RiFileUserFill } from 'react-icons/ri';
 import _ from 'lodash';
 
 //Others
@@ -64,6 +66,52 @@ const AllUser = (props) => {
     // };
   }, []);
 
+  const popOverContent1 = (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Button
+        type="primary"
+        shape="round"
+        icon={<ImUserPlus style={{ marginRight: '8px' }} />}
+      >
+        Mời vào chơi
+      </Button>
+      <Button
+        type="default"
+        shape="round"
+        style={{ marginTop: '8px' }}
+        icon={<RiFileUserFill style={{ marginRight: '8px' }} />}
+      >
+        Thông tin chi tiết
+      </Button>
+    </div>
+  );
+
+  const popOverContent2 = (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Button
+        type="default"
+        shape="round"
+        icon={<RiFileUserFill style={{ marginRight: '8px' }} />}
+      >
+        Thông tin chi tiết
+      </Button>
+    </div>
+  );
+
   let content = null;
   if (users) {
     content = (
@@ -71,27 +119,48 @@ const AllUser = (props) => {
         itemLayout="horizontal"
         dataSource={users}
         renderItem={(user) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-              }
-              title={<div onClick={() => {}}>{user.name}</div>}
-            />
+          <List.Item
+            onClick={() => {
+              console.log('Helo');
+            }}
+            className="list-item-user"
+          >
             {user.isOnline ? (
-              <Tooltip title="Online">
-                <SmileTwoTone
-                  className="online-offline-status"
-                  twoToneColor="#52c41a"
+              <Popover
+                placement="left"
+                content={popOverContent1}
+                trigger="hover"
+              >
+                <List.Item.Meta
+                  avatar={
+                    <Badge status="success" offset={[-5, 30]}>
+                      <Avatar
+                        shape="circle"
+                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                      />
+                    </Badge>
+                  }
+                  title={<div onClick={() => {}}>{user.name}</div>}
                 />
-              </Tooltip>
+              </Popover>
             ) : (
-              <Tooltip title="Offline">
-                <FrownTwoTone
-                  className="online-offline-status"
-                  twoToneColor="red"
+              <Popover
+                placement="left"
+                content={popOverContent2}
+                trigger="hover"
+              >
+                <List.Item.Meta
+                  avatar={
+                    <Badge status="error" offset={[-5, 30]}>
+                      <Avatar
+                        shape="circle"
+                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                      />
+                    </Badge>
+                  }
+                  title={<div onClick={() => {}}>{user.name}</div>}
                 />
-              </Tooltip>
+              </Popover>
             )}
           </List.Item>
         )}

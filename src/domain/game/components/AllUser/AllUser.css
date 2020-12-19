@@ -8,3 +8,9 @@
   margin-top: 16px;
   width: 100%;
 }
+
+.list-item-user:hover {
+  background-color: #eee;
+  border-radius: 5px;
+  cursor: pointer;
+}
