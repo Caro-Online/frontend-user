@@ -7,7 +7,7 @@ import BoardGame from "../../components/BoardGame/BoardGame";
 import UserInfo from "../../components/UserInfo/UserInfo";
 import History from "../../components/History/History";
 import Chat from "../../components/Chat/Chat";
-import { initSocket } from "../../../../shared/utils/socket.io-client";
+import { initSocket, getSocket } from "../../../../shared/utils/socket.io-client";
 import AllUser from "../../components/AllUser/AllUser";
 //Others
 import { API } from "../../../../config";
@@ -15,6 +15,7 @@ import "./GamePage.css";
 import { Row, Col } from "antd";
 import { Spin } from "antd";
 import api from '../../apiGame'
+import { getUserById } from '../../../user/apiUser'
 
 
 const GamePage = (props) => {
@@ -26,6 +27,18 @@ const GamePage = (props) => {
   const [history, setHistory] = useState(null);
   const [locationToJump, setLocationToJump] = useState(1);
   const [render, setRender] = useState(false);
+  let socket;
+
+
+  useEffect(() => {
+    socket = initSocket(localStorage.getItem("userId"));
+    getRoomInfo();
+    return () => {
+      socket.disconnect();
+      removeAudience()
+    };
+  }, [params]);
+
 
   const getRoomInfo = () => {
     const { roomId } = params;
@@ -45,7 +58,9 @@ const GamePage = (props) => {
           setRoom(response.room);
           console.log(response.room)
           setIsSuccess(true);
-          addAudience(response.room)
+          //add audience, socket new audience
+          addAudience(response.room);
+          socketListener()
         } else {
           setNotFound(true);
           setIsSuccess(false);
@@ -58,13 +73,42 @@ const GamePage = (props) => {
       });
 
   }
+  // Người xem Join room socket
+  const socketListener = () => {
+    socket = getSocket();
+    socket.emit(
+      'join',
+      { userId: localStorage.getItem('userId'), roomId: room.roomId },
+      (error) => {
+        if (error) {
+          alert(error);
+        }
+      }
+    );
+    socket.on('newaudience', (message) => {
+      console.log(message)
+      // getUserById(message).then(res => {
+      //   console.log(res)
+      //   res.data.room.audience.push(userId)
+      //   setRoom(res.data.room)
+      // })
 
+    });
+  }
+
+
+
+  //Thên user hiện hành vào danh sách ng xem
   const addAudience = (room) => {
     const userId = localStorage.getItem('userId');
     const join = () => {
       api.joinRoom(userId, params.roomId).then(res => {
         console.log('join success');
-        setRender(!render)
+        setRoom((room) => {
+          room.audience.push(userId);
+          console.log(room)
+          return room;
+        })
       })
     }
 
@@ -86,15 +130,6 @@ const GamePage = (props) => {
     })
   }
 
-  useEffect(() => {
-    let socket;
-    socket = initSocket(localStorage.getItem("userId"));
-    getRoomInfo();
-    return () => {
-      socket.disconnect();
-      removeAudience()
-    };
-  }, [params]);
 
 
   const emitHistory = (history) => {

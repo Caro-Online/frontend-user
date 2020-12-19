@@ -18,3 +18,7 @@ export const signinWithFacebook = (userId, accessToken) => {
 export const updateStatusToOnline = (userId) => {
   return axios.put(`${API}/user/${userId}/update-status`);
 };
+
+export const getUserById = (userId) => {
+  return axios.get(`${API}/user/${userId}`);
+}
