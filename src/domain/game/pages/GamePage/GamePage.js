@@ -169,7 +169,7 @@ const GamePage = (props) => {
   let content = (
     <Row>
       <Col className="game-board" flex="3 0 500px">
-        <BoardGame emitHistory={emitHistory} locationToJump={locationToJump} />
+        <BoardGame room={room} emitHistory={emitHistory} locationToJump={locationToJump} />
       </Col>
       <Col flex="1 0 200px">
         <UserInfo
