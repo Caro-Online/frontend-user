@@ -40,7 +40,7 @@ export default function Chat({ room }) {
       };
     });
     setMessages([...responseMessages]);
-
+    console.log(socket)
     socket.on('message', (message) => {
       setMessages((messages) => [...messages, message]);
     });

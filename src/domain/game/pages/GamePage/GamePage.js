@@ -28,7 +28,7 @@ const GamePage = (props) => {
   const [notFound, setNotFound] = useState(false);
   const [history, setHistory] = useState(null);
   const [locationToJump, setLocationToJump] = useState(1);
-  const [render, setRender] = useState(false);
+  const [audience, setAudience] = useState([])
 
   //Thên user hiện hành vào danh sách ng xem
   const addAudience = useCallback(
@@ -37,11 +37,9 @@ const GamePage = (props) => {
       const join = () => {
         api.joinRoom(userId, params.roomId).then((res) => {
           console.log('join success');
-          setRoom((room) => {
-            room.audience.push(userId);
-            console.log(room);
-            return room;
-          });
+          getUserById(userId).then(res => {
+            setAudience([...audience, res.data.user])
+          })
         });
       };
 
@@ -61,33 +59,15 @@ const GamePage = (props) => {
   );
 
   const removeAudience = useCallback(() => {
+
     const userId = localStorage.getItem('userId');
     api.outRoom(userId, params.roomId).then((res) => {
       console.log('out success');
+      let socket = getSocket();
+      socket.emit('audience-out', { userId })
     });
-  }, [params.roomId]);
 
-  // Người xem Join room socket
-  // const socketListener = useCallback(() => {
-  //   let socket = getSocket();
-  //   socket.emit(
-  //     'join',
-  //     { userId: localStorage.getItem('userId'), roomId: room.roomId },
-  //     (error) => {
-  //       if (error) {
-  //         alert(error);
-  //       }
-  //     }
-  //   );
-  //   socket.on('newaudience', (message) => {
-  //     console.log(message);
-  //     // getUserById(message).then(res => {
-  //     //   console.log(res)
-  //     //   res.data.room.audience.push(userId)
-  //     //   setRoom(res.data.room)
-  //     // })
-  //   });
-  // }, [room]);
+  }, [params.roomId]);
 
   const getRoomInfo = useCallback(() => {
     const { roomId } = params;
@@ -108,6 +88,7 @@ const GamePage = (props) => {
           console.log(response.room);
           setIsSuccess(true);
           //add audience, socket new audience
+          setAudience(response.room.audience);
           addAudience(response.room);
           let socket = getSocket();
           socket.emit(
@@ -122,13 +103,19 @@ const GamePage = (props) => {
               }
             }
           );
-          socket.on('newaudience', (message) => {
-            console.log(message);
-            // getUserById(message).then(res => {
-            //   console.log(res)
-            //   res.data.room.audience.push(userId)
-            //   setRoom(res.data.room)
-            // })
+          socket.on('new-audience', (message) => {
+            console.log(message.userId);
+            getUserById(message.userId).then(res => {
+              console.log(res)
+              setAudience([...audience, res.data.user])
+            })
+          });
+          const userId = localStorage.getItem('userId');
+          socket.on('audience-out-update', (message) => {
+            console.log(message.userId);
+            let cloneAudience = [...audience]
+            cloneAudience = cloneAudience.filter(x => x._id !== userId)
+            setAudience(cloneAudience)
           });
           // socketListener();
         } else {
@@ -149,12 +136,11 @@ const GamePage = (props) => {
     socket = getSocket();
     getRoomInfo();
 
-    // return () => {
-    //Không dùng socket.disconnect(), vì khi out khỏi GamePage component sẽ mất instance socket => user sẽ bị offline mặc dù vẫn đang online
-    //   socket.disconnect();
-    //Nên emit sự kiện outRoom ở đây và lắng nghe trên server
-    //   removeAudience();
-    // };
+    return () => {
+
+
+      removeAudience();
+    };
   }, [getRoomInfo, removeAudience]);
 
   const emitHistory = useCallback((history) => {
@@ -175,7 +161,7 @@ const GamePage = (props) => {
         <UserInfo
           roomId={isSuccess ? room.roomId : null}
           user={isSuccess ? room.user : null}
-          audience={isSuccess ? room.audience : null}
+          audience={isSuccess ? audience : null}
         />
       </Col>
       <Col flex="1 0 200px">

@@ -4,6 +4,7 @@ let socket;
 
 export const initSocket = (userId) => {
   socket = io('http://localhost:4000', { query: { userId } });
+  console.log(socket)
   return socket;
 };
 

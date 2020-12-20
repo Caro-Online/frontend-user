@@ -20,7 +20,11 @@ export const updateStatusToOnline = (userId) => {
 };
 
 export const getUserById = (userId) => {
-  return axios.get(`${API}/user/${userId}`);
+  const token = localStorage.getItem('token');
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+  return axios.get(`${API}/user/${userId}`, config);
 }
 // export const updateStatusToOnline = (userId) => {
 //   return axios.put(`${API}/user/${userId}/update-status`);

@@ -30,12 +30,12 @@ export default function UserInfo(props) {
 
         }
     }, [props.user])
-    useEffect(() => {
-        if (props.audience) {
-            setAudience(props.audience)
-            console.log(props.audience)
-        }
-    }, [props.audience])
+    // useEffect(() => {
+    //     if (props.audience) {
+    //         setAudience(props.audience)
+    //         console.log(props.audience)
+    //     }
+    // }, [props.audience])
 
     const joinMatchHanler = () => {
         const userId = localStorage.getItem('userId');
@@ -57,7 +57,7 @@ export default function UserInfo(props) {
                 <Card style={{ width: "100%", height: "30%" }}>
                     <div>Đang xem</div>
                     <ul>
-                        {audience ? audience.map((au, i) => (
+                        {props.audience ? props.audience.map((au, i) => (
                             <li key={i}>{au.name}</li>
                         )) :
                             <li>Không có khán giả</li>
