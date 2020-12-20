@@ -3,6 +3,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import Square from "./Square";
 import "./BoardGame.css";
 import { getSocket } from "../../../../shared/utils/socket.io-client";
+import gameService from './gameService'
 
 import { Row, Col } from "antd";
 const boardSize = 17;
@@ -16,7 +17,7 @@ export default function BoardGame({ emitHistory, locationToJump }) {
   const [xIsNext, setXIsNext] = useState(true);
   const [move, setMove] = useState(null);
   const [room, setRoom] = useState(null);
-  const [disable, setDisable] = useState(false); //disable check in board and wait ...
+  const [disable, setDisable] = useState(false); //disable board and waiting
   const location = useLocation();
   const reactHistory = useHistory();
 
@@ -47,12 +48,12 @@ export default function BoardGame({ emitHistory, locationToJump }) {
   //     });
   // }, [location]);
 
-  const sendMove = () => {
-    socket = getSocket();
-    if (move) {
-      socket.emit("sendMove", { move, room }, () => setMove(null));
-    }
-  };
+  // const sendMove = () => {
+  //   socket = getSocket();
+  //   if (move) {
+  //     socket.emit("sendMove", { move, room }, () => setMove(null));
+  //   }
+  // };
 
   const renderSquare = (i) => {
     const val = history[stepNumber]?.squares[i] || null;
@@ -63,7 +64,7 @@ export default function BoardGame({ emitHistory, locationToJump }) {
         value={val}
         onClick={() => {
           console.log(i);
-          sendMove(i);
+          //sendMove(i);
           return handleSquareClick(i);
         }}
         disable={disable}
@@ -106,13 +107,16 @@ export default function BoardGame({ emitHistory, locationToJump }) {
     return board;
   };
 
-  const winner = calculateWinner(null);
-  const squaresWinner = winner;
+  const squares = history[history.length - 1].squares;
+  const winner = gameService.checkWin(squares, boardSize);
+  console.log(winner)
   let status;
-  if (squaresWinner) {
-    status = "Winner: " + squaresWinner;
-  } else if (winner.isDraw) {
-    status = "Draw!!";
+  if (winner) {
+    if (winner === 'D') {
+
+    } else {
+      status = "Winner: " + winner;
+    }
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
@@ -128,6 +132,8 @@ export default function BoardGame({ emitHistory, locationToJump }) {
     </div>
   );
 }
-function calculateWinner(squares) {
-  return false;
-}
+
+
+
+
+
