@@ -163,11 +163,6 @@
   margin: 0 auto;
 }
 
-.create-room-button,
-.abort-create-room-button {
-  float: left;
-}
-
 .abort-create-room-button {
   margin-left: 8px;
 }

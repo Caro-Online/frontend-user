@@ -1,6 +1,6 @@
-.card-room{
-    margin: 10px;
-    font-size:12px !important;
+.card-room {
+  margin: 10px;
+  font-size: 12px !important;
 }
 
 .site-page-header-ghost-wrapper {
@@ -8,20 +8,50 @@
   padding: 24px;
 }
 
-.room-status{
-    height: 30px;
-    display: flex;
-    align-items: center;
+.room-status {
+  display: flex;
+  align-items: center;
 }
-.room-status div{
-    margin-right: 2px;
+.room-status div {
+  margin-right: 2px;
 }
 
-.room-status span{
-    display: flex;
-    align-items: center;
+.room-status span {
+  display: flex;
+  align-items: center;
 }
 
 .room-name span {
-    font-weight: bold;
+  font-weight: bold;
+}
+
+.center {
+  margin: 0 auto;
+  margin-top: 16px;
+  width: 100%;
+}
+
+.ant-page-header-heading-extra {
+  display: flex;
+}
+
+.ant-descriptions-item-container {
+  display: flex;
+  align-items: center;
+}
+
+.ant-card-body {
+  height: 100%;
+  padding: 0;
+}
+
+.pause-play-icon {
+  color: orange;
+  height: 100%;
+  width: 100%;
+}
+
+.create-room-header {
+  text-align: center;
+  margin: 0 auto;
 }

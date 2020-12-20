@@ -2,8 +2,17 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { SiHappycow } from 'react-icons/si';
 import { useHistory, useLocation } from 'react-router-dom';
-import apiGame from '../../game/apiGame';
-import { Form, Input, Button, Select, Spin, message, Switch } from 'antd';
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Spin,
+  message,
+  Switch,
+  Typography,
+  Alert,
+} from 'antd';
 import {
   LockOutlined,
   EyeTwoTone,
@@ -11,9 +20,12 @@ import {
 } from '@ant-design/icons';
 
 import Modal from '../../../shared/components/Modal/Modal';
+import InputRoomIdModal from '../../../shared/components/InputRoomIdModal/InputRoomIdModal';
 
 import { API } from '../../../config';
 import './Home.css';
+
+const { Title } = Typography;
 
 const { Option } = Select;
 
@@ -25,7 +37,7 @@ const Home = (props) => {
   const [openCreateRoomModal, setOpenCreateRoomModal] = useState(false);
   const [openInputRoomIdModal, setOpenInputRoomIdModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [roomNotFound, setRoomNotFound] = useState('');
+
   const [havePassword, setHavePassword] = useState(false);
 
   useEffect(() => {
@@ -52,16 +64,16 @@ const Home = (props) => {
     history.push('/rooms');
   };
 
-  const onClickJoinRoomHandler = () => {
-    setOpenInputRoomIdModal(true);
-  };
-
   const onClickCreateRoomButtonHandler = () => {
     setOpenCreateRoomModal(true);
   };
 
   const closeCreateRoomModal = () => {
     setOpenCreateRoomModal(false);
+  };
+
+  const onClickJoinRoomHandler = () => {
+    setOpenInputRoomIdModal(true);
   };
 
   const closeInputRoomIdModal = () => {
@@ -94,25 +106,6 @@ const Home = (props) => {
         .catch((error) => {
           console.log(error);
           setIsLoading(false);
-        });
-    },
-    [history]
-  );
-
-  const onSubmitJoinRoomHandler = useCallback(
-    (values) => {
-      const { roomId } = values;
-      apiGame
-        .getRoomInfoById(roomId)
-        .then((res) => {
-          if (res.data.room) {
-            history.push(`/room/${roomId}`);
-          } else {
-            setRoomNotFound(true);
-          }
-        })
-        .catch((error) => {
-          setRoomNotFound(true);
         });
     },
     [history]
@@ -172,7 +165,9 @@ const Home = (props) => {
   return (
     <>
       <Modal show={openCreateRoomModal} modalClosed={closeCreateRoomModal}>
-        <h1 className="create-room-header">Tạo phòng</h1>
+        <Title className="create-room-header" level={2}>
+          Tạo phòng
+        </Title>
         {isLoading ? (
           <Spin style={{ fontSize: '64px' }} />
         ) : (
@@ -235,76 +230,38 @@ const Home = (props) => {
             ) : null}
 
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="create-room-button"
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
+                }}
               >
-                Tạo
-              </Button>
-              <Button
-                type="danger"
-                htmlType="button"
-                onClick={closeCreateRoomModal}
-                className="abort-create-room-button"
-              >
-                Hủy
-              </Button>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="create-room-button"
+                >
+                  Tạo
+                </Button>
+                <Button
+                  type="danger"
+                  htmlType="button"
+                  onClick={closeCreateRoomModal}
+                  className="abort-create-room-button"
+                >
+                  Hủy
+                </Button>
+              </div>
             </Form.Item>
           </Form>
         )}
       </Modal>
 
-      <Modal show={openInputRoomIdModal} modalClosed={closeInputRoomIdModal}>
-        <h1 className="create-room-header">Nhập id phòng</h1>
-        <Form
-          name="normal_register"
-          className="create-room-form"
-          onFinish={onSubmitJoinRoomHandler}
-        >
-          <Form.Item
-            label="Id phòng"
-            name="roomId"
-            rules={[
-              {
-                required: true,
-                message: 'Id phòng không được bỏ trống',
-              },
-              {
-                len: 6,
-                message: 'Id phòng phải đúng 6 ký tự',
-              },
-            ]}
-          >
-            <Input type="text" placeholder="1K3n2S" style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="create-room-button"
-            >
-              Tham gia
-            </Button>
-            <Button
-              type="danger"
-              htmlType="button"
-              onClick={closeInputRoomIdModal}
-              className="abort-create-room-button"
-            >
-              Hủy
-            </Button>
-          </Form.Item>
-          {
-            <div
-              style={{ display: roomNotFound ? '' : 'none' }}
-              className="alert alert-danger"
-            >
-              Phòng không tồn tại
-            </div>
-          }
-        </Form>
-      </Modal>
+      <InputRoomIdModal
+        show={openInputRoomIdModal}
+        onClose={closeInputRoomIdModal}
+      />
       {content}
     </>
   );

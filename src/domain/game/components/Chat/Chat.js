@@ -11,7 +11,6 @@ import './Chat.css';
 import { getSocket } from '../../../../shared/utils/socket.io-client';
 import { useLocation } from 'react-router-dom';
 
-let socket;
 
 export default function Chat({ room }) {
   const [messages, setMessages] = useState([]);
@@ -32,7 +31,7 @@ export default function Chat({ room }) {
   // }, [location, room]);
 
   useEffect(() => {
-    socket = getSocket();
+    let socket = getSocket();
     const responseMessages = room.chat.map((chat) => {
       return {
         userId: chat.user._id,
@@ -51,7 +50,7 @@ export default function Chat({ room }) {
     (event) => {
       event.preventDefault();
 
-      socket = getSocket();
+      let socket = getSocket();
 
       if (message) {
         socket.emit(

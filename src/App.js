@@ -1,13 +1,13 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import PrivateRoute from './shared/components/PrivateRoute/PrivatetRoute';
 // import 'antd/dist/antd.css';
 import './App.css';
-import { getSocket, initSocket } from './shared/utils/socket.io-client';
+import { initSocket } from './shared/utils/socket.io-client';
 import MainHeader from './shared/components/MainHeader/MainHeader';
 import * as actions from './store/actions';
 
@@ -27,7 +27,7 @@ const UpdatePassword = lazy(() =>
 );
 const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 const App = (props) => {
   const { isAuthenticated } = props;
 
