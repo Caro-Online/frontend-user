@@ -18,18 +18,18 @@ export default function Chat({ room }) {
   const [message, setMessage] = useState('');
   const location = useLocation();
 
-  useEffect(() => {
-    socket = getSocket();
-    socket.emit(
-      'join',
-      { userId: localStorage.getItem('userId'), roomId: room.roomId },
-      (error) => {
-        if (error) {
-          alert(error);
-        }
-      }
-    );
-  }, [location, room]);
+  // useEffect(() => {
+  //   socket = getSocket();
+  //   socket.emit(
+  //     'join',
+  //     { userId: localStorage.getItem('userId'), roomId: room.roomId },
+  //     (error) => {
+  //       if (error) {
+  //         alert(error);
+  //       }
+  //     }
+  //   );
+  // }, [location, room]);
 
   useEffect(() => {
     socket = getSocket();
