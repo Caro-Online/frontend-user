@@ -3,11 +3,12 @@ import { useLocation, useHistory } from "react-router-dom";
 import Square from "./Square";
 import "./BoardGame.css";
 import { getSocket } from "../../../../shared/utils/socket.io-client";
+import gameService from './gameService'
 
 import { Row, Col } from "antd";
 const boardSize = 17;
 
-export default function BoardGame({ emitHistory, locationToJump }) {
+export default function BoardGame(props) {
   const [history, setHistory] = useState([
     {
       squares: Array(boardSize).fill(null),
@@ -15,8 +16,8 @@ export default function BoardGame({ emitHistory, locationToJump }) {
   ]);
   const [xIsNext, setXIsNext] = useState(true);
   const [move, setMove] = useState(null);
-  const [room, setRoom] = useState(null);
-  const [disable, setDisable] = useState(false); //disable check in board and wait ...
+  //const [room, setRoom] = useState(null);
+  const [disable, setDisable] = useState(false); //disable board and waiting
   const location = useLocation();
   const reactHistory = useHistory();
 
@@ -29,8 +30,8 @@ export default function BoardGame({ emitHistory, locationToJump }) {
   };
   let socket;
   useEffect(() => {
-    jumpTo(locationToJump);
-  }, [locationToJump]);
+    jumpTo(props.locationToJump);
+  }, [props.locationToJump]);
   // useEffect(() => {
   //     socket = getSocket();
   //     socket.emit(
@@ -47,12 +48,12 @@ export default function BoardGame({ emitHistory, locationToJump }) {
   //     });
   // }, [location]);
 
-  const sendMove = () => {
-    socket = getSocket();
-    if (move) {
-      socket.emit("sendMove", { move, room }, () => setMove(null));
-    }
-  };
+  // const sendMove = () => {
+  //   socket = getSocket();
+  //   if (move) {
+  //     socket.emit("sendMove", { move, room }, () => setMove(null));
+  //   }
+  // };
 
   const renderSquare = (i) => {
     const val = history[stepNumber]?.squares[i] || null;
@@ -63,7 +64,7 @@ export default function BoardGame({ emitHistory, locationToJump }) {
         value={val}
         onClick={() => {
           console.log(i);
-          sendMove(i);
+          //sendMove(i);
           return handleSquareClick(i);
         }}
         disable={disable}
@@ -78,7 +79,7 @@ export default function BoardGame({ emitHistory, locationToJump }) {
     squares[i] = squares[i] ? squares[i] : xIsNext ? "X" : "O";
     setHistory(newHistory.concat([{ squares: squares, location: i }]));
     // * Need to improve
-    emitHistory(history);
+    props.emitHistory(history);
     setStepNumber(newHistory.length);
     setMove(i);
     // TODO: Alert comment disable in here
@@ -106,13 +107,23 @@ export default function BoardGame({ emitHistory, locationToJump }) {
     return board;
   };
 
-  const winner = calculateWinner(null);
-  const squaresWinner = winner;
+  const squares = history[history.length - 1].squares;
+  let winner = null
+  console.log(winner)
   let status;
-  if (squaresWinner) {
-    status = "Winner: " + squaresWinner;
-  } else if (winner.isDraw) {
-    status = "Draw!!";
+  if (props.room) {
+    if (props.room.rule === 'BLOCK_TWO_SIDE') {
+      winner = gameService.checkWin2(squares, boardSize);
+    } else if (props.room.rule === 'NOT_BLOCK_TWO_SIDE') {
+      winner = gameService.checkWin(squares, boardSize);
+    }
+  }
+  if (winner) {
+    if (winner === 'D') {
+
+    } else {
+      status = "Winner: " + winner;
+    }
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
@@ -128,6 +139,8 @@ export default function BoardGame({ emitHistory, locationToJump }) {
     </div>
   );
 }
-function calculateWinner(squares) {
-  return false;
-}
+
+
+
+
+
