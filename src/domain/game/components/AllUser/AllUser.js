@@ -229,11 +229,11 @@ const AllUser = (props) => {
                           >
                             <Avatar
                               size={96}
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'row-reverse',
-                                alignItems: 'center',
-                              }}
+                              // style={{
+                              //   display: 'flex',
+                              //   flexDirection: 'row-reverse',
+                              //   alignItems: 'center',
+                              // }}
                               icon={<UserOutlined />}
                             />
                           </Badge>

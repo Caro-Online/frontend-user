@@ -150,7 +150,7 @@ const GamePage = (props) => {
     getRoomInfo();
 
     // return () => {
-    //Không dùng cái này, vì khi out khỏi GamePage component sẽ mất instance socket => user sẽ bị offline mặc dù vẫn đang online
+    //Không dùng socket.disconnect(), vì khi out khỏi GamePage component sẽ mất instance socket => user sẽ bị offline mặc dù vẫn đang online
     //   socket.disconnect();
     //Nên emit sự kiện outRoom ở đây và lắng nghe trên server
     //   removeAudience();
