@@ -29,7 +29,7 @@ const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 
 const { Header, Content, Footer } = Layout;
 const App = (props) => {
-  const { onTryAutoLogin, isAuthenticated } = props;
+  const { isAuthenticated } = props;
 
   // useEffect(() => {
   //   onTryAutoLogin();
@@ -37,7 +37,6 @@ const App = (props) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log('In here');
       let socket;
       socket = initSocket(localStorage.getItem('userId'));
       return () => {

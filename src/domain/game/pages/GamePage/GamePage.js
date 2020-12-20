@@ -1,22 +1,24 @@
 //Library
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 // Components
-import BoardGame from "../../components/BoardGame/BoardGame";
-import UserInfo from "../../components/UserInfo/UserInfo";
-import History from "../../components/History/History";
-import Chat from "../../components/Chat/Chat";
-import { initSocket, getSocket } from "../../../../shared/utils/socket.io-client";
-import AllUser from "../../components/AllUser/AllUser";
+import BoardGame from '../../components/BoardGame/BoardGame';
+import UserInfo from '../../components/UserInfo/UserInfo';
+import History from '../../components/History/History';
+import Chat from '../../components/Chat/Chat';
+import {
+  initSocket,
+  getSocket,
+} from '../../../../shared/utils/socket.io-client';
+import AllUser from '../../components/AllUser/AllUser';
 //Others
-import { API } from "../../../../config";
-import "./GamePage.css";
-import { Row, Col } from "antd";
-import { Spin } from "antd";
-import api from '../../apiGame'
-import { getUserById } from '../../../user/apiUser'
-
+import { API } from '../../../../config';
+import './GamePage.css';
+import { Row, Col } from 'antd';
+import { Spin } from 'antd';
+import api from '../../apiGame';
+import { getUserById } from '../../../user/apiUser';
 
 const GamePage = (props) => {
   const params = useParams();
@@ -27,20 +29,67 @@ const GamePage = (props) => {
   const [history, setHistory] = useState(null);
   const [locationToJump, setLocationToJump] = useState(1);
   const [render, setRender] = useState(false);
-  let socket;
 
+  //Thên user hiện hành vào danh sách ng xem
+  const addAudience = useCallback(
+    (room) => {
+      const userId = localStorage.getItem('userId');
+      const join = () => {
+        api.joinRoom(userId, params.roomId).then((res) => {
+          console.log('join success');
+          setRoom((room) => {
+            room.audience.push(userId);
+            console.log(room);
+            return room;
+          });
+        });
+      };
 
-  useEffect(() => {
-    socket = initSocket(localStorage.getItem("userId"));
-    getRoomInfo();
-    return () => {
-      socket.disconnect();
-      removeAudience()
-    };
-  }, [params]);
+      if ((room.user.u1.userRef._id !== userId) & !room.user.u2) {
+        join();
+      }
+      if (room.user.u2) {
+        if (
+          room.user.u1.userRef._id !== userId &&
+          room.user.u2.userRef._id !== userId
+        ) {
+          join();
+        }
+      }
+    },
+    [params.roomId]
+  );
 
+  const removeAudience = useCallback(() => {
+    const userId = localStorage.getItem('userId');
+    api.outRoom(userId, params.roomId).then((res) => {
+      console.log('out success');
+    });
+  }, [params.roomId]);
 
-  const getRoomInfo = () => {
+  // Người xem Join room socket
+  // const socketListener = useCallback(() => {
+  //   let socket = getSocket();
+  //   socket.emit(
+  //     'join',
+  //     { userId: localStorage.getItem('userId'), roomId: room.roomId },
+  //     (error) => {
+  //       if (error) {
+  //         alert(error);
+  //       }
+  //     }
+  //   );
+  //   socket.on('newaudience', (message) => {
+  //     console.log(message);
+  //     // getUserById(message).then(res => {
+  //     //   console.log(res)
+  //     //   res.data.room.audience.push(userId)
+  //     //   setRoom(res.data.room)
+  //     // })
+  //   });
+  // }, [room]);
+
+  const getRoomInfo = useCallback(() => {
     const { roomId } = params;
     setIsLoading(true);
     fetch(`${API}/room/${roomId}`, {
@@ -56,11 +105,32 @@ const GamePage = (props) => {
         console.log(response);
         if (response.success) {
           setRoom(response.room);
-          console.log(response.room)
+          console.log(response.room);
           setIsSuccess(true);
           //add audience, socket new audience
           addAudience(response.room);
-          socketListener()
+          let socket = getSocket();
+          socket.emit(
+            'join',
+            {
+              userId: localStorage.getItem('userId'),
+              roomId: response.room.roomId,
+            },
+            (error) => {
+              if (error) {
+                alert(error);
+              }
+            }
+          );
+          socket.on('newaudience', (message) => {
+            console.log(message);
+            // getUserById(message).then(res => {
+            //   console.log(res)
+            //   res.data.room.audience.push(userId)
+            //   setRoom(res.data.room)
+            // })
+          });
+          // socketListener();
         } else {
           setNotFound(true);
           setIsSuccess(false);
@@ -71,92 +141,48 @@ const GamePage = (props) => {
         setIsLoading(false);
         setIsSuccess(false);
       });
+  }, [addAudience, params]);
 
-  }
-  // Người xem Join room socket
-  const socketListener = () => {
+  useEffect(() => {
+    let socket;
+    // socket = initSocket(localStorage.getItem('userId'));
     socket = getSocket();
-    socket.emit(
-      'join',
-      { userId: localStorage.getItem('userId'), roomId: room.roomId },
-      (error) => {
-        if (error) {
-          alert(error);
-        }
-      }
-    );
-    socket.on('newaudience', (message) => {
-      console.log(message)
-      // getUserById(message).then(res => {
-      //   console.log(res)
-      //   res.data.room.audience.push(userId)
-      //   setRoom(res.data.room)
-      // })
+    getRoomInfo();
 
-    });
-  }
+    // return () => {
+    //Không dùng cái này, vì khi out khỏi GamePage component sẽ mất instance socket => user sẽ bị offline mặc dù vẫn đang online
+    //   socket.disconnect();
+    //Nên emit sự kiện outRoom ở đây và lắng nghe trên server
+    //   removeAudience();
+    // };
+  }, [getRoomInfo, removeAudience]);
 
-
-
-  //Thên user hiện hành vào danh sách ng xem
-  const addAudience = (room) => {
-    const userId = localStorage.getItem('userId');
-    const join = () => {
-      api.joinRoom(userId, params.roomId).then(res => {
-        console.log('join success');
-        setRoom((room) => {
-          room.audience.push(userId);
-          console.log(room)
-          return room;
-        })
-      })
-    }
-
-    if (room.user.u1.userRef._id !== userId & !room.user.u2) {
-      join();
-    }
-    if (room.user.u2) {
-      if (room.user.u1.userRef._id !== userId && room.user.u2.userRef._id !== userId) {
-        join();
-      }
-    }
-
-  }
-
-  const removeAudience = () => {
-    const userId = localStorage.getItem('userId');
-    api.outRoom(userId, params.roomId).then(res => {
-      console.log('out success');
-    })
-  }
-
-
-
-  const emitHistory = (history) => {
+  const emitHistory = useCallback((history) => {
     console.log(`emitHistory`, history);
     setHistory(history);
-  };
-  const jumpTo = (move) => {
+  }, []);
+
+  const jumpTo = useCallback((move) => {
     setLocationToJump(move);
-  };
+  }, []);
+
   let content = (
     <Row>
-      <Col className="game-board" flex="3 0 500px" >
-        <BoardGame
-          emitHistory={emitHistory}
-          locationToJump={locationToJump} />
+      <Col className="game-board" flex="3 0 500px">
+        <BoardGame emitHistory={emitHistory} locationToJump={locationToJump} />
       </Col>
       <Col flex="1 0 200px">
         <UserInfo
           roomId={isSuccess ? room.roomId : null}
           user={isSuccess ? room.user : null}
-          audience={isSuccess ? room.audience : null} />
+          audience={isSuccess ? room.audience : null}
+        />
       </Col>
       <Col flex="1 0 200px">
         <History history={history} jumpTo={jumpTo} />
         {room ? <Chat room={room} /> : null}
       </Col>
-      <Col flex="1 0 200px" style={{ padding: "4px 8px" }}>
+      <Col flex="1 0 200px" style={{ padding: '4px 8px' }}>
         Online user
         <AllUser />
       </Col>
