@@ -108,7 +108,7 @@ export default function BoardGame({ emitHistory, locationToJump }) {
   };
 
   const squares = history[history.length - 1].squares;
-  const winner = gameService.checkWin(squares, boardSize);
+  const winner = gameService.checkWin2(squares, boardSize);
   console.log(winner)
   let status;
   if (winner) {
