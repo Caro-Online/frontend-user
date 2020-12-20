@@ -5,7 +5,7 @@ import "./BoardGame.css";
 import { getSocket } from "../../../../shared/utils/socket.io-client";
 
 import { Row, Col } from "antd";
-const boardSize = 20;
+const boardSize = 17;
 
 export default function BoardGame({ emitHistory, locationToJump }) {
   const [history, setHistory] = useState([

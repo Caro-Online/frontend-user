@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { SiHappycow } from 'react-icons/si';
 import { useHistory, useLocation } from 'react-router-dom';
+import apiGame from '../../game/apiGame'
 import { Form, Input, Button, Select, Spin, message, Switch } from 'antd';
 import {
   LockOutlined,
@@ -24,6 +25,7 @@ const Home = (props) => {
   const [openCreateRoomModal, setOpenCreateRoomModal] = useState(false);
   const [openInputRoomIdModal, setOpenInputRoomIdModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [roomNotFound, setRoomNotFound] = useState('')
   const [havePassword, setHavePassword] = useState(false);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ const Home = (props) => {
     history.push('/register');
   };
 
-  const onClickPlayNowButtonHandler = () => {};
+  const onClickPlayNowButtonHandler = () => { };
 
   const onClickFindRoomsHandler = () => {
     history.push('/rooms');
@@ -100,7 +102,17 @@ const Home = (props) => {
   const onSubmitJoinRoomHandler = useCallback(
     (values) => {
       const { roomId } = values;
-      history.push(`/room/${roomId}`);
+      apiGame.getRoomInfoById(roomId).then(res => {
+        if (res.data.room) {
+          history.push(`/room/${roomId}`);
+        } else {
+          setRoomNotFound(true);
+        }
+      })
+        .catch(error => {
+          setRoomNotFound(true);
+        })
+
     },
     [history]
   );
@@ -163,86 +175,102 @@ const Home = (props) => {
         {isLoading ? (
           <Spin style={{ fontSize: '64px' }} />
         ) : (
-          <Form
-            name="normal_register"
-            className="create-room-form"
-            onFinish={onSubmitCreateRoomHandler}
-          >
-            <Form.Item
-              label="Tên phòng"
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: 'Tên phòng không được bỏ trống',
-                },
-              ]}
+            <Form
+              name="normal_register"
+              className="create-room-form"
+              onFinish={onSubmitCreateRoomHandler}
             >
-              <Input
-                type="text"
-                placeholder="Phòng của tui"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-            <Form.Item
-              name="rule"
-              label="Luật chơi"
-              initialValue="BLOCK_TWO_SIDE"
-            >
-              <Select
-                style={{
-                  width: 240,
-                }}
-              >
-                <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
-                <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="havePassword"
-              label="Đặt mật khẩu"
-              valuePropName="checked"
-            >
-              <Switch onChange={onSwitchChange} />
-            </Form.Item>
-            {havePassword ? (
               <Form.Item
-                label="Mật khẩu"
-                name="roomPassword"
+                label="Tên phòng"
+                name="name"
                 rules={[
-                  { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                  {
+                    required: true,
+                    message: 'Tên phòng không được bỏ trống',
+                  },
                 ]}
               >
-                <Input.Password
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  placeholder="daylamatkhau"
-                  iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
+                <Input
+                  type="text"
+                  placeholder="Phòng của tui"
+                  style={{ width: '100%' }}
                 />
               </Form.Item>
-            ) : null}
+              <Form.Item
+                name="rule"
+                label="Luật chơi"
+                initialValue="BLOCK_TWO_SIDE">
+                <Select>
+                  <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
+                  <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
+                </Select>
+              </Form.Item>
 
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="create-room-button"
+              <Form.Item
+                name="havePassword"
+                label="Đặt mật khẩu"
+                valuePropName="checked"
               >
-                Tạo
+                <Switch onChange={onSwitchChange} />
+              </Form.Item>
+
+              {havePassword ? (
+                <Form.Item
+                  label="Mật khẩu"
+                  name="roomPassword"
+                  rules={[
+                    { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                  ]}
+                >
+                  <Input.Password
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    placeholder="daylamatkhau"
+                    iconRender={(visible) =>
+                      visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                    }
+                  />
+                </Form.Item>
+              ) : null}
+
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="create-room-button"
+                >
+                  <Select
+                    style={{
+                      width: 240,
+                    }}
+                  >
+                    <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
+                    <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
+                  </Select>
+                </Button>
+              </Form.Item>
+
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="create-room-button"
+                >
+                  Tạo
+                </Button>
+                <Button
+                  type="danger"
+                  htmlType="button"
+                  onClick={closeCreateRoomModal}
+                  className="abort-create-room-button"
+                >
+                  Hủy
               </Button>
-              <Button
-                type="danger"
-                htmlType="button"
-                onClick={closeCreateRoomModal}
-                className="abort-create-room-button"
-              >
-                Hủy
-              </Button>
-            </Form.Item>
-          </Form>
-        )}
+              </Form.Item>
+
+            </Form>
+          )}
       </Modal>
+
       <Modal show={openInputRoomIdModal} modalClosed={closeInputRoomIdModal}>
         <h1 className="create-room-header">Nhập id phòng</h1>
         <Form
@@ -283,9 +311,13 @@ const Home = (props) => {
               Hủy
             </Button>
           </Form.Item>
+          {<div style={{ display: roomNotFound ? '' : 'none' }}
+            className="alert alert-danger">
+            Phòng không tồn tại
+            </div>}
         </Form>
       </Modal>
-      {content}
+      { content}
     </>
   );
 };

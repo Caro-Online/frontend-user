@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, PageHeader, Button, Descriptions } from 'antd';
+import { Link } from 'react-router-dom'
 import './Rooms.css';
 import api from '../../apiGame'
 import {
@@ -67,7 +68,12 @@ const Rooms = (props) => {
           <div className="col-lg-3 col-md-4 col-sm-6" key={room._id}>
             <Card className="card-room" bordered={true} style={{ width: "80%" }}>
               <div className="d-flex flex-column justify-content-around">
-                <div className="room-name">Bàn: <span>{room.name}</span></div>
+                <div className="room-name">
+                  Bàn:
+                <Link to={`/room/${room.roomId}`}>
+                    <span>{room.name}</span>
+                  </Link>
+                </div>
                 {getStatus(room)}
               </div>
 

@@ -30,13 +30,14 @@
     padding: 0;
     text-align: center;
     cursor: pointer; */
-    width: 2.2rem;
-    height: 2.2rem;
+    display: table-cell;
+    width: 1.8rem;
+    height: 1.8rem;
     border: 1.7px solid #999;
     text-align: center;
     font-family: 'Poppins';
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.0rem;
 }
 
 .square:focus {
