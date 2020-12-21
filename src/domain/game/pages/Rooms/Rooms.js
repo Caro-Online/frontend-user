@@ -12,7 +12,9 @@ import {
   Form,
   Input,
   Alert,
+  Space,
 } from 'antd';
+import Highlighter from 'react-highlight-words';
 import { useHistory } from 'react-router-dom';
 import {
   LoadingOutlined,
@@ -38,6 +40,7 @@ import api from '../../apiGame';
 const { Title } = Typography;
 
 const Rooms = (props) => {
+  let searchInput = '';
   const [rooms, setRooms] = useState([]);
   const [waitingRooms, setWaitingRooms] = useState([]);
   const [playingRooms, setPlayingRooms] = useState([]);
@@ -47,6 +50,8 @@ const Rooms = (props) => {
   const [realRoomPassword, setRealRoomPassword] = useState(null);
   const [roomId, setRoomId] = useState(null);
   const [passwordFail, setPasswordFail] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
   const history = useHistory();
 
   const onClickJoinRoomByIdHandler = useCallback(() => {
@@ -120,6 +125,85 @@ const Rooms = (props) => {
       });
   }, []);
 
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          ref={(node) => {
+            searchInput = node;
+          }}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        ? record[dataIndex]
+            .toString()
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        : '',
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
   const columns = [
     {
       title: (
@@ -132,6 +216,7 @@ const Rooms = (props) => {
       ),
       dataIndex: 'name',
       key: 'name',
+      ...getColumnSearchProps('name'),
       render: (name) => <span style={{ fontWeight: 'bold' }}>{name}</span>,
     },
     {
@@ -145,6 +230,20 @@ const Rooms = (props) => {
       ),
       dataIndex: 'rule',
       key: 'rule',
+      filters: [
+        {
+          text: 'Chặn 2 đầu',
+          value: 'BLOCK_TWO_SIDE',
+        },
+        {
+          text: 'Không chặn 2 đầu',
+          value: 'NOT_BLOCK_TWO_SIDE',
+        },
+      ],
+      filterMultiple: false,
+      onFilter: (value, record) => {
+        return record.rule.indexOf(value) === 0;
+      },
       render: (rule) => (
         <>{rule === 'BLOCK_TWO_SIDE' ? 'Chặn 2 đầu' : 'Không chặn 2 đầu'} </>
       ),
@@ -160,6 +259,20 @@ const Rooms = (props) => {
       ),
       dataIndex: 'status',
       key: 'status',
+      filters: [
+        {
+          text: 'Đang chờ',
+          value: 'WAITING',
+        },
+        {
+          text: 'Đang chơi',
+          value: 'PLAYING',
+        },
+      ],
+      filterMultiple: false,
+      onFilter: (value, record) => {
+        return record.status.indexOf(value) === 0;
+      },
       render: (status) => (
         <div style={{ textAlign: 'center' }}>
           {status === 'WAITING' ? (
