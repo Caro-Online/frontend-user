@@ -1,4 +1,9 @@
-import { actionType } from './actionTypes'
+import * as actionTypes from './actionTypes'
 
-export const joinRoom = { type: actionType.JOIN_ROOM }
-export const outRoom = { type: actionType.OUT_ROOM }
+export const updateNextPlayer = (nextPlayer) => ({
+    type: actionTypes.NEXT_PLAYER,
+    nextPlayer
+})
+
+
+

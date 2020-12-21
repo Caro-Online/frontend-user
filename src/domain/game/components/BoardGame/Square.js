@@ -4,9 +4,12 @@ import x from '../../../../shared/assets/images/x.png'
 import o from '../../../../shared/assets/images/o.png'
 export default function Square(props) {
     const handleClick = () => {
-        console.log("click");
+
         if (!props.disable) {
+            console.log("click");
+            props.setDisable(!props.disable)
             return props.onClick()
+
         }
         return null;
     }
