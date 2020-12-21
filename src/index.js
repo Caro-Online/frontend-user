@@ -9,6 +9,7 @@ import thunk from 'redux-thunk';
 
 import './index.css';
 import authReducer from './store/reducers/auth.reducer';
+import gameReducer from './store/reducers/game.reducer'
 // import configureAuthStore from './hooks-store/auth-store';
 
 // configureAuthStore();
@@ -17,6 +18,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  game: gameReducer
 });
 
 const store = createStore(

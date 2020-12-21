@@ -1,26 +1,19 @@
 import * as actionTypes from '../actions/actionTypes';
-import updateObject from '../../shared/utils/updateObject';
-
+import {
+    updateNextPlayer
+} from '../actions/game.action'
 const initialState = {
-    roomId: '',
+    nextPlayer: true,
 };
-
-const joinRoom = (state, action) => ({
-    ...state,
-    roomId: action.roomId
-})
-const outRoom = (state) => ({
-    ...state,
-    roomId: ''
-})
-
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.JOIN_ROOM:
-            return joinRoom(state, action);
-        case actionTypes.OUT_ROOM:
-            return outRoom(state);
+        case actionTypes.NEXT_PLAYER:
+            console.log(action)
+            return {
+                ...state,
+                nextPlayer: action.nextPlayer
+            }
         default:
             return state;
     }
