@@ -19,6 +19,7 @@ import { Row, Col } from 'antd';
 import { Spin } from 'antd';
 import api from '../../apiGame';
 import { getUserById } from '../../../user/apiUser';
+import { removeItem } from '../../../../shared/utils/utils'
 
 const GamePage = (props) => {
   const params = useParams();
@@ -63,8 +64,11 @@ const GamePage = (props) => {
     const userId = localStorage.getItem('userId');
     api.outRoom(userId, params.roomId).then((res) => {
       console.log('out success');
-      let socket = getSocket();
-      socket.emit('audience-out', { userId })
+      if (res.data) {
+        let socket = getSocket();
+        socket.emit('audience-out', { userId })
+      }
+
     });
 
   }, [params.roomId]);
@@ -88,8 +92,8 @@ const GamePage = (props) => {
           console.log(response.room);
           setIsSuccess(true);
           //add audience, socket new audience
-          setAudience(response.room.audience);
-          addAudience(response.room);
+          setAudience(response.room.audience);//add to state
+          addAudience(response.room);// add to db
           let socket = getSocket();
           socket.emit(
             'join',
@@ -113,9 +117,7 @@ const GamePage = (props) => {
           const userId = localStorage.getItem('userId');
           socket.on('audience-out-update', (message) => {
             console.log(message.userId);
-            let cloneAudience = [...audience]
-            cloneAudience = cloneAudience.filter(x => x._id !== userId)
-            setAudience(cloneAudience)
+            setAudience(removeItem(audience, message.userId));
           });
           // socketListener();
         } else {

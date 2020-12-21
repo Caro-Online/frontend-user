@@ -11,8 +11,8 @@ export default function CardInfo(props) {
         >
             <Meta
                 avatar={<Avatar src={props.x ? x : o} />}
-                title={props.name}
-                description={props.name ? 'Đang đợi ...' : 'Còn trống'}
+                title={props.user ? props.user.name : ''}
+                description={props.user ? 'Đang đợi ...' : 'Còn trống'}
             />
             <img path="../../shared/assets/images/x.png" />
         </Card>
