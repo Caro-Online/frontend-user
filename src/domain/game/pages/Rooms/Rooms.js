@@ -97,10 +97,10 @@ const Rooms = (props) => {
         if (res.data.success) {
           const rooms = res.data.rooms.map((room) => {
             let numPeople = [];
-            if (room.user.u1) {
+            if (room.status === 'PLAYING') {
               numPeople.push('1');
-            }
-            if (room.user.u2) {
+              numPeople.push('1');
+            } else {
               numPeople.push('1');
             }
             for (let i = 0; i < room.audience.length; i++) {

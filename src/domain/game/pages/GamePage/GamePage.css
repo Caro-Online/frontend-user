@@ -16,3 +16,15 @@
 .ant-tabs-tab {
   flex: 1 1 0;
 }
+
+.tabpane-main {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tabpane-sub {
+  display: flex;
+  align-items: center;
+}

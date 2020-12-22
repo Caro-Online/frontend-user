@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Row, Col, Tabs, Spin, Typography } from 'antd';
-import { FaTrophy, FaUsers } from 'react-icons/fa';
+import { FaTrophy, FaUsers, FaInfoCircle } from 'react-icons/fa';
 
 // Components
 import BoardGame from '../../components/BoardGame/BoardGame';
@@ -186,25 +186,35 @@ const GamePage = (props) => {
           locationToJump={locationToJump}
         />
       </Col>
-      <Col span={6}>
+      {/* <Col span={6}>
         <UserInfo
           roomId={isSuccess ? room.roomId : null}
           user={isSuccess ? room.user : null}
           audience={isSuccess ? audience : null}
         />
-      </Col>
+      </Col> */}
       <Col span={6}>
         <Tabs defaultActiveKey="1" type="card" size="middle">
           <TabPane tab="Card Tab 1" key="1">
             Content of card tab 1
           </TabPane>
-          <TabPane tab="Card Tab 2" key="2">
-            Content of card tab 2
+          <TabPane
+            tab={
+              <div className="tabpane-main">
+                <FaInfoCircle size="24" />
+                <Title level={5} style={{ marginBottom: 0, fontSize: '14px' }}>
+                  Thông tin phòng
+                </Title>
+              </div>
+            }
+            key="2"
+          >
+            {/* Chứa thông tin về 2 người chơi, các khán giả trong phòng chơi, nội dung chat, thông tin về phòng chơi */}
           </TabPane>
           <TabPane
             tab={
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <FaUsers size="24" style={{ marginRight: '8px' }} />
+              <div className="tabpane-main">
+                <FaUsers size="24" />
                 <Title level={5} style={{ marginBottom: 0, fontSize: '14px' }}>
                   Các kỳ thủ
                 </Title>
@@ -215,7 +225,7 @@ const GamePage = (props) => {
             <Tabs defaultActiveKey="1" type="card" size="small">
               <TabPane
                 tab={
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div className="tabpane-sub">
                     <FaUsers size="24" style={{ marginRight: '8px' }} />
                     <Title
                       level={5}
@@ -231,7 +241,7 @@ const GamePage = (props) => {
               </TabPane>
               <TabPane
                 tab={
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div className="tabpane-sub">
                     <FaTrophy size="24" style={{ marginRight: '8px' }} />
                     <Title
                       level={5}
