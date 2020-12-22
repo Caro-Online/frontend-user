@@ -11,24 +11,10 @@ import './Chat.css';
 import { getSocket } from '../../../../shared/utils/socket.io-client';
 import { useLocation } from 'react-router-dom';
 
-
 export default function Chat({ room }) {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const location = useLocation();
-
-  // useEffect(() => {
-  //   socket = getSocket();
-  //   socket.emit(
-  //     'join',
-  //     { userId: localStorage.getItem('userId'), roomId: room.roomId },
-  //     (error) => {
-  //       if (error) {
-  //         alert(error);
-  //       }
-  //     }
-  //   );
-  // }, [location, room]);
 
   useEffect(() => {
     let socket = getSocket();
@@ -40,7 +26,6 @@ export default function Chat({ room }) {
       };
     });
     setMessages([...responseMessages]);
-    console.log(socket)
     socket.on('message', (message) => {
       setMessages((messages) => [...messages, message]);
     });

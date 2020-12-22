@@ -20,11 +20,16 @@
 .tabpane-main {
   display: flex;
   align-items: center;
-  flex-direction: column;
   justify-content: center;
+  flex-direction: column;
 }
 
 .tabpane-sub {
   display: flex;
   align-items: center;
+}
+
+.ant-tabs-tab-btn {
+  width: 100%;
+  height: 100%;
 }

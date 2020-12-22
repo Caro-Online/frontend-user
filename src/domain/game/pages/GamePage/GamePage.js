@@ -1,7 +1,16 @@
 //Library
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Row, Col, Tabs, Spin, Typography } from 'antd';
+import {
+  Row,
+  Col,
+  Tabs,
+  Spin,
+  Typography,
+  Descriptions,
+  Card,
+  Statistic,
+} from 'antd';
 import { FaTrophy, FaUsers, FaInfoCircle } from 'react-icons/fa';
 
 // Components
@@ -18,15 +27,16 @@ import { API } from '../../../../config';
 import './GamePage.css';
 import api from '../../apiGame';
 import { getUserById } from '../../../user/apiUser';
-import { removeItem } from '../../../../shared/utils/utils'
+import { removeItem } from '../../../../shared/utils/utils';
 
 const { TabPane } = Tabs;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const GamePage = (props) => {
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [room, setRoom] = useState(null);
+  const [numPeopleInRoom, setNumPeopleInRoom] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [history, setHistory] = useState(null);
@@ -67,9 +77,8 @@ const GamePage = (props) => {
       console.log('out success');
       if (res.data) {
         let socket = getSocket();
-        socket.emit('audience-out', { userId })
+        socket.emit('audience-out', { userId });
       }
-
     });
   }, [params.roomId]);
 
@@ -89,11 +98,15 @@ const GamePage = (props) => {
         console.log(response);
         if (response.success) {
           setRoom(response.room);
-          console.log(response.room);
+          if (response.room.status === 'PLAYING') {
+            setNumPeopleInRoom(2 + response.room.audience.length);
+          } else {
+            setNumPeopleInRoom(1 + response.room.audience.length);
+          }
           setIsSuccess(true);
           //add audience, socket new audience
-          setAudience(response.room.audience);//add to state
-          addAudience(response.room);// add to db
+          // setAudience(response.room.audience); //add to state
+          // addAudience(response.room); // add to db
           let socket = getSocket();
           socket.emit(
             'join',
@@ -107,18 +120,18 @@ const GamePage = (props) => {
               }
             }
           );
-          socket.on('new-audience', (message) => {
-            console.log(message.userId);
-            getUserById(message.userId).then((res) => {
-              console.log(res);
-              setAudience([...audience, res.data.user]);
-            });
-          });
-          const userId = localStorage.getItem('userId');
-          socket.on('audience-out-update', (message) => {
-            console.log(message.userId);
-            setAudience(removeItem(audience, message.userId));
-          });
+          // socket.on('new-audience', (message) => {
+          //   console.log(message.userId);
+          //   getUserById(message.userId).then((res) => {
+          //     console.log(res);
+          //     setAudience([...audience, res.data.user]);
+          //   });
+          // });
+          // const userId = localStorage.getItem('userId');
+          // socket.on('audience-out-update', (message) => {
+          //   console.log(message.userId);
+          //   setAudience(removeItem(audience, message.userId));
+          // });
           // socketListener();
         } else {
           setNotFound(true);
@@ -181,13 +194,13 @@ const GamePage = (props) => {
     //   </Col>
     // </Row>
     <Row gutter={8}>
-      <Col className="game-board" span={12}>
+      {/* <Col className="game-board" span={12}>
         <BoardGame
           room={room}
           emitHistory={emitHistory}
           locationToJump={locationToJump}
         />
-      </Col>
+      </Col> */}
       {/* <Col span={6}>
         <UserInfo
           roomId={isSuccess ? room.roomId : null}
@@ -196,7 +209,7 @@ const GamePage = (props) => {
         />
       </Col> */}
       <Col span={6}>
-        <Tabs defaultActiveKey="1" type="card" size="middle">
+        <Tabs defaultActiveKey="2" type="card" size="middle">
           <TabPane tab="Card Tab 1" key="1">
             Content of card tab 1
           </TabPane>
@@ -205,13 +218,53 @@ const GamePage = (props) => {
               <div className="tabpane-main">
                 <FaInfoCircle size="24" />
                 <Title level={5} style={{ marginBottom: 0, fontSize: '14px' }}>
-                  Thông tin phòng
+                  Phòng
                 </Title>
               </div>
             }
             key="2"
           >
-            {/* Chứa thông tin về 2 người chơi, các khán giả trong phòng chơi, nội dung chat, thông tin về phòng chơi */}
+            {/* Các khán giả trong phòng chơi, nội dung chat, thông tin về phòng chơi */}
+            {room ? (
+              <>
+                <Descriptions
+                  style={{ marginTop: '8px' }}
+                  title={
+                    <div className="tabpane-sub">
+                      <FaInfoCircle size="24" style={{ marginRight: '8px' }} />
+                      <Title
+                        level={5}
+                        style={{ marginBottom: 0, fontSize: '14px' }}
+                      >
+                        Thông tin phòng
+                      </Title>
+                    </div>
+                  }
+                  layout="vertical"
+                >
+                  <Descriptions.Item label="Tên phòng">
+                    <Text strong>{room.name}</Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Số người trong phòng" span={2}>
+                    <Statistic value={numPeopleInRoom}></Statistic>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Chủ phòng">
+                    <Text strong>{room.owner.name}</Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Luật chơi">
+                    <Text strong>
+                      {room.rule === 'BLOCK_TWO_SIDE'
+                        ? 'Chặn 2 đầu'
+                        : 'Không chặn 2 đầu'}
+                    </Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Id phòng">
+                    <Text strong>{room.roomId}</Text>
+                  </Descriptions.Item>
+                </Descriptions>
+                <Chat room={room} />
+              </>
+            ) : null}
           </TabPane>
           <TabPane
             tab={
