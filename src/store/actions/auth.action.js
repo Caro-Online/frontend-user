@@ -20,7 +20,7 @@ const processResponseWhenLoginSuccess = (dispatch, response) => {
 };
 
 const processErrWhenLoginFail = (dispatch, err) => {
-  console.log(err);
+  console.log(err.response);
   dispatch(authFail(err.response.data.message));
 };
 
