@@ -27,7 +27,11 @@ import { API } from '../../../../config';
 import './GamePage.css';
 import api from '../../apiGame';
 import { getUserById } from '../../../user/apiUser';
-import { removeItem } from '../../../../shared/utils/utils';
+import {
+  removeItem,
+  getUserIdFromStorage,
+  getTokenFromStorage,
+} from '../../../../shared/utils/utils';
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -46,7 +50,7 @@ const GamePage = (props) => {
   //Thên user hiện hành vào danh sách ng xem
   const addAudience = useCallback(
     (room) => {
-      const userId = localStorage.getItem('userId');
+      const userId = getUserIdFromStorage();
       const join = () => {
         api.joinRoom(userId, params.roomId).then((res) => {
           console.log('join success');
@@ -72,7 +76,7 @@ const GamePage = (props) => {
   );
 
   const removeAudience = useCallback(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = getUserIdFromStorage();
     api.outRoom(userId, params.roomId).then((res) => {
       console.log('out success');
       if (res.data) {
@@ -89,7 +93,7 @@ const GamePage = (props) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${getTokenFromStorage()}`,
       },
     })
       .then((res) => res.json())
@@ -111,7 +115,7 @@ const GamePage = (props) => {
           socket.emit(
             'join',
             {
-              userId: localStorage.getItem('userId'),
+              userId: getUserIdFromStorage(),
               roomId: response.room.roomId,
             },
             (error) => {
@@ -127,7 +131,7 @@ const GamePage = (props) => {
           //     setAudience([...audience, res.data.user]);
           //   });
           // });
-          // const userId = localStorage.getItem('userId');
+          // const userId = getUserIdFromStorage();
           // socket.on('audience-out-update', (message) => {
           //   console.log(message.userId);
           //   setAudience(removeItem(audience, message.userId));

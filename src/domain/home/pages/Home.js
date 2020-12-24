@@ -24,6 +24,11 @@ import InputRoomIdModal from '../../../shared/components/InputRoomIdModal/InputR
 
 import { API } from '../../../config';
 import './Home.css';
+import {
+  getUserIdFromStorage,
+  getTokenFromStorage,
+  getUsernameFromStorage,
+} from '../../../shared/utils/utils';
 
 const { Title } = Typography;
 
@@ -89,12 +94,12 @@ const Home = (props) => {
         body: JSON.stringify({
           name,
           rule,
-          userId: localStorage.getItem('userId'),
+          userId: getUserIdFromStorage(),
           roomPassword,
         }),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${getTokenFromStorage()}`,
         },
       })
         .then((res) => res.json())
@@ -139,7 +144,7 @@ const Home = (props) => {
   if (isAuthenticated) {
     content = (
       <div className="home-container">
-        <h2>Chào mừng, {localStorage.getItem('userName')}</h2>
+        <h2>Chào mừng, {getUsernameFromStorage()}</h2>
         <button
           className="home-button-auth"
           onClick={onClickPlayNowButtonHandler}
@@ -192,14 +197,10 @@ const Home = (props) => {
                 style={{ width: '100%' }}
               />
             </Form.Item>
-            <Form.Item
-              name="rule"
-              label="Luật chơi"
-              initialValue="BLOCK_TWO_SIDE"
-            >
+            <Form.Item name="rule" label="Luật chơi" initialValue={true}>
               <Select>
-                <Option value="BLOCK_TWO_SIDE">Chặn hai đầu không thắng</Option>
-                <Option value="NOT_BLOCK_TWO_SIDE">Chặn hai đầu thắng</Option>
+                <Option value={true}>Chặn hai đầu không thắng</Option>
+                <Option value={false}>Chặn hai đầu thắng</Option>
               </Select>
             </Form.Item>
 

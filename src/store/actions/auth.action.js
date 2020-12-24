@@ -5,16 +5,23 @@ import {
 } from '../../domain/user/apiUser';
 import * as actionTypes from './actionTypes';
 import { initSocket } from '../../shared/utils/socket.io-client';
+import {
+  setTokenToStorage,
+  setExpirationDateToStorage,
+  setUserToStorage,
+  getTokenFromStorage,
+  getUserIdFromStorage,
+  getExpirationDateFromStorage,
+} from '../../shared/utils/utils';
 
 const processResponseWhenLoginSuccess = (dispatch, response) => {
   if (response.data) {
-    console.log(response.data);
+    const { token, user } = response.data;
     const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('expirationDate', expirationDate);
-    localStorage.setItem('userId', response.data.userId);
-    localStorage.setItem('userName', response.data.userName);
-    dispatch(authSuccess(response.data.accessToken, response.data.userId));
+    setTokenToStorage(token);
+    setExpirationDateToStorage(expirationDate);
+    setUserToStorage(user);
+    dispatch(authSuccess(token, user._id));
     dispatch(checkAuthTimeout(3600));
   }
 };
@@ -115,26 +122,26 @@ export const authWithFacebook = (userId, accessToken) => {
 
 export const authCheckState = () => {
   return (dispatch) => {
-    const token = localStorage.getItem('token');
+    const token = getTokenFromStorage();
     if (!token) {
       dispatch(logout());
     } else {
-      const expirationDate = new Date(localStorage.getItem('expirationDate'));
+      const expirationDate = new Date(getExpirationDateFromStorage());
       if (expirationDate <= new Date()) {
         dispatch(logout());
       } else {
-        const userId = localStorage.getItem('userId');
+        const userId = getUserIdFromStorage();
         dispatch(authSuccess(token, userId));
         dispatch(
           checkAuthTimeout(
             (expirationDate.getTime() - new Date().getTime()) / 1000
           )
         );
-        let socket = initSocket(localStorage.getItem('userId'));
+        let socket = initSocket(getUserIdFromStorage());
         console.log('Emit user online');
         socket.emit(
           'user-online',
-          { userId: localStorage.getItem('userId') },
+          { userId: getUserIdFromStorage() },
           (error) => {
             if (error) {
               alert(error);

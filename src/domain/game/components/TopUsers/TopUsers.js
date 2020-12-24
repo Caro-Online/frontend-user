@@ -23,6 +23,10 @@ import 'antd/dist/antd.css';
 import './TopUsers.css';
 import { API } from '../../../../config';
 import { getSocket } from '../../../../shared/utils/socket.io-client';
+import {
+  getUserIdFromStorage,
+  getTokenFromStorage,
+} from '../../../../shared/utils/utils';
 
 const { Text } = Typography;
 
@@ -50,7 +54,7 @@ const TopUsers = (props) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${getTokenFromStorage()}`,
       },
     })
       .then((res) => res.json())
@@ -94,7 +98,7 @@ const TopUsers = (props) => {
             className="list-item-user"
             actions={[
               <>
-                {user._id !== localStorage.getItem('userId') ? (
+                {user._id !== getUserIdFromStorage() ? (
                   <>
                     {user.isOnline ? (
                       <Button

@@ -5,6 +5,7 @@ import { Menu, Button, Dropdown, Avatar } from 'antd';
 import { CaretDownOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import './NavigationItems.css';
+import { getUsernameFromStorage } from '../../../utils/utils';
 
 const menu = (
   <Menu>
@@ -68,7 +69,7 @@ const NavigationItems = (props) => {
             >
               U
             </Avatar>
-            {localStorage.getItem('userName')}
+            {getUsernameFromStorage()}
           </Button>
         </Link>
         <Dropdown overlay={menu} placement="bottomRight" arrow>

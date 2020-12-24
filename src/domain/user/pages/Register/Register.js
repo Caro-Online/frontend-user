@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Card, Typography, Form, Input, Button, Alert, Spin } from 'antd';
+import {
+  Card,
+  Typography,
+  Form,
+  Input,
+  Button,
+  Alert,
+  Spin,
+  message,
+} from 'antd';
 import {
   UserOutlined,
   LockOutlined,
@@ -39,12 +48,10 @@ const Register = (props) => {
         setAuthError(response.message);
       } else {
         setIsLoading(false);
-        history.push({
-          pathname: '/login',
-          state: {
-            returnFromRegister: true,
-          },
-        });
+        message.success(
+          'Email xác nhận đã được gửi đi. Hãy kiểm tra email của bạn!'
+        );
+        history.push('/login');
       }
     } catch (error) {
       console.log(error);
