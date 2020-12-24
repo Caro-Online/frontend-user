@@ -1,16 +1,16 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
-
 import { Layout } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
-import PrivateRoute from './shared/components/PrivateRoute/PrivatetRoute';
 // import 'antd/dist/antd.css';
 import './App.css';
 import { initSocket } from './shared/utils/socket.io-client';
-import MainHeader from './shared/components/MainHeader/MainHeader';
 import * as actions from './store/actions';
+import { getUserIdFromStorage } from './shared/utils/utils';
 
+import PrivateRoute from './shared/components/PrivateRoute/PrivatetRoute';
+import MainHeader from './shared/components/MainHeader/MainHeader';
 import Home from './domain/home/pages/Home';
 import GamePage from './domain/game/pages/GamePage/GamePage';
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
@@ -38,7 +38,7 @@ const App = (props) => {
   useEffect(() => {
     if (isAuthenticated) {
       let socket;
-      socket = initSocket(localStorage.getItem('userId'));
+      socket = initSocket(getUserIdFromStorage());
       return () => {
         socket.disconnect();
       };

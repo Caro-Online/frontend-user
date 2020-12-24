@@ -1,8 +1,10 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
+import { getUserIdFromStorage } from '../../utils/utils';
+
 export default function PrivateRoute({ children, ...rest }) {
-  const userId = localStorage.getItem('userId');
+  const userId = getUserIdFromStorage();
   return (
     <Route
       {...rest}

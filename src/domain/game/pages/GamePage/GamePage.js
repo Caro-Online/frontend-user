@@ -27,7 +27,11 @@ import { API } from '../../../../config';
 import './GamePage.css';
 import api from '../../apiGame';
 import { getUserById } from '../../../user/apiUser';
-import { removeItem } from '../../../../shared/utils/utils';
+import {
+  removeItem,
+  getUserIdFromStorage,
+  getTokenFromStorage,
+} from '../../../../shared/utils/utils';
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -46,7 +50,7 @@ const GamePage = (props) => {
   //Thên user hiện hành vào danh sách ng xem
   const addAudience = useCallback(
     (room) => {
-      const userId = localStorage.getItem('userId');
+      const userId = getUserIdFromStorage();
       const join = () => {
         api.joinRoom(userId, params.roomId).then((res) => {
           console.log('join success');
@@ -72,7 +76,7 @@ const GamePage = (props) => {
   );
 
   const removeAudience = useCallback(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = getUserIdFromStorage();
     api.outRoom(userId, params.roomId).then((res) => {
       console.log('out success');
       if (res.data) {
@@ -89,7 +93,7 @@ const GamePage = (props) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${getTokenFromStorage()}`,
       },
     })
       .then((res) => res.json())
@@ -98,11 +102,9 @@ const GamePage = (props) => {
         console.log(response);
         if (response.success) {
           setRoom(response.room);
-          if (response.room.status === 'PLAYING') {
-            setNumPeopleInRoom(2 + response.room.audience.length);
-          } else {
-            setNumPeopleInRoom(1 + response.room.audience.length);
-          }
+          setNumPeopleInRoom(
+            response.room.users.length + response.room.audiences.length
+          );
           setIsSuccess(true);
           //add audience, socket new audience
           // setAudience(response.room.audience); //add to state
@@ -111,7 +113,7 @@ const GamePage = (props) => {
           socket.emit(
             'join',
             {
-              userId: localStorage.getItem('userId'),
+              userId: getUserIdFromStorage(),
               roomId: response.room.roomId,
             },
             (error) => {
@@ -127,7 +129,7 @@ const GamePage = (props) => {
           //     setAudience([...audience, res.data.user]);
           //   });
           // });
-          // const userId = localStorage.getItem('userId');
+          // const userId = getUserIdFromStorage();
           // socket.on('audience-out-update', (message) => {
           //   console.log(message.userId);
           //   setAudience(removeItem(audience, message.userId));
@@ -249,13 +251,11 @@ const GamePage = (props) => {
                     <Statistic value={numPeopleInRoom}></Statistic>
                   </Descriptions.Item>
                   <Descriptions.Item label="Chủ phòng">
-                    <Text strong>{room.owner.name}</Text>
+                    <Text strong>{room.users[0].name}</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>
-                      {room.rule === 'BLOCK_TWO_SIDE'
-                        ? 'Chặn 2 đầu'
-                        : 'Không chặn 2 đầu'}
+                      {room.rule ? 'Chặn 2 đầu' : 'Không chặn 2 đầu'}
                     </Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Id phòng">

@@ -97,13 +97,10 @@ const Rooms = (props) => {
         if (res.data.success) {
           const rooms = res.data.rooms.map((room) => {
             let numPeople = [];
-            if (room.status === 'PLAYING') {
-              numPeople.push('1');
-              numPeople.push('1');
-            } else {
+            for (let i = 0; i < room.users.length; i++) {
               numPeople.push('1');
             }
-            for (let i = 0; i < room.audience.length; i++) {
+            for (let i = 0; i < room.audiences.length; i++) {
               numPeople.push('1');
             }
             return { ...room, key: room._id, numPeople: numPeople };
@@ -233,20 +230,18 @@ const Rooms = (props) => {
       filters: [
         {
           text: 'Chặn 2 đầu',
-          value: 'BLOCK_TWO_SIDE',
+          value: true,
         },
         {
           text: 'Không chặn 2 đầu',
-          value: 'NOT_BLOCK_TWO_SIDE',
+          value: false,
         },
       ],
       filterMultiple: false,
       onFilter: (value, record) => {
         return record.rule.indexOf(value) === 0;
       },
-      render: (rule) => (
-        <>{rule === 'BLOCK_TWO_SIDE' ? 'Chặn 2 đầu' : 'Không chặn 2 đầu'} </>
-      ),
+      render: (rule) => <>{rule ? 'Chặn 2 đầu' : 'Không chặn 2 đầu'} </>,
     },
     {
       title: (

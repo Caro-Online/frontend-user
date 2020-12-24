@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API } from '../../config';
+import { getTokenFromStorage } from '../../shared/utils/utils';
 
 export const login = (user) => {
   return axios.post(`${API}/user/auth/login`, user);
@@ -20,12 +21,12 @@ export const updateStatusToOnline = (userId) => {
 };
 
 export const getUserById = (userId) => {
-  const token = localStorage.getItem('token');
+  const token = getTokenFromStorage();
   const config = {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   };
   return axios.get(`${API}/user/${userId}`, config);
-}
+};
 // export const updateStatusToOnline = (userId) => {
 //   return axios.put(`${API}/user/${userId}/update-status`);
 // };
