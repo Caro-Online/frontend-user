@@ -24,10 +24,12 @@ export default function Chat({ room }) {
   useEffect(() => {
     let socket = getSocket();
     const responseMessages = room.chat.map((chat) => {
+      console.log(chat.createdAt);
       return {
         userId: chat.user._id,
         userName: chat.user.name,
         text: chat.content,
+        createdAt: chat.createdAt,
       };
     });
     setMessages([...responseMessages]);

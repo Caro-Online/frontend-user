@@ -5,7 +5,10 @@ import { Menu, Button, Dropdown, Avatar } from 'antd';
 import { CaretDownOutlined, LogoutOutlined } from '@ant-design/icons';
 
 import './NavigationItems.css';
-import { getUsernameFromStorage } from '../../../utils/utils';
+import {
+  getUsernameFromStorage,
+  getUserImageUrlFromStorage,
+} from '../../../utils/utils';
 
 const menu = (
   <Menu>
@@ -59,16 +62,20 @@ const NavigationItems = (props) => {
               alignItems: 'center',
             }}
           >
-            <Avatar
-              style={{
-                color: '#f56a00',
-                backgroundColor: '#fde3cf',
-                height: '30px',
-                marginRight: '4px',
-              }}
-            >
-              U
-            </Avatar>
+            {getUserImageUrlFromStorage() ? (
+              <Avatar src={getUserImageUrlFromStorage()} />
+            ) : (
+              <Avatar
+                style={{
+                  color: '#f56a00',
+                  backgroundColor: '#fde3cf',
+                  height: '30px',
+                  marginRight: '4px',
+                }}
+              >
+                {getUsernameFromStorage().split(' ')[0][0]}
+              </Avatar>
+            )}
             {getUsernameFromStorage()}
           </Button>
         </Link>

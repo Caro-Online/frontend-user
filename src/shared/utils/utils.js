@@ -35,6 +35,10 @@ export const getUsernameFromStorage = () => {
   return getUserFromStorage().name;
 };
 
+export const getUserImageUrlFromStorage = () => {
+  return getUserFromStorage().imageUrl;
+};
+
 export const setExpirationDateToStorage = (expirationDate) => {
   localStorage.setItem('expirationDate', expirationDate);
 };
