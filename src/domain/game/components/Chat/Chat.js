@@ -16,15 +16,13 @@ import {
   getUsernameFromStorage,
 } from '../../../../shared/utils/utils';
 
-export default function Chat({ room }) {
+const Chat = ({ room }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
-  const location = useLocation();
 
   useEffect(() => {
     let socket = getSocket();
     const responseMessages = room.chat.map((chat) => {
-      console.log(chat.createdAt);
       return {
         userId: chat.user._id,
         userName: chat.user.name,
@@ -76,4 +74,6 @@ export default function Chat({ room }) {
       </div>
     </div>
   );
-}
+};
+
+export default React.memo(Chat);

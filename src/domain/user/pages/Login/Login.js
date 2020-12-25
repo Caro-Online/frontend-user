@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { Form, Input, Button, Alert, Spin } from 'antd';
-import { Link } from 'react-router-dom';
+import { Form, Input, Button, Alert, Spin, message } from 'antd';
+import { Link, useHistory } from 'react-router-dom';
 import { Card, Typography } from 'antd';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
@@ -36,8 +35,6 @@ const tailLayout = {
 };
 
 const Login = (props) => {
-  const [form] = Form.useForm();
-
   const {
     onLoginWithEmailAndPassword,
     onLoginWithFacebook,
@@ -48,6 +45,15 @@ const Login = (props) => {
     authRedirectPath,
     loading,
   } = props;
+  const history = useHistory();
+
+  useEffect(() => {
+    if (authRedirectPath) {
+      history.push('/');
+      message.success('Đăng nhập thành công');
+      onResetAuthRedirectPath();
+    }
+  }, [authRedirectPath, history, onResetAuthRedirectPath]);
 
   const onFinish = useCallback(
     (values) => {
@@ -80,15 +86,10 @@ const Login = (props) => {
     },
     [onClearError]
   );
-  let redirect = null;
-  if (authRedirectPath) {
-    redirect = <Redirect to={authRedirectPath} />;
-    onResetAuthRedirectPath();
-  }
 
   return (
     <>
-      {redirect}
+      {/* {redirect} */}
       <Link to="/" className="caro-online">
         <Title>CaroOnline</Title>
       </Link>
@@ -115,12 +116,7 @@ const Login = (props) => {
             className="center"
           />
         ) : (
-          <Form
-            {...layout}
-            form={form}
-            name="control-hooks"
-            onFinish={onFinish}
-          >
+          <Form {...layout} name="control-hooks" onFinish={onFinish}>
             <Form.Item
               name="email"
               rules={[

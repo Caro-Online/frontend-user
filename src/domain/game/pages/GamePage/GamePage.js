@@ -99,12 +99,9 @@ const GamePage = (props) => {
       .then((res) => res.json())
       .then((response) => {
         setIsLoading(false);
-        console.log(response);
         if (response.success) {
           setRoom(response.room);
-          setNumPeopleInRoom(
-            response.room.users.length + response.room.audiences.length
-          );
+          setNumPeopleInRoom(response.room.users.length);
           setIsSuccess(true);
           //add audience, socket new audience
           // setAudience(response.room.audience); //add to state
@@ -251,7 +248,7 @@ const GamePage = (props) => {
                     <Statistic value={numPeopleInRoom}></Statistic>
                   </Descriptions.Item>
                   <Descriptions.Item label="Chủ phòng">
-                    <Text strong>{room.users[0].name}</Text>
+                    <Text strong>{room.owner.name}</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>
