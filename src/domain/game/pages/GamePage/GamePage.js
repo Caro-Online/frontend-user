@@ -38,6 +38,7 @@ const { Title, Text } = Typography;
 
 const GamePage = (props) => {
   const params = useParams();
+  const { roomId } = params;
   const [isLoading, setIsLoading] = useState(false);
   const [room, setRoom] = useState(null);
   const [numPeopleInRoom, setNumPeopleInRoom] = useState(0);
@@ -87,7 +88,6 @@ const GamePage = (props) => {
   }, [params.roomId]);
 
   const getRoomInfo = useCallback(() => {
-    const { roomId } = params;
     setIsLoading(true);
     fetch(`${API}/room/${roomId}`, {
       method: 'GET',
@@ -107,6 +107,7 @@ const GamePage = (props) => {
           // setAudience(response.room.audience); //add to state
           // addAudience(response.room); // add to db
           let socket = getSocket();
+          console.log('Emit join');
           socket.emit(
             'join',
             {
@@ -142,7 +143,7 @@ const GamePage = (props) => {
         setIsLoading(false);
         setIsSuccess(false);
       });
-  }, [addAudience, params]);
+  }, [roomId]);
 
   useEffect(() => {
     getRoomInfo();
@@ -325,4 +326,4 @@ const GamePage = (props) => {
   return content;
 };
 
-export default GamePage;
+export default React.memo(GamePage);

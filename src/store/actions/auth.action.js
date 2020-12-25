@@ -2,9 +2,9 @@ import {
   login,
   signinWithGoogle,
   signinWithFacebook,
+  updateStatusToOnline,
 } from '../../domain/user/apiUser';
 import * as actionTypes from './actionTypes';
-import { initSocket } from '../../shared/utils/socket.io-client';
 import {
   setTokenToStorage,
   setExpirationDateToStorage,
@@ -137,17 +137,28 @@ export const authCheckState = () => {
             (expirationDate.getTime() - new Date().getTime()) / 1000
           )
         );
-        let socket = initSocket(getUserIdFromStorage());
-        console.log('Emit user online');
-        socket.emit(
-          'user-online',
-          { userId: getUserIdFromStorage() },
-          (error) => {
-            if (error) {
-              alert(error);
+        updateStatusToOnline(userId)
+          .then((response) => {
+            if (response.data.success) {
+              console.log('Update status success');
+            } else {
+              console.log('Update status failed');
             }
-          }
-        );
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        // let socket = initSocket(getUserIdFromStorage());
+        // console.log('Emit user online');
+        // socket.emit(
+        //   'user-online',
+        //   { userId: getUserIdFromStorage() },
+        //   (error) => {
+        //     if (error) {
+        //       alert(error);
+        //     }
+        //   }
+        // );
       }
     }
   };

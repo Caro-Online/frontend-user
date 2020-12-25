@@ -29,11 +29,11 @@ const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 
 const { Content } = Layout;
 const App = (props) => {
-  const { isAuthenticated } = props;
+  const { isAuthenticated, onTryAutoLogin } = props;
 
-  // useEffect(() => {
-  //   onTryAutoLogin();
-  // }, [onTryAutoLogin]);
+  useEffect(() => {
+    onTryAutoLogin();
+  }, [onTryAutoLogin]);
 
   useEffect(() => {
     if (isAuthenticated) {

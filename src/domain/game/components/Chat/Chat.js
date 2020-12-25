@@ -1,7 +1,6 @@
 //Library
 import React, { useCallback, useState, useEffect } from 'react';
 import { MessageFilled } from '@ant-design/icons';
-import { useLocation } from 'react-router-dom';
 
 //Components
 import InfoBar from './InfoBar/InfoBar';
@@ -32,6 +31,7 @@ const Chat = ({ room }) => {
     });
     setMessages([...responseMessages]);
     socket.on('message', (message) => {
+      console.log('Receive message');
       setMessages((messages) => [...messages, message]);
     });
   }, [room]);
@@ -43,6 +43,7 @@ const Chat = ({ room }) => {
       let socket = getSocket();
 
       if (message) {
+        console.log('emit sendmessage');
         socket.emit(
           'sendMessage',
           { message, userId: getUserIdFromStorage() },
