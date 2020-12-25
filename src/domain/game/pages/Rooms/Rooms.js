@@ -100,9 +100,6 @@ const Rooms = (props) => {
             for (let i = 0; i < room.users.length; i++) {
               numPeople.push('1');
             }
-            for (let i = 0; i < room.audiences.length; i++) {
-              numPeople.push('1');
-            }
             return { ...room, key: room._id, numPeople: numPeople };
           });
           setRooms(rooms);

@@ -106,7 +106,6 @@ const Home = (props) => {
         .then((response) => {
           history.push(`/room/${response.room.roomId}`);
           setIsLoading(false);
-          console.log(response);
         })
         .catch((error) => {
           console.log(error);

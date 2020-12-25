@@ -1,7 +1,6 @@
 //Library
 import React, { useCallback, useState, useEffect } from 'react';
 import { MessageFilled } from '@ant-design/icons';
-import { useLocation } from 'react-router-dom';
 
 //Components
 import InfoBar from './InfoBar/InfoBar';
@@ -16,15 +15,13 @@ import {
   getUsernameFromStorage,
 } from '../../../../shared/utils/utils';
 
-export default function Chat({ room }) {
+const Chat = ({ room }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
-  const location = useLocation();
 
   useEffect(() => {
     let socket = getSocket();
     const responseMessages = room.chat.map((chat) => {
-      console.log(chat.createdAt);
       return {
         userId: chat.user._id,
         userName: chat.user.name,
@@ -34,6 +31,7 @@ export default function Chat({ room }) {
     });
     setMessages([...responseMessages]);
     socket.on('message', (message) => {
+      console.log('Receive message');
       setMessages((messages) => [...messages, message]);
     });
   }, [room]);
@@ -45,6 +43,7 @@ export default function Chat({ room }) {
       let socket = getSocket();
 
       if (message) {
+        console.log('emit sendmessage');
         socket.emit(
           'sendMessage',
           { message, userId: getUserIdFromStorage() },
@@ -76,4 +75,6 @@ export default function Chat({ room }) {
       </div>
     </div>
   );
-}
+};
+
+export default React.memo(Chat);

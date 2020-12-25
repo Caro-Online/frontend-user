@@ -38,6 +38,7 @@ const { Title, Text } = Typography;
 
 const GamePage = (props) => {
   const params = useParams();
+  const { roomId } = params;
   const [isLoading, setIsLoading] = useState(false);
   const [room, setRoom] = useState(null);
   const [numPeopleInRoom, setNumPeopleInRoom] = useState(0);
@@ -87,7 +88,6 @@ const GamePage = (props) => {
   }, [params.roomId]);
 
   const getRoomInfo = useCallback(() => {
-    const { roomId } = params;
     setIsLoading(true);
     fetch(`${API}/room/${roomId}`, {
       method: 'GET',
@@ -99,17 +99,15 @@ const GamePage = (props) => {
       .then((res) => res.json())
       .then((response) => {
         setIsLoading(false);
-        console.log(response);
         if (response.success) {
           setRoom(response.room);
-          setNumPeopleInRoom(
-            response.room.users.length + response.room.audiences.length
-          );
+          setNumPeopleInRoom(response.room.users.length);
           setIsSuccess(true);
           //add audience, socket new audience
           // setAudience(response.room.audience); //add to state
           // addAudience(response.room); // add to db
           let socket = getSocket();
+          console.log('Emit join');
           socket.emit(
             'join',
             {
@@ -145,7 +143,7 @@ const GamePage = (props) => {
         setIsLoading(false);
         setIsSuccess(false);
       });
-  }, [addAudience, params]);
+  }, [roomId]);
 
   useEffect(() => {
     getRoomInfo();
@@ -251,7 +249,7 @@ const GamePage = (props) => {
                     <Statistic value={numPeopleInRoom}></Statistic>
                   </Descriptions.Item>
                   <Descriptions.Item label="Chủ phòng">
-                    <Text strong>{room.users[0].name}</Text>
+                    <Text strong>{room.owner.name}</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>
@@ -328,4 +326,4 @@ const GamePage = (props) => {
   return content;
 };
 
-export default GamePage;
+export default React.memo(GamePage);

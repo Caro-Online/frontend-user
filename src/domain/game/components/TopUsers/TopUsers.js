@@ -33,13 +33,13 @@ const { Text } = Typography;
 let socket;
 // const abortController = new AbortController();
 
-const modifyUsersStatus = (response, data, setUsers, isOnline) => {
+const modifyUsersStatus = (response, data, setUsers, status) => {
   const modifyUsers = _.cloneDeep(response.users);
   const index = modifyUsers.findIndex(
     (user) => user._id.toString() === data.userId.toString()
   );
   const modifyUser = _.cloneDeep(modifyUsers[index]);
-  modifyUser.isOnline = isOnline;
+  modifyUser.status = status;
   modifyUsers[index] = modifyUser;
   setUsers(modifyUsers);
 };
@@ -73,11 +73,11 @@ const TopUsers = (props) => {
           setUsers(users);
           socket = getSocket();
           socket.on('user-online', (data) => {
-            modifyUsersStatus(response, data, setUsers, true);
+            modifyUsersStatus(response, data, setUsers, 'ONLINE');
           });
           socket.on('user-offline', (data) => {
             console.log('Processing user offline event');
-            modifyUsersStatus(response, data, setUsers, false);
+            modifyUsersStatus(response, data, setUsers, 'OFFLINE');
           });
         }
       })
@@ -100,7 +100,7 @@ const TopUsers = (props) => {
               <>
                 {user._id !== getUserIdFromStorage() ? (
                   <>
-                    {user.isOnline ? (
+                    {user.status === 'ONLINE' ? (
                       <Button
                         type="ghost"
                         shape="round"
@@ -115,7 +115,7 @@ const TopUsers = (props) => {
               </>,
             ]}
           >
-            {user.isOnline ? (
+            {user.status === 'ONLINE' ? (
               <Popover
                 placement="left"
                 content={
