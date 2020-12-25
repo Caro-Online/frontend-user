@@ -19,77 +19,65 @@ import {
 const { Meta } = Card;
 
 export default function UserInfo(props) {
-  const [user1, setUser1] = useState(null);
-  const [user2, setUser2] = useState(null);
   const [playing, setPlaying] = useState(false);
-  const [audience, setAudience] = useState([]);
   useEffect(() => {
     const userId = getUserIdFromStorage();
-    if (props.user) {
-      //player1
-      setUser1(props.user.u1.userRef);
-      if (userId === props.user.u1.userRef._id) {
-        setPlaying(true);
-      }
-
-      //player2
-      if (props.user.u2) {
-        setUser2(props.user.u2.userRef);
-        if (userId === props.user.u2.userRef._id) {
-          setPlaying(true);
+    console.log(props.players)
+    if (props.players) {
+      let isXNext = true;//players[0] la X
+      props.players.forEach(player => {
+        if (userId === player.user._id) {
+          setPlaying(isXNext);
         }
-      }
+        isXNext = false;//players[1] la O
+      });
     }
-  }, [props.user]);
-  useEffect(() => {
-    setAudience(props.audience);
-  }, [props.audience]);
-  const joinMatchHanler = () => {
+  }, [props.players]);
+
+  const joinPlayerQueueHanler = () => {
     const userId = getUserIdFromStorage();
-    api.joinMatch(userId, props.roomId).then((res) => {
+    api.joinPlayerQueue(userId, props.roomId).then((res) => {
       getUserById(userId).then((res) => {
-        setUser2(res.data.user);
         setPlaying(true);
         let socket = getSocket();
-        socket.emit('join-match', { userId });
-        //remove audience
-        setAudience(removeItem(audience, userId));
+        socket.emit('join-player-queue', { userId });
       });
     });
-    console.log('click');
   };
 
-  useEffect(() => {
-    let socket = getSocket();
-    socket.on('join-match-update', (message) => {
-      getUserById(message.userId).then((res) => {
-        setUser2(res.data.user);
-      });
-    });
-  });
+  //ĐƯA RA NGOÀI BOARD GAME
+  // useEffect(() => {
+  //   let socket = getSocket();
+  //   socket.on('join-match-update', (message) => {
+  //     getUserById(message.userId).then((res) => {
+  //       setUser2(res.data.user);
+  //     });
+  //   });
+  // });
 
   return (
     <div className="user-info">
       <Card className="card-group">
-        <CardInfo user={user1} x={true} />
-        <CardInfo user={user2} x={false} />
+        <CardInfo user={props.players ? props.players[0].user : null} x={true} />
+        <CardInfo user={props.players ? props.players[1] ? props.players[1].user : null : null} x={false} />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
           <Button
             style={{ display: playing ? 'none' : '' }}
             type="primary"
-            onClick={joinMatchHanler}
+            onClick={joinPlayerQueueHanler}
           >
             Vào chơi
           </Button>
         </Card>
         <Card style={{ width: '100%', height: '30%' }}>
           <div>Đang xem</div>
+          {console.log(props.audiences)}
           <ul>
-            {audience ? (
-              audience.map((au, i) => <li key={i}>{au.name}</li>)
+            {props.audiences ? (
+              props.audiences.map((au, i) => <li key={i}>{au.name}</li>)
             ) : (
-              <li>Không có khán giả</li>
-            )}
+                <li>Không có khán giả</li>
+              )}
           </ul>
         </Card>
       </Card>

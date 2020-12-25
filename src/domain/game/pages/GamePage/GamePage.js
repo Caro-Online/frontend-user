@@ -22,13 +22,14 @@ import OnlineUsers from '../../components/OnlineUsers/OnlineUsers';
 import TopUsers from '../../components/TopUsers/TopUsers';
 
 //Others
-import { getSocket } from '../../../../shared/utils/socket.io-client';
+import { getSocket, initSocket } from '../../../../shared/utils/socket.io-client';
 import { API } from '../../../../config';
 import './GamePage.css';
 import api from '../../apiGame';
 import { getUserById } from '../../../user/apiUser';
 import {
   removeItem,
+  addItem,
   getUserIdFromStorage,
   getTokenFromStorage,
 } from '../../../../shared/utils/utils';
@@ -36,6 +37,7 @@ import {
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
 
+let socket;
 const GamePage = (props) => {
   const params = useParams();
   const { roomId } = params;
@@ -46,43 +48,47 @@ const GamePage = (props) => {
   const [notFound, setNotFound] = useState(false);
   const [history, setHistory] = useState(null);
   const [locationToJump, setLocationToJump] = useState(1);
-  const [audience, setAudience] = useState([]);
+  const [audiences, setAudiences] = useState([]);
+  const [players, setPlayers] = useState([])
 
-  //Thên user hiện hành vào danh sách ng xem
-  const addAudience = useCallback(
-    (room) => {
-      const userId = getUserIdFromStorage();
-      const join = () => {
-        api.joinRoom(userId, params.roomId).then((res) => {
-          console.log('join success');
-          getUserById(userId).then((res) => {
-            setAudience([...audience, res.data.user]);
-          });
-        });
+  //F5 => Init socket
+  useEffect(() => {
+    socket = getSocket();
+    if (!socket) {//Nếu k tồn tại socket (do load lại page)
+      socket = initSocket(getUserIdFromStorage());
+      return () => {
+        socket.disconnect();
       };
+    }
+  }, []);
 
-      if ((room.user.u1.userRef._id !== userId) & !room.user.u2) {
-        join();
+  const addAudience = useCallback((audiences) => {
+    const userId = getUserIdFromStorage();
+    const join = () => {
+      api.joinRoom(userId, params.roomId).then((res) => {
+        console.log('join success');
+        getUserById(userId).then((res) => {
+          setAudiences(addItem(audiences, res.data.user));
+        });
+      });
+    };
+    //Nếu đã là player thì ko là audience
+    let isAu = true; //
+    players.forEach(player => {
+      if (player._id === userId) {
+        isAu = false
       }
-      if (room.user.u2) {
-        if (
-          room.user.u1.userRef._id !== userId &&
-          room.user.u2.userRef._id !== userId
-        ) {
-          join();
-        }
-      }
-    },
-    [params.roomId]
-  );
+    });
+    if (isAu) join();//tham gia vào audience
+  }, [params.roomId]);
 
   const removeAudience = useCallback(() => {
     const userId = getUserIdFromStorage();
     api.outRoom(userId, params.roomId).then((res) => {
       console.log('out success');
       if (res.data) {
-        let socket = getSocket();
-        socket.emit('audience-out', { userId });
+        if (socket)
+          socket.emit('audience-out', { userId });
       }
     });
   }, [params.roomId]);
@@ -100,13 +106,17 @@ const GamePage = (props) => {
       .then((response) => {
         setIsLoading(false);
         if (response.success) {
-          setRoom(response.room);
-          setNumPeopleInRoom(response.room.users.length);
+          setPlayers(response.room.players);
+          setNumPeopleInRoom(response.room.players.length);
+          setRoom(() => {
+            response.room.players = undefined;
+            return response.room
+          })
           setIsSuccess(true);
           //add audience, socket new audience
-          // setAudience(response.room.audience); //add to state
-          // addAudience(response.room); // add to db
-          let socket = getSocket();
+          setAudiences(response.room.audiences); //add to state
+          addAudience(response.room.audiences); // add to db
+          socket = getSocket();
           console.log('Emit join');
           socket.emit(
             'join',
@@ -120,19 +130,8 @@ const GamePage = (props) => {
               }
             }
           );
-          // socket.on('new-audience', (message) => {
-          //   console.log(message.userId);
-          //   getUserById(message.userId).then((res) => {
-          //     console.log(res);
-          //     setAudience([...audience, res.data.user]);
-          //   });
-          // });
-          // const userId = getUserIdFromStorage();
-          // socket.on('audience-out-update', (message) => {
-          //   console.log(message.userId);
-          //   setAudience(removeItem(audience, message.userId));
-          // });
-          // socketListener();
+
+          //socketListener();
         } else {
           setNotFound(true);
           setIsSuccess(false);
@@ -144,6 +143,20 @@ const GamePage = (props) => {
         setIsSuccess(false);
       });
   }, [roomId]);
+
+  useEffect(() => {
+    socket.on('new-audience', (message) => {
+      console.log(message.userId);
+      getUserById(message.userId).then((res) => {
+        console.log(res);
+        setAudiences([...audiences, res.data.user]);
+      });
+    });
+    socket.on('audience-out-update', (message) => {
+      console.log(message.userId);
+      setAudiences(removeItem(audiences, message.userId));
+    });
+  }, [audiences])
 
   useEffect(() => {
     getRoomInfo();
@@ -162,52 +175,24 @@ const GamePage = (props) => {
   }, []);
 
   let content = (
-    // <Row>
-    //   <Col className="game-board" flex="3 0 500px">
-    //     <BoardGame
-    //       room={room}
-    //       emitHistory={emitHistory}
-    //       locationToJump={locationToJump}
-    //     />
-    //   </Col>
-    //   <Col className="game-board" flex="3 0 500px">
-    //     <BoardGame
-    //       room={room}
-    //       emitHistory={emitHistory}
-    //       locationToJump={locationToJump}
-    //     />
-    //   </Col>
-    //   <Col flex="1 0 200px">
-    //     <UserInfo
-    //       roomId={isSuccess ? room.roomId : null}
-    //       user={isSuccess ? room.user : null}
-    //       audience={isSuccess ? audience : null}
-    //     />
-    //   </Col>
-    //   {/* <Col flex="1 0 200px">
-    //     <History history={history} jumpTo={jumpTo} />
-    //     {room ? <Chat room={room} /> : null}
-    //   </Col> */}
-    //   <Col flex="1 0 200px" style={{ padding: '4px 8px' }}>
-    //     Online user
-    //     <AllUser />
-    //   </Col>
-    // </Row>
     <Row gutter={8}>
-      {/* <Col className="game-board" span={12}>
+      {console.log(players)}
+      <Col className="game-board" span={12}>
         <BoardGame
+          socket={socket}
           room={room}
+          players={players}
           emitHistory={emitHistory}
           locationToJump={locationToJump}
         />
-      </Col> */}
-      {/* <Col span={6}>
+      </Col>
+      <Col span={6}>
         <UserInfo
           roomId={isSuccess ? room.roomId : null}
-          user={isSuccess ? room.user : null}
-          audience={isSuccess ? audience : null}
+          players={isSuccess ? players : null}
+          audiences={isSuccess ? audiences : null}
         />
-      </Col> */}
+      </Col>
       <Col span={6}>
         <Tabs defaultActiveKey="2" type="card" size="middle">
           <TabPane tab="Card Tab 1" key="1">
@@ -249,7 +234,7 @@ const GamePage = (props) => {
                     <Statistic value={numPeopleInRoom}></Statistic>
                   </Descriptions.Item>
                   <Descriptions.Item label="Chủ phòng">
-                    <Text strong>{room.owner.name}</Text>
+                    <Text strong>{room.players ? room.players[0] : null}</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>

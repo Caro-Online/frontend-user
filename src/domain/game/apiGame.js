@@ -33,21 +33,21 @@ const outRoom = (userId, roomId) => {
   return axios.put(`${API}/room/${roomId}/out`, { userId }, config);
 };
 
-const joinMatch = (userId, roomId) => {
+const joinPlayerQueue = (userId, roomId) => {
   const token = getTokenFromStorage();
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-  return axios.put(`${API}/room/${roomId}/join-match`, { userId }, config);
+  return axios.put(`${API}/room/${roomId}/join-player-queue`, { userId }, config);
 };
 
-const joinRoomById = (roomId) => {};
+const joinRoomById = (roomId) => { };
 
 const api = {
   getAllRoom,
   getRoomInfoById,
   joinRoom,
-  joinMatch,
+  joinPlayerQueue,
   outRoom,
 };
 

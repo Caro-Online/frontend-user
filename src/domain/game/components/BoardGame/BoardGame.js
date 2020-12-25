@@ -33,28 +33,21 @@ function BoardGame(props) {
   //   setStepNumber(step);
   //   setXIsNext(step % 2 === 0);
   // };
-  let socket;
   // useEffect(() => {
   //   jumpTo(props.locationToJump);
   // }, [props.locationToJump]);
   useEffect(() => {
     const userId = getUserIdFromStorage();
     if (props.room) {
-      //Người đầu tiên là X
-      if (props.room.user.u1.userRef._id === userId) {
-        setXIsNext(true); // X
-        props.setNextPlayer(true);
-        setDisable(false); // Đi trước
-        console.log('here u1');
-      }
-      //Người thứ 2 là O
-      if (props.room.user.u2) {
-        if (props.room.user.u2.userRef._id === userId) {
-          setXIsNext(false); // O
-          props.setNextPlayer(false);
-          setDisable(true); // Đi sau
+      let isXNext = true;//players[0] là X
+      props.players.forEach(player => {
+        if (player.user._id === userId) {
+          setXIsNext(isXNext); // X
+          props.setNextPlayer(isXNext);
+          setDisable(!isXNext); // Đi trước
         }
-      }
+        isXNext = false;//players[1] là O
+      });
     }
 
     return () => {
@@ -63,30 +56,31 @@ function BoardGame(props) {
   }, [props.room]);
 
   useEffect(() => {
-    let socket = getSocket();
-    socket.on('receive-move', (message) => {
-      const { move } = message;
-      console.log(message);
+    if (props.socket) {
+      props.socket.on('receive-move', (message) => {
+        const { move } = message;
+        console.log(message);
 
-      //Bỏ step number để làm chơi 2 người
-      // const newHistory = history.slice(0, stepNumber + 1);
-      //const current = newHistory[newHistory.length - 1];
+        //Bỏ step number để làm chơi 2 người
+        // const newHistory = history.slice(0, stepNumber + 1);
+        //const current = newHistory[newHistory.length - 1];
 
-      let newHistory = history.slice();
-      console.log('history-before-on-socket:' + newHistory.length);
-      let current = newHistory[newHistory.length - 1];
-      let squares = current.squares.slice();
-      squares[move.index] = move.value;
-      setHistory([...newHistory, { squares: squares }]);
-      setDisable(false);
-      setXIsNext(move.value === 'O' ? true : false);
-      props.setNextPlayer(move.value === 'O' ? true : false);
-    });
+        let newHistory = history.slice();
+        console.log('history-before-on-socket:' + newHistory.length);
+        let current = newHistory[newHistory.length - 1];
+        let squares = current.squares.slice();
+        squares[move.index] = move.value;
+        setHistory([...newHistory, { squares: squares }]);
+        setDisable(false);
+        setXIsNext(move.value === 'O' ? true : false);
+        props.setNextPlayer(move.value === 'O' ? true : false);
+
+      });
+    }
   }, [history]);
 
   const sendMove = (i) => {
-    socket = getSocket();
-    socket.emit('send-move', {
+    props.socket.emit('send-move', {
       move: { index: i, value: xIsNext ? 'X' : 'O' },
       roomId: props.room.roomId,
     });
