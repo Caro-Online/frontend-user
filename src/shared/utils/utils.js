@@ -2,6 +2,17 @@ export const removeItem = (array, id) => {
   let cloneArray = [...array];
   return cloneArray.filter((x) => x._id !== id);
 };
+export const addItem = (array, audience) => {
+  let cloneArray = [...array];
+  let flag = true;
+  cloneArray.map(x => {
+    if (x._id === audience._id) {
+      flag = false;
+    }
+  })
+  if (flag) cloneArray.push(audience)
+  return cloneArray
+};
 
 export const setTokenToStorage = (token) => {
   localStorage.setItem('token', token);
