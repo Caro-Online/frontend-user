@@ -22,7 +22,10 @@ import OnlineUsers from '../../components/OnlineUsers/OnlineUsers';
 import TopUsers from '../../components/TopUsers/TopUsers';
 
 //Others
-import { getSocket, initSocket } from '../../../../shared/utils/socket.io-client';
+import {
+  getSocket,
+  initSocket,
+} from '../../../../shared/utils/socket.io-client';
 import { API } from '../../../../config';
 import './GamePage.css';
 import api from '../../apiGame';
@@ -49,46 +52,50 @@ const GamePage = (props) => {
   const [history, setHistory] = useState(null);
   const [locationToJump, setLocationToJump] = useState(1);
   const [audiences, setAudiences] = useState([]);
-  const [players, setPlayers] = useState([])
+  const [players, setPlayers] = useState([]);
 
-  //F5 => Init socket
-  useEffect(() => {
-    socket = getSocket();
-    if (!socket) {//Nếu k tồn tại socket (do load lại page)
-      socket = initSocket(getUserIdFromStorage());
-      return () => {
-        socket.disconnect();
-      };
-    }
-  }, []);
+  // //F5 => Init socket
+  // useEffect(() => {
+  //   socket = getSocket();
+  //   if (!socket) {
+  //     //Nếu k tồn tại socket (do load lại page)
+  //     socket = initSocket(getUserIdFromStorage());
+  //     return () => {
+  //       socket.disconnect();
+  //     };
+  //   }
+  // }, []);
 
-  const addAudience = useCallback((audiences) => {
-    const userId = getUserIdFromStorage();
-    const join = () => {
-      api.joinRoom(userId, params.roomId).then((res) => {
-        console.log('join success');
-        getUserById(userId).then((res) => {
-          setAudiences(addItem(audiences, res.data.user));
+  const addAudience = useCallback(
+    (audiences) => {
+      const userId = getUserIdFromStorage();
+      const join = () => {
+        api.joinRoom(userId, params.roomId).then((res) => {
+          console.log('join success');
+          getUserById(userId).then((res) => {
+            setAudiences(addItem(audiences, res.data.user));
+          });
         });
+      };
+      //Nếu đã là player thì ko là audience
+      let isAu = true; //
+      players.forEach((player) => {
+        if (player._id === userId) {
+          isAu = false;
+        }
       });
-    };
-    //Nếu đã là player thì ko là audience
-    let isAu = true; //
-    players.forEach(player => {
-      if (player._id === userId) {
-        isAu = false
-      }
-    });
-    if (isAu) join();//tham gia vào audience
-  }, [params.roomId]);
+      if (isAu) join(); //tham gia vào audience
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [params.roomId]
+  );
 
   const removeAudience = useCallback(() => {
     const userId = getUserIdFromStorage();
     api.outRoom(userId, params.roomId).then((res) => {
       console.log('out success');
       if (res.data) {
-        if (socket)
-          socket.emit('audience-out', { userId });
+        if (socket) socket.emit('audience-out', { userId });
       }
     });
   }, [params.roomId]);
@@ -107,11 +114,13 @@ const GamePage = (props) => {
         setIsLoading(false);
         if (response.success) {
           setPlayers(response.room.players);
-          setNumPeopleInRoom(response.room.players.length + response.room.audiences.length);
+          setNumPeopleInRoom(
+            response.room.players.length + response.room.audiences.length
+          );
           setRoom(() => {
-            response.room.players = undefined;
-            return response.room
-          })
+            // response.room.players = undefined;
+            return response.room;
+          });
           setIsSuccess(true);
           //add audience, socket new audience
           setAudiences(response.room.audiences); //add to state
@@ -142,9 +151,10 @@ const GamePage = (props) => {
         setIsLoading(false);
         setIsSuccess(false);
       });
-  }, [roomId]);
+  }, [roomId, addAudience]);
 
   useEffect(() => {
+    let socket = getSocket();
     socket.on('new-audience', (message) => {
       console.log(message.userId);
       getUserById(message.userId).then((res) => {
@@ -156,19 +166,19 @@ const GamePage = (props) => {
       console.log(message.userId);
       setAudiences(removeItem(audiences, message.userId));
     });
-  }, [audiences])
+  }, [audiences]);
 
   useEffect(() => {
     getRoomInfo();
     return () => {
-      // removeAudience();
+      removeAudience();
       // Khi người dùng thoát khỏi room thì emit sự kiện leave room
       let socket = getSocket();
       socket.emit('leave-room', {
         userId: getUserIdFromStorage(),
       });
     };
-  }, [getRoomInfo]);
+  }, [getRoomInfo, removeAudience]);
 
   const emitHistory = useCallback((history) => {
     console.log(`emitHistory`, history);
