@@ -97,7 +97,10 @@ const Rooms = (props) => {
         if (res.data.success) {
           const rooms = res.data.rooms.map((room) => {
             let numPeople = [];
-            for (let i = 0; i < room.users.length; i++) {
+            for (let i = 0; i < room.players.length; i++) {
+              numPeople.push('1');
+            }
+            for (let i = 0; i < room.audiences.length; i++) {
               numPeople.push('1');
             }
             return { ...room, key: room._id, numPeople: numPeople };
