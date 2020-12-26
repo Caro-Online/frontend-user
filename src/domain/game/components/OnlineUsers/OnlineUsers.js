@@ -25,6 +25,7 @@ import { getSocket } from '../../../../shared/utils/socket.io-client';
 import {
   getUserIdFromStorage,
   getTokenFromStorage,
+  getUserImageUrlFromStorage,
 } from '../../../../shared/utils/utils';
 
 const { Text } = Typography;
@@ -122,13 +123,19 @@ const OnlineUsers = (props) => {
                             offset={[-10, 80]}
                             style={{ width: '12px', height: '12px' }}
                           >
-                            <Avatar
-                              size={96}
-                              style={{
-                                backgroundColor: '#87d068',
-                              }}
-                              icon={<UserOutlined />}
-                            />
+                            {user.imageUrl ? (
+                              <Avatar
+                                shape="circle"
+                                size={96}
+                                src={user.imageUrl}
+                              />
+                            ) : (
+                              <Avatar
+                                shape="circle"
+                                size={96}
+                                icon={<UserOutlined />}
+                              />
+                            )}
                           </Badge>
                         </Col>
                         <Col
@@ -194,10 +201,11 @@ const OnlineUsers = (props) => {
                   <List.Item.Meta
                     avatar={
                       <Badge status="success" offset={[-5, 30]}>
-                        <Avatar
-                          shape="circle"
-                          src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                        />
+                        {user.imageUrl ? (
+                          <Avatar shape="circle" src={user.imageUrl} />
+                        ) : (
+                          <Avatar shape="circle" icon={<UserOutlined />} />
+                        )}
                       </Badge>
                     }
                     title={

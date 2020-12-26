@@ -76,16 +76,16 @@ const GamePage = (props) => {
     [params.roomId]
   );
 
-  const removeAudience = useCallback(() => {
-    const userId = getUserIdFromStorage();
-    api.outRoom(userId, params.roomId).then((res) => {
-      console.log('out success');
-      if (res.data) {
-        let socket = getSocket();
-        socket.emit('audience-out', { userId });
-      }
-    });
-  }, [params.roomId]);
+  // const removeAudience = useCallback(() => {
+  //   const userId = getUserIdFromStorage();
+  //   api.outRoom(userId, params.roomId).then((res) => {
+  //     console.log('out success');
+  //     if (res.data) {
+  //       let socket = getSocket();
+  //       socket.emit('audience-out', { userId });
+  //     }
+  //   });
+  // }, [params.roomId]);
 
   const getRoomInfo = useCallback(() => {
     setIsLoading(true);
@@ -101,7 +101,9 @@ const GamePage = (props) => {
         setIsLoading(false);
         if (response.success) {
           setRoom(response.room);
-          setNumPeopleInRoom(response.room.users.length);
+          setNumPeopleInRoom(
+            response.room.players.length + response.room.audiences.length
+          );
           setIsSuccess(true);
           //add audience, socket new audience
           // setAudience(response.room.audience); //add to state
@@ -148,9 +150,14 @@ const GamePage = (props) => {
   useEffect(() => {
     getRoomInfo();
     return () => {
-      removeAudience();
+      // removeAudience();
+      // Khi người dùng thoát khỏi room thì emit sự kiện leave room
+      let socket = getSocket();
+      socket.emit('leave-room', {
+        userId: getUserIdFromStorage(),
+      });
     };
-  }, [getRoomInfo, removeAudience]);
+  }, [getRoomInfo]);
 
   const emitHistory = useCallback((history) => {
     console.log(`emitHistory`, history);
@@ -249,7 +256,7 @@ const GamePage = (props) => {
                     <Statistic value={numPeopleInRoom}></Statistic>
                   </Descriptions.Item>
                   <Descriptions.Item label="Chủ phòng">
-                    <Text strong>{room.owner.name}</Text>
+                    <Text strong>{room.players[0].user.name}</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>
