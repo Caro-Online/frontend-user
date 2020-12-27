@@ -32,9 +32,11 @@ const Chat = ({ room }) => {
     setMessages([...responseMessages]);
     socket.on('message', (message) => {
       console.log('Receive message');
+      console.log(message);
       setMessages((messages) => [...messages, message]);
     });
-  }, [room]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const sendMessage = useCallback(
     (event) => {

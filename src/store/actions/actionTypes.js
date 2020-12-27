@@ -6,7 +6,8 @@ export const AUTH_LOGOUT = 'AUTH_LOGOUT';
 export const AUTH_CLEAR_ERRROR = 'AUTH_CLEAR_ERRROR';
 export const SET_AUTH_REDIRECT_PATH = 'SET_AUTH_REDIRECT_PATH';
 export const RESET_AUTH_REDIRECT_PATH = 'RESET_AUTH_REDIRECT_PATH';
+export const SET_SOCKET = 'SET_SOCKET';
+export const REMOVE_SOCKET = 'REMOVE_SOCKET';
 
 //game
-export const NEXT_PLAYER = 'NEXT_PLAYER'
-
+export const NEXT_PLAYER = 'NEXT_PLAYER';

@@ -5,13 +5,18 @@ export const removeItem = (array, id) => {
 export const addItem = (array, audience) => {
   let cloneArray = [...array];
   let flag = true;
-  cloneArray.map(x => {
+  // cloneArray.map((x) => {
+  //   if (x._id === audience._id) {
+  //     flag = false;
+  //   }
+  // });
+  cloneArray.forEach((x) => {
     if (x._id === audience._id) {
       flag = false;
     }
-  })
-  if (flag) cloneArray.push(audience)
-  return cloneArray
+  });
+  if (flag) cloneArray.push(audience);
+  return cloneArray;
 };
 
 export const setTokenToStorage = (token) => {

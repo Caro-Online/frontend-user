@@ -9,7 +9,7 @@ function CardInfo(props) {
 
     const isPlayingStatus = () => {
         if (props.nextPlayer === props.x) {
-            console.log(props.nextPlayer)
+            // console.log(props.nextPlayer)
             return <StarFilled style={{ color: "yellow" }} />
         }
         return <div></div>
