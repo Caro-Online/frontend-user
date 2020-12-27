@@ -4,6 +4,7 @@ import {
 } from '../actions/game.action'
 const initialState = {
     nextPlayer: true,
+    players: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -13,6 +14,11 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 nextPlayer: action.nextPlayer
+            }
+        case 'SET_PLAYERS':
+            return {
+                ...state,
+                players: action.players
             }
         default:
             return state;

@@ -15,10 +15,11 @@ import {
   removeItem,
   getUserIdFromStorage,
 } from '../../../../shared/utils/utils';
+import { connect } from 'react-redux'
 
 const { Meta } = Card;
 
-export default function UserInfo(props) {
+function UserInfo(props) {
   const [playing, setPlaying] = useState(false);
   useEffect(() => {
     const userId = getUserIdFromStorage();
@@ -31,6 +32,9 @@ export default function UserInfo(props) {
         }
         isXNext = false;//players[1] la O
       });
+      if (props.players.length === 2) {
+        setPlaying(false);//disable button play
+      }
     }
   }, [props.players]);
 
@@ -42,6 +46,7 @@ export default function UserInfo(props) {
         let socket = getSocket();
         socket.emit('join-player-queue', { userId });
       });
+      props.setPlayers([...props.players, userId])
     });
   };
 
@@ -84,3 +89,9 @@ export default function UserInfo(props) {
     </div>
   );
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  setPlayers: (players) => dispatch({ type: 'SET_PLAYERS', players })
+})
+
+export default connect(null, mapDispatchToProps)(UserInfo)

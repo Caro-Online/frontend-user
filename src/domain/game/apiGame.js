@@ -43,12 +43,21 @@ const joinPlayerQueue = (userId, roomId) => {
 
 const joinRoomById = (roomId) => { };
 
+const getCurrentMatchByIdOfRoom = (roomId) => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.get(`${API}/match/room/${roomId}`, config);
+};
+
 const api = {
   getAllRoom,
   getRoomInfoById,
   joinRoom,
   joinPlayerQueue,
   outRoom,
+  getCurrentMatchByIdOfRoom
 };
 
 export default api;

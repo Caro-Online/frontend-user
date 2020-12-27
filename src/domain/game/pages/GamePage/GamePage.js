@@ -36,6 +36,7 @@ import {
   getUserIdFromStorage,
   getTokenFromStorage,
 } from '../../../../shared/utils/utils';
+import { connect } from 'react-redux'
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -52,19 +53,27 @@ const GamePage = (props) => {
   const [history, setHistory] = useState(null);
   const [locationToJump, setLocationToJump] = useState(1);
   const [audiences, setAudiences] = useState([]);
-  const [players, setPlayers] = useState([]);
+  const [match, setMatch] = useState(null)
 
-  // //F5 => Init socket
-  // useEffect(() => {
-  //   socket = getSocket();
-  //   if (!socket) {
-  //     //Nếu k tồn tại socket (do load lại page)
-  //     socket = initSocket(getUserIdFromStorage());
-  //     return () => {
-  //       socket.disconnect();
-  //     };
-  //   }
-  // }, []);
+  //F5 => Init socket 
+  useEffect(() => {
+    socket = getSocket();
+    if (!socket) {
+      //Nếu k tồn tại socket (do load lại page)
+      socket = initSocket(getUserIdFromStorage());
+      return () => {
+        socket.disconnect();
+      };
+    }
+
+  }, []);
+
+  const getCurrentMatch = (idOfRoom) => {
+    api.getCurrentMatchByIdOfRoom(idOfRoom).then(res => {
+      console.log(res.data)
+      setMatch(res.data.match)
+    })
+  }
 
   const addAudience = useCallback(
     (audiences) => {
@@ -79,7 +88,7 @@ const GamePage = (props) => {
       };
       //Nếu đã là player thì ko là audience
       let isAu = true; //
-      players.forEach((player) => {
+      props.players.forEach((player) => {
         if (player._id === userId) {
           isAu = false;
         }
@@ -113,7 +122,7 @@ const GamePage = (props) => {
       .then((response) => {
         setIsLoading(false);
         if (response.success) {
-          setPlayers(response.room.players);
+          props.setPlayers(response.room.players);
           setNumPeopleInRoom(
             response.room.players.length + response.room.audiences.length
           );
@@ -125,6 +134,7 @@ const GamePage = (props) => {
           //add audience, socket new audience
           setAudiences(response.room.audiences); //add to state
           addAudience(response.room.audiences); // add to db
+          getCurrentMatch(response.room._id)
           socket = getSocket();
           console.log('Emit join');
           socket.emit(
@@ -191,12 +201,12 @@ const GamePage = (props) => {
 
   let content = (
     <Row gutter={8}>
-      {console.log(players)}
       <Col className="game-board" span={12}>
         <BoardGame
+          match={match}
           socket={socket}
           room={room}
-          players={players}
+          players={props.players}
           emitHistory={emitHistory}
           locationToJump={locationToJump}
         />
@@ -204,7 +214,7 @@ const GamePage = (props) => {
       <Col span={6}>
         <UserInfo
           roomId={isSuccess ? room.roomId : null}
-          players={isSuccess ? players : null}
+          players={isSuccess ? props.players : null}
           audiences={isSuccess ? audiences : null}
         />
       </Col>
@@ -249,7 +259,7 @@ const GamePage = (props) => {
                     <Statistic value={numPeopleInRoom}></Statistic>
                   </Descriptions.Item>
                   <Descriptions.Item label="Chủ phòng">
-                    <Text strong>{room.players[0].user.name}</Text>
+                    <Text strong>Tam thoi de trong</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>
@@ -326,4 +336,12 @@ const GamePage = (props) => {
   return content;
 };
 
-export default React.memo(GamePage);
+const mapStateToProps = (state) => ({
+  players: state.game.players
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  setPlayers: (players) => dispatch({ type: 'SET_PLAYERS', players })
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(GamePage);

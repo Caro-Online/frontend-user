@@ -38,7 +38,10 @@ function BoardGame(props) {
   // }, [props.locationToJump]);
   useEffect(() => {
     const userId = getUserIdFromStorage();
-    if (props.room) {
+    if (!props.match) {//Nếu chưa có match truyền vào
+      setDisable(true);
+
+    } else if (props.room) {//Nếu có match rồi set các giá trị O,X cho ng chơi
       let isXNext = true;//players[0] là X
       props.players.forEach(player => {
         if (player.user._id === userId) {
@@ -49,7 +52,6 @@ function BoardGame(props) {
         isXNext = false;//players[1] là O
       });
     }
-
     return () => {
       console.log('board game unmounted');
     };
