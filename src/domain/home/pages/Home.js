@@ -104,7 +104,12 @@ const Home = (props) => {
       })
         .then((res) => res.json())
         .then((response) => {
-          history.push(`/room/${response.room.roomId}`);
+          history.push({
+            pathname: `/room/${response.room.roomId}`,
+            state: {
+              fromCreateRoom: true,
+            },
+          });
           setIsLoading(false);
         })
         .catch((error) => {

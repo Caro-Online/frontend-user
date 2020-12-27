@@ -23,11 +23,15 @@ const processResponseWhenLoginSuccess = (dispatch, response) => {
     setUserToStorage(user);
     dispatch(authSuccess(token, user._id));
     dispatch(checkAuthTimeout(3600));
+    dispatch(setAuthRedirectPath());
+    console.log(user._id);
+    dispatch(setSocket(user._id));
   }
 };
 
 const processErrWhenLoginFail = (dispatch, err) => {
   console.log(err.response);
+  console.log(err);
   dispatch(authFail(err.response.data.message));
 };
 
@@ -84,7 +88,6 @@ export const authWithEmailAndPassword = (email, password) => {
     login({ email, password })
       .then((response) => {
         processResponseWhenLoginSuccess(dispatch, response);
-        dispatch(setAuthRedirectPath());
       })
       .catch((err) => {
         processErrWhenLoginFail(dispatch, err);
@@ -98,7 +101,6 @@ export const authWithGoogle = (idToken) => {
     signinWithGoogle(idToken)
       .then((response) => {
         processResponseWhenLoginSuccess(dispatch, response);
-        dispatch(setAuthRedirectPath());
       })
       .catch((err) => {
         processErrWhenLoginFail(dispatch, err);
@@ -112,7 +114,6 @@ export const authWithFacebook = (userId, accessToken) => {
     signinWithFacebook(userId, accessToken)
       .then((response) => {
         processResponseWhenLoginSuccess(dispatch, response);
-        dispatch(setAuthRedirectPath());
       })
       .catch((err) => {
         processErrWhenLoginFail(dispatch, err);
@@ -148,6 +149,9 @@ export const authCheckState = () => {
           .catch((error) => {
             console.log(error);
           });
+        dispatch(setSocket(userId));
+        console.log(userId);
+        console.log('AutoLogin success');
         // let socket = initSocket(getUserIdFromStorage());
         // console.log('Emit user online');
         // socket.emit(
@@ -173,5 +177,18 @@ export const setAuthRedirectPath = () => {
 export const resetAuthRedirectPath = () => {
   return {
     type: actionTypes.RESET_AUTH_REDIRECT_PATH,
+  };
+};
+
+export const setSocket = (userId) => {
+  return {
+    type: actionTypes.SET_SOCKET,
+    userId,
+  };
+};
+
+export const removeSocket = () => {
+  return {
+    type: actionTypes.REMOVE_SOCKET,
   };
 };

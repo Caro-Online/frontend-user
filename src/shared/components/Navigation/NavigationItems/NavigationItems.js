@@ -13,14 +13,14 @@ import {
 const menu = (
   <Menu>
     <Menu.Item>
-      <a
+      <Link
         style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
         rel="noopener noreferrer"
-        href="/logout"
+        to="/logout"
       >
         <LogoutOutlined />
         Đăng xuất
-      </a>
+      </Link>
     </Menu.Item>
   </Menu>
 );

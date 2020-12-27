@@ -23,7 +23,7 @@ function UserInfo(props) {
   const [playing, setPlaying] = useState(false);
   useEffect(() => {
     const userId = getUserIdFromStorage();
-    console.log(props.players)
+    // console.log(props.players)
     if (props.players) {
       let isXNext = true;//players[0] la X
       props.players.forEach(player => {
@@ -76,7 +76,7 @@ function UserInfo(props) {
         </Card>
         <Card style={{ width: '100%', height: '30%' }}>
           <div>Đang xem</div>
-          {console.log(props.audiences)}
+          {/* {console.log(props.audiences)} */}
           <ul>
             {props.audiences ? (
               props.audiences.map((au, i) => <li key={i}>{au.name}</li>)

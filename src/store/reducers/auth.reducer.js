@@ -1,9 +1,11 @@
 import * as actionTypes from '../actions/actionTypes';
 import updateObject from '../../shared/utils/updateObject';
+import { initSocket } from '../../shared/utils/socket.io-client';
 
 const initialState = {
   token: null,
   userId: null,
+  socket: null,
   error: null,
   loading: false,
   authRedirectPath: null,
@@ -27,7 +29,13 @@ const authFail = (state, action) => {
 };
 
 const authLogout = (state, action) => {
-  return updateObject(state, { token: null, userId: null });
+  return updateObject(state, {
+    token: null,
+    userId: null,
+    socket: null,
+    loading: false,
+    authRedirectPath: null,
+  });
 };
 
 const authClearError = (state, action) => {
@@ -40,6 +48,14 @@ const setAuthRedirectPath = (state, action) => {
 
 const resetAuthRedirectPath = (state, action) => {
   return updateObject(state, { authRedirectPath: null });
+};
+
+const setSocket = (state, action) => {
+  return updateObject(state, { socket: initSocket(action.userId) });
+};
+
+const removeSocket = (state, action) => {
+  return updateObject(state, { socket: null });
 };
 
 const reducer = (state = initialState, action) => {
@@ -58,6 +74,10 @@ const reducer = (state = initialState, action) => {
       return setAuthRedirectPath(state, action);
     case actionTypes.RESET_AUTH_REDIRECT_PATH:
       return resetAuthRedirectPath(state, action);
+    case actionTypes.SET_SOCKET:
+      return setSocket(state, action);
+    case actionTypes.REMOVE_SOCKET:
+      return removeSocket(state, action);
     default:
       return state;
   }

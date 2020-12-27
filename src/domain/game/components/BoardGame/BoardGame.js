@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Col } from 'antd';
 
 import Square from './Square';
 
@@ -14,6 +13,8 @@ import { getUserIdFromStorage } from '../../../../shared/utils/utils';
 const boardSize = 17;
 
 function BoardGame(props) {
+  const { match, room, players, setNextPlayer, emitHistory } = props;
+
   const [history, setHistory] = useState([
     {
       squares: Array(boardSize * boardSize).fill(null),
@@ -23,7 +24,6 @@ function BoardGame(props) {
   //const [move, setMove] = useState(null);
   //const [room, setRoom] = useState(null);
   const [disable, setDisable] = useState(true); //disable board and waiting
-  const location = useLocation();
   const reactHistory = useHistory();
 
   //const [stepNumber, setStepNumber] = useState(1);
@@ -38,53 +38,55 @@ function BoardGame(props) {
   // }, [props.locationToJump]);
   useEffect(() => {
     const userId = getUserIdFromStorage();
-    if (!props.match) {//Nếu chưa có match truyền vào
+    if (!match) {
+      //Nếu chưa có match truyền vào
       setDisable(true);
-
-    } else if (props.room) {//Nếu có match rồi set các giá trị O,X cho ng chơi
-      let isXNext = true;//players[0] là X
-      props.players.forEach(player => {
+    } else if (room) {
+      //Nếu có match rồi set các giá trị O,X cho ng chơi
+      let isXNext = true; //players[0] là X
+      players.forEach((player) => {
         if (player.user._id === userId) {
           setXIsNext(isXNext); // X
-          props.setNextPlayer(isXNext);
+          setNextPlayer(isXNext);
           setDisable(!isXNext); // Đi trước
         }
-        isXNext = false;//players[1] là O
+        isXNext = false; //players[1] là O
       });
     }
     return () => {
-      console.log('board game unmounted');
+      // console.log('board game unmounted');
     };
-  }, [props.room]);
+  }, [room, match, players, setNextPlayer]);
 
   useEffect(() => {
-    if (props.socket) {
-      props.socket.on('receive-move', (message) => {
+    let socket = getSocket();
+    if (socket) {
+      socket.on('receive-move', (message) => {
         const { move } = message;
-        console.log(message);
+        // console.log(message);
 
         //Bỏ step number để làm chơi 2 người
         // const newHistory = history.slice(0, stepNumber + 1);
         //const current = newHistory[newHistory.length - 1];
 
         let newHistory = history.slice();
-        console.log('history-before-on-socket:' + newHistory.length);
+        // console.log('history-before-on-socket:' + newHistory.length);
         let current = newHistory[newHistory.length - 1];
         let squares = current.squares.slice();
         squares[move.index] = move.value;
         setHistory([...newHistory, { squares: squares }]);
         setDisable(false);
         setXIsNext(move.value === 'O' ? true : false);
-        props.setNextPlayer(move.value === 'O' ? true : false);
-
+        setNextPlayer(move.value === 'O' ? true : false);
       });
     }
-  }, [history]);
+  }, [history, setNextPlayer]);
 
   const sendMove = (i) => {
-    props.socket.emit('send-move', {
+    let socket = getSocket();
+    socket.emit('send-move', {
       move: { index: i, value: xIsNext ? 'X' : 'O' },
-      roomId: props.room.roomId,
+      roomId: room.roomId,
     });
   };
 
@@ -113,11 +115,11 @@ function BoardGame(props) {
       squares[i] = xIsNext ? 'X' : 'O';
       setHistory(newHistory.concat([{ squares: squares }]));
       // * Need to improve
-      props.emitHistory(history);
+      emitHistory(history);
       //setStepNumber(newHistory.length);
       // TODO: Alert comment disable in here
       setXIsNext(!xIsNext);
-      props.setNextPlayer(!xIsNext);
+      setNextPlayer(!xIsNext);
       //Send move to socket
       sendMove(i);
     }
@@ -145,12 +147,12 @@ function BoardGame(props) {
 
   const squares = history[history.length - 1].squares;
   let winner = null;
-  console.log('winner: ' + winner);
+  // console.log('winner: ' + winner);
   let status;
-  if (props.room) {
-    if (props.room.rule === 'BLOCK_TWO_SIDE') {
+  if (room) {
+    if (room.rule === 'BLOCK_TWO_SIDE') {
       winner = gameService.checkWin2(squares, boardSize);
-    } else if (props.room.rule === 'NOT_BLOCK_TWO_SIDE') {
+    } else if (room.rule === 'NOT_BLOCK_TWO_SIDE') {
       winner = gameService.checkWin(squares, boardSize);
     }
   }
@@ -168,11 +170,11 @@ function BoardGame(props) {
         <div>{status}</div>
       </div>
       <table className="board">
-        {console.log(reactHistory)}
+        {/* {console.log(reactHistory)} */}
         <tbody>{renderBoard()}</tbody>
       </table>
-      {console.log(xIsNext + ' ' + disable)}
-      {console.log('history-client:' + history.length)}
+      {/* {console.log(xIsNext + ' ' + disable)} */}
+      {/* {console.log('history-client:' + history.length)} */}
     </div>
   );
 }

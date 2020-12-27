@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { Layout } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
@@ -29,21 +29,24 @@ const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 
 const { Content } = Layout;
 const App = (props) => {
-  const { isAuthenticated, onTryAutoLogin } = props;
+  const { isAuthenticated, onTryAutoLogin, socket } = props;
 
   useEffect(() => {
     onTryAutoLogin();
   }, [onTryAutoLogin]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      let socket;
-      socket = initSocket(getUserIdFromStorage());
+    if (socket) {
+      // let socket;
+      // socket = initSocket(getUserIdFromStorage());
+      // console.log('Init socket');
       return () => {
         socket.disconnect();
       };
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, socket]);
+
+  console.log(isAuthenticated);
 
   let routes = (
     <Switch>
@@ -61,17 +64,20 @@ const App = (props) => {
         component={UpdatePassword}
       />
       <Route path="/" exact component={Home} />
-      <PrivateRoute path="/logout" exact>
-        <Logout />
-      </PrivateRoute>
-      <PrivateRoute path="/rooms" exact>
-        <Rooms />
-      </PrivateRoute>
-      <PrivateRoute path="/room/:roomId" exact>
-        <GamePage />
-      </PrivateRoute>
+      {/* <Redirect to="/" /> */}
     </Switch>
   );
+  if (isAuthenticated) {
+    routes = (
+      <Switch>
+        <Route path="/" exact component={Home} />
+        <Route path="/logout" exact component={Logout} />
+        <Route path="/rooms" exact component={Rooms} />
+        <Route path="/room/:roomId" exact component={GamePage} />
+        <Redirect to="/" />
+      </Switch>
+    );
+  }
 
   return (
     <Layout>
@@ -97,6 +103,7 @@ const App = (props) => {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.token !== null,
+    socket: state.auth.socket,
   };
 };
 
