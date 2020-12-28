@@ -23,19 +23,19 @@ function UserInfo(props) {
   const [playing, setPlaying] = useState(false);
   useEffect(() => {
     const userId = getUserIdFromStorage();
-    console.log(props.players)
-    if (props.players) {
-      let isXNext = true;//players[0] la X
-      props.players.forEach(player => {
-        if (userId === player.user._id) {
-          setPlaying(isXNext);
-        }
-        isXNext = false;//players[1] la O
-      });
-      if (props.players.length === 2) {
-        setPlaying(false);//disable button play
-      }
-    }
+    // if (props.players) {
+    //   let isXNext = true;//players[0] la X
+    //   props.players.forEach(player => {
+    //     if (userId === player.user._id) {
+    //       setPlaying(isXNext);
+    //     }
+    //     isXNext = false;//players[1] la O
+    //   });
+    //   if (props.players.length === 2) {
+    //     setPlaying(false);//disable button play
+    //   }
+    // }
+
   }, [props.players]);
 
   const joinPlayerQueueHanler = () => {
@@ -76,7 +76,6 @@ function UserInfo(props) {
         </Card>
         <Card style={{ width: '100%', height: '30%' }}>
           <div>Đang xem</div>
-          {console.log(props.audiences)}
           <ul>
             {props.audiences ? (
               props.audiences.map((au, i) => <li key={i}>{au.name}</li>)
@@ -90,8 +89,12 @@ function UserInfo(props) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  setPlayers: (players) => dispatch({ type: 'SET_PLAYERS', players })
-})
+// const mapDispatchToProps = (dispatch) => ({
+//   setXIsNext: (xIsNext) => dispatch({ type: 'SET_XISNEXT', xIsNext }),
+//   setPlayers: (players) => dispatch({ type: 'SET_PLAYER', players })
+// })
+// const mapStateToProps = (state) => ({
+//   xIsNext: state.game.xIsNext
+// })
 
-export default connect(null, mapDispatchToProps)(UserInfo)
+export default (UserInfo)

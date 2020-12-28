@@ -3,22 +3,27 @@ import {
     updateNextPlayer
 } from '../actions/game.action'
 const initialState = {
-    nextPlayer: true,
-    players: []
+    players: [],
+    history: [],
+    xIsNext: true
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.NEXT_PLAYER:
-            console.log(action)
-            return {
-                ...state,
-                nextPlayer: action.nextPlayer
-            }
         case 'SET_PLAYERS':
             return {
                 ...state,
                 players: action.players
+            }
+        case 'SET_HISTORY':
+            return {
+                ...state,
+                history: action.history
+            }
+        case 'SET_XISNEXT':
+            return {
+                ...state,
+                xIsNext: action.xIsNext
             }
         default:
             return state;

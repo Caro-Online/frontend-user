@@ -47,19 +47,22 @@ const GamePage = (props) => {
   const { roomId } = params;
   const [isLoading, setIsLoading] = useState(false);
   const [room, setRoom] = useState(null);
+  const [roomID, setRoomId] = useState(null);
   const [numPeopleInRoom, setNumPeopleInRoom] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [history, setHistory] = useState(null);
   const [locationToJump, setLocationToJump] = useState(1);
   const [audiences, setAudiences] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [players, setPlayers] = useState(null)
+  const [xIsNext, setXIsNext] = useState(true);
   const [match, setMatch] = useState(null)
 
-  //F5 => Init socket 
+  //F5 => Init socket - Don't comment it
   useEffect(() => {
     socket = getSocket();
     if (!socket) {
-      //Nếu k tồn tại socket (do load lại page)
+      //Nếu k tồn tại socket (do load lại page) .
       socket = initSocket(getUserIdFromStorage());
       return () => {
         socket.disconnect();
@@ -69,10 +72,18 @@ const GamePage = (props) => {
   }, []);
 
   const getCurrentMatch = (idOfRoom) => {
-    api.getCurrentMatchByIdOfRoom(idOfRoom).then(res => {
-      console.log(res.data)
-      setMatch(res.data.match)
-    })
+    console.log("get curr match")
+    api.getCurrentMatchByIdOfRoom(idOfRoom)
+      .then(res => {//lần promise thứ 2 k set state đc
+        console.log(res.data)// k hiển thị
+        if (res.data.match) {
+          setMatch(res.data.match)
+          setHistory(res.data.match.history);
+          setXIsNext(res.data.match.xIsNext);
+          setPlayers(res.data.match.players)
+        }
+
+      })
   }
 
   const addAudience = useCallback(
@@ -80,7 +91,6 @@ const GamePage = (props) => {
       const userId = getUserIdFromStorage();
       const join = () => {
         api.joinRoom(userId, params.roomId).then((res) => {
-          console.log('join success');
           getUserById(userId).then((res) => {
             setAudiences(addItem(audiences, res.data.user));
           });
@@ -102,7 +112,6 @@ const GamePage = (props) => {
   const removeAudience = useCallback(() => {
     const userId = getUserIdFromStorage();
     api.outRoom(userId, params.roomId).then((res) => {
-      console.log('out success');
       if (res.data) {
         if (socket) socket.emit('audience-out', { userId });
       }
@@ -111,37 +120,32 @@ const GamePage = (props) => {
 
   const getRoomInfo = useCallback(() => {
     setIsLoading(true);
-    fetch(`${API}/room/${roomId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getTokenFromStorage()}`,
-      },
-    })
-      .then((res) => res.json())
+    api.getRoomInfoById(roomId)
       .then((response) => {
         setIsLoading(false);
-        if (response.success) {
-          props.setPlayers(response.room.players);
+        if (response.data) {
+          console.log(response.data.room.players)
+          getCurrentMatch(response.data.room._id)
           setNumPeopleInRoom(
-            response.room.players.length + response.room.audiences.length
+            response.data.room.players.length + response.data.room.audiences.length
           );
           setRoom(() => {
             // response.room.players = undefined;
-            return response.room;
+            return response.data.room;
           });
+          setRoomId(response.data.room.roomId)
           setIsSuccess(true);
           //add audience, socket new audience
-          setAudiences(response.room.audiences); //add to state
-          addAudience(response.room.audiences); // add to db
-          getCurrentMatch(response.room._id)
+          setAudiences(response.data.room.audiences); //add to state
+          addAudience(response.data.room.audiences); // add to db
+          //get cur match
+
           socket = getSocket();
-          console.log('Emit join');
           socket.emit(
             'join',
             {
               userId: getUserIdFromStorage(),
-              roomId: response.room.roomId,
+              roomId: response.data.room.roomId,
             },
             (error) => {
               if (error) {
@@ -153,32 +157,27 @@ const GamePage = (props) => {
           //socketListener();
         } else {
           setNotFound(true);
-          setIsSuccess(false);
         }
       })
       .catch((error) => {
-        console.log(error);
         setIsLoading(false);
-        setIsSuccess(false);
       });
   }, [roomId, addAudience]);
 
   useEffect(() => {
     let socket = getSocket();
     socket.on('new-audience', (message) => {
-      console.log(message.userId);
       getUserById(message.userId).then((res) => {
-        console.log(res);
         setAudiences([...audiences, res.data.user]);
       });
     });
     socket.on('audience-out-update', (message) => {
-      console.log(message.userId);
       setAudiences(removeItem(audiences, message.userId));
     });
   }, [audiences]);
 
   useEffect(() => {
+
     getRoomInfo();
     return () => {
       removeAudience();
@@ -191,7 +190,6 @@ const GamePage = (props) => {
   }, [getRoomInfo, removeAudience]);
 
   const emitHistory = useCallback((history) => {
-    console.log(`emitHistory`, history);
     setHistory(history);
   }, []);
 
@@ -201,21 +199,27 @@ const GamePage = (props) => {
 
   let content = (
     <Row gutter={8}>
+      {console.log(props.history)}
+      {console.log("gamepage")}
       <Col className="game-board" span={12}>
         <BoardGame
-          match={match}
+          matchId={match ? match._id : null}
           socket={socket}
           room={room}
-          players={props.players}
-          emitHistory={emitHistory}
-          locationToJump={locationToJump}
+          history={history}
+          setHistory={setHistory}
+          xIsNext={xIsNext}
+          setXIsNext={setXIsNext}
+          players={players}
+          setPlayers={setPlayers}
         />
       </Col>
       <Col span={6}>
         <UserInfo
-          roomId={isSuccess ? room.roomId : null}
-          players={isSuccess ? props.players : null}
-          audiences={isSuccess ? audiences : null}
+          roomId={roomID}
+          players={players}
+          setPlayers={setPlayers}
+          audiences={audiences}
         />
       </Col>
       <Col span={6}>
@@ -336,12 +340,17 @@ const GamePage = (props) => {
   return content;
 };
 
-const mapStateToProps = (state) => ({
-  players: state.game.players
-})
+// const mapStateToProps = (state) => ({
+//   players: state.game.players,
+//   xIsNext: state.game.xIsNext,
+//   history: state.game.history
+// })
 
-const mapDispatchToProps = (dispatch) => ({
-  setPlayers: (players) => dispatch({ type: 'SET_PLAYERS', players })
-})
+// const mapDispatchToProps = (dispatch) => ({
+//   setPlayers: (players) => dispatch({ type: 'SET_PLAYERS', players }),
+//   setXIsNext: (xIsNext) => dispatch({ type: 'SET_XISNEXT', xIsNext }),
+//   setHistory: (history) => dispatch({ type: 'SET_HISTORY', history })
+// })
 
-export default connect(mapStateToProps, mapDispatchToProps)(GamePage);
+//export default connect(mapStateToProps, mapDispatchToProps)(GamePage);
+export default (GamePage);

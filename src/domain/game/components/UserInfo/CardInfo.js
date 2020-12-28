@@ -8,7 +8,7 @@ const { Meta } = Card;
 function CardInfo(props) {
 
     const isPlayingStatus = () => {
-        if (props.nextPlayer === props.x) {
+        if (props.xIsNext === props.x) {
             console.log(props.nextPlayer)
             return <StarFilled style={{ color: "yellow" }} />
         }
@@ -31,6 +31,6 @@ function CardInfo(props) {
     )
 }
 const mapStateToProps = (state) => ({
-    nextPlayer: state.game.nextPlayer
+    xIsNext: state.game.xIsNext
 })
 export default connect(mapStateToProps)(CardInfo)
