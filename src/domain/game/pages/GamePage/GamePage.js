@@ -39,23 +39,33 @@ const { Title, Text } = Typography;
 
 const GamePage = (props) => {
   const params = useParams();
+  const location = useLocation();
   const { roomId } = params;
-  const { setPlayers, players, socket } = props;
+  const { socket } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [room, setRoom] = useState(null);
+  const [roomID, setRoomId] = useState(null);
   const [numPeopleInRoom, setNumPeopleInRoom] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [history, setHistory] = useState(null);
-  const location = useLocation();
   const [locationToJump, setLocationToJump] = useState(1);
   const [audiences, setAudiences] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [players, setPlayers] = useState(null);
+  const [xIsNext, setXIsNext] = useState(true);
   const [match, setMatch] = useState(null);
 
   const getCurrentMatch = (idOfRoom) => {
+    console.log('get curr match');
     api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
-      console.log(res.data);
-      setMatch(res.data.match);
+      //lần promise thứ 2 k set state đc
+      console.log(res.data); // k hiển thị
+      if (res.data.match) {
+        setMatch(res.data.match);
+        setHistory(res.data.match.history);
+        setXIsNext(res.data.match.xIsNext);
+        setPlayers(res.data.match.players);
+      }
     });
   };
 
@@ -114,6 +124,7 @@ const GamePage = (props) => {
         setAudiences(room.audiences);
         setNumPeopleInRoom(room.players.length + room.audiences.length);
         setRoom(room);
+        setRoomId(room.roomId);
         setIsSuccess(true);
         getCurrentMatch(room._id);
         if (socket) {
@@ -176,7 +187,6 @@ const GamePage = (props) => {
   }, [getRoomInfo, addAudience, location, socket]);
 
   const emitHistory = useCallback((history) => {
-    console.log(`emitHistory`, history);
     setHistory(history);
   }, []);
 
@@ -186,20 +196,27 @@ const GamePage = (props) => {
 
   let content = (
     <Row gutter={8}>
+      {console.log(props.history)}
+      {console.log('gamepage')}
       <Col className="game-board" span={12}>
         <BoardGame
-          match={match}
+          matchId={match ? match._id : null}
+          socket={socket}
           room={room}
+          history={history}
+          setHistory={setHistory}
+          xIsNext={xIsNext}
+          setXIsNext={setXIsNext}
           players={players}
-          emitHistory={emitHistory}
-          locationToJump={locationToJump}
+          setPlayers={setPlayers}
         />
       </Col>
       <Col span={6}>
         <UserInfo
-          roomId={isSuccess ? room.roomId : null}
-          players={isSuccess ? players : null}
-          audiences={isSuccess ? audiences : null}
+          roomId={roomID}
+          players={players}
+          setPlayers={setPlayers}
+          audiences={audiences}
         />
       </Col>
       <Col span={6}>
@@ -321,12 +338,7 @@ const GamePage = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  players: state.game.players,
   socket: state.auth.socket,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  setPlayers: (players) => dispatch({ type: 'SET_PLAYERS', players }),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(GamePage);
+export default connect(mapStateToProps)(GamePage);
