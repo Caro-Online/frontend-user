@@ -8,8 +8,8 @@ const { Meta } = Card;
 function CardInfo(props) {
 
     const isPlayingStatus = () => {
+
         if (props.xIsNext === props.x) {
-            console.log(props.nextPlayer)
             return <StarFilled style={{ color: "yellow" }} />
         }
         return <div></div>
@@ -25,12 +25,11 @@ function CardInfo(props) {
                 title={props.user ? props.user.name : ''}
                 description={props.user ? 'Đang đợi ...' : 'Còn trống'}
             />
+            {console.log(props.user)}
             <img path="../../shared/assets/images/x.png" />
             {isPlayingStatus()}
         </Card>
     )
 }
-const mapStateToProps = (state) => ({
-    xIsNext: state.game.xIsNext
-})
-export default connect(mapStateToProps)(CardInfo)
+
+export default (CardInfo)

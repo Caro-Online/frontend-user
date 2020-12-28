@@ -20,34 +20,30 @@ import { connect } from 'react-redux'
 const { Meta } = Card;
 
 function UserInfo(props) {
-  const [playing, setPlaying] = useState(false);
+  const [showButton, setShowButton] = useState(true);
   useEffect(() => {
     const userId = getUserIdFromStorage();
-    // if (props.players) {
-    //   let isXNext = true;//players[0] la X
-    //   props.players.forEach(player => {
-    //     if (userId === player.user._id) {
-    //       setPlaying(isXNext);
-    //     }
-    //     isXNext = false;//players[1] la O
-    //   });
-    //   if (props.players.length === 2) {
-    //     setPlaying(false);//disable button play
-    //   }
-    // }
+    if (props.players.length === 1) {
+      if (props.players[0].user._id === userId) {
+        setShowButton(false)
+      }
+    }
+    if (props.players.length === 2) setShowButton(false)
 
   }, [props.players]);
 
-  const joinPlayerQueueHanler = () => {
+  const joinPlayerQueueHanler = async () => {
     const userId = getUserIdFromStorage();
-    api.joinPlayerQueue(userId, props.roomId).then((res) => {
-      getUserById(userId).then((res) => {
-        setPlaying(true);
-        let socket = getSocket();
-        socket.emit('join-player-queue', { userId });
-      });
-      props.setPlayers([...props.players, userId])
-    });
+    const res = await api.joinPlayerQueue(userId, props.roomId)
+    const { success } = res;
+    if (success) {
+      const res = await getUserById(userId);
+      let socket = getSocket();
+      socket.emit('join-player-queue', { userId });
+      props.setPlayers([...props.players, res.data.user])
+      setShowButton(false)
+      api.createMatch(props.idOfRoom, [...props.players, res.data.user])
+    }
   };
 
   //ĐƯA RA NGOÀI BOARD GAME
@@ -63,11 +59,11 @@ function UserInfo(props) {
   return (
     <div className="user-info">
       <Card className="card-group">
-        <CardInfo user={props.players ? props.players[0].user : null} x={true} />
-        <CardInfo user={props.players ? props.players[1] ? props.players[1].user : null : null} x={false} />
+        <CardInfo user={props.players.length > 0 ? props.players[0].user : null} x={true} xIsNext={props.xIsNext} />
+        <CardInfo user={props.players.length > 1 ? props.players[1].user : null} x={false} xIsNext={props.xIsNext} />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
           <Button
-            style={{ display: playing ? 'none' : '' }}
+            style={{ display: showButton ? '' : 'none' }}
             type="primary"
             onClick={joinPlayerQueueHanler}
           >

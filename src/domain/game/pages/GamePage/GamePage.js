@@ -44,14 +44,14 @@ const GamePage = (props) => {
   const { socket } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [room, setRoom] = useState(null);
-  const [roomID, setRoomId] = useState(null);
+  const [idOfRoom, setIdOfRoom] = useState(null);
   const [numPeopleInRoom, setNumPeopleInRoom] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [locationToJump, setLocationToJump] = useState(1);
   const [audiences, setAudiences] = useState([]);
   const [history, setHistory] = useState([]);
-  const [players, setPlayers] = useState(null);
+  const [players, setPlayers] = useState([]);
   const [xIsNext, setXIsNext] = useState(true);
   const [match, setMatch] = useState(null);
 
@@ -60,14 +60,17 @@ const GamePage = (props) => {
     api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
       //lần promise thứ 2 k set state đc
       console.log(res.data); // k hiển thị
-      if (res.data.match) {
+      if (res.data.success) {
         setMatch(res.data.match);
         setHistory(res.data.match.history);
         setXIsNext(res.data.match.xIsNext);
-        setPlayers(res.data.match.players);
+        //setPlayers(res.data.match.players);
+        return true
       }
+      return false;
     });
   };
+
 
   const addAudience = useCallback(
     async () => {
@@ -121,10 +124,10 @@ const GamePage = (props) => {
       setIsLoading(false);
       if (success) {
         setPlayers(room.players);
+        setIdOfRoom(room._id);
         setAudiences(room.audiences);
         setNumPeopleInRoom(room.players.length + room.audiences.length);
         setRoom(room);
-        setRoomId(room.roomId);
         setIsSuccess(true);
         getCurrentMatch(room._id);
         if (socket) {
@@ -186,6 +189,8 @@ const GamePage = (props) => {
     };
   }, [getRoomInfo, addAudience, location, socket]);
 
+
+
   const emitHistory = useCallback((history) => {
     setHistory(history);
   }, []);
@@ -208,15 +213,16 @@ const GamePage = (props) => {
           xIsNext={xIsNext}
           setXIsNext={setXIsNext}
           players={players}
-          setPlayers={setPlayers}
         />
       </Col>
       <Col span={6}>
         <UserInfo
-          roomId={roomID}
+          roomId={roomId}
+          idOfRoom={idOfRoom}
           players={players}
           setPlayers={setPlayers}
           audiences={audiences}
+          xIsNext={xIsNext}
         />
       </Col>
       <Col span={6}>

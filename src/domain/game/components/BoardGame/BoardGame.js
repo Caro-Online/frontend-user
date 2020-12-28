@@ -22,7 +22,7 @@ function BoardGame(props) {
   const setPlaying = (xIsNext) => {
     const userId = getUserIdFromStorage();
     console.log(props.players)
-    if (props.players) {
+    if (props.players.length === 2) {
       console.log(props.players)
       if ((props.players[0].user._id === userId && xIsNext) ||
         (props.players[1].user._id === userId && !xIsNext)) {
