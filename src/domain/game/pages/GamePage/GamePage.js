@@ -39,6 +39,7 @@ const { Title, Text } = Typography;
 
 const GamePage = (props) => {
   const params = useParams();
+  const location = useLocation();
   const { roomId } = params;
   const { socket } = props;
   const [isLoading, setIsLoading] = useState(false);

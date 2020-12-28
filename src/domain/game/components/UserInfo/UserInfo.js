@@ -76,10 +76,6 @@ function UserInfo(props) {
         </Card>
         <Card style={{ width: '100%', height: '30%' }}>
           <div>Đang xem</div>
-<<<<<<< HEAD
-          {/* {console.log(props.audiences)} */}
-=======
->>>>>>> origin/create-match
           <ul>
             {props.audiences ? (
               props.audiences.map((au, i) => <li key={i}>{au.name}</li>)
