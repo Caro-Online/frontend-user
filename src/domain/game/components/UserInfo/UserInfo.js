@@ -15,35 +15,53 @@ import {
   removeItem,
   getUserIdFromStorage,
 } from '../../../../shared/utils/utils';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 const { Meta } = Card;
 
-function UserInfo(props) {
+function UserInfo({
+  socket,
+  roomId,
+  idOfRoom,
+  match,
+  setMatch,
+  players,
+  setPlayers,
+  audiences,
+  setAudiences,
+  setNumPeopleInRoom,
+  setRoom,
+}) {
   const [showButton, setShowButton] = useState(true);
+
   useEffect(() => {
     const userId = getUserIdFromStorage();
-    if (props.players.length === 1) {
-      if (props.players[0].user._id === userId) {
-        setShowButton(false)
+    if (players.length === 1) {
+      if (players[0].user._id === userId) {
+        setShowButton(false);
       }
     }
-    if (props.players.length === 2) setShowButton(false)
-
-  }, [props.players]);
+    if (players.length === 2) setShowButton(false);
+  }, [players]);
 
   const joinPlayerQueueHanler = async () => {
     const userId = getUserIdFromStorage();
-    const res = await api.joinPlayerQueue(userId, props.roomId)
-    if (res.data.success) {
-      console.log("join queue success")
-      const res = await getUserById(userId);
-      const resp = await api.createMatch(props.idOfRoom, [...props.players, res.data.user])
-      props.setPlayers([...props.players, { user: res.data.user, isReady: true }])
-      props.setMatch(resp.data.match)
-      setShowButton(false)
-      props.socket.emit('join-players-queue', { userId });
-      props.socket.emit('match-start', { matchId: resp.data.match._id });
+    const res = await api.joinPlayerQueue(userId, roomId);
+    const { success, room } = res.data;
+    if (success) {
+      console.log('join queue success');
+      setAudiences(room.audiences);
+      setNumPeopleInRoom(room.audiences.length + room.players.length);
+      setRoom(room);
+      const response1 = await getUserById(userId);
+      const resp = await api.createMatch(idOfRoom, [
+        ...players,
+        response1.data.user,
+      ]);
+      setPlayers([...players, { user: response1.data.user, isReady: true }]);
+      setMatch(resp.data.match);
+      setShowButton(false);
+      socket.emit('match-start', { matchId: resp.data.match._id });
     }
   };
 
@@ -61,15 +79,17 @@ function UserInfo(props) {
     <div className="user-info">
       <Card className="card-group">
         <CardInfo
-          player={props.players.length > 0 ? props.players[0] : null}
+          player={players.length > 0 ? players[0] : null}
           x={true}
-          xIsNext={props.match ? props.match.xIsNext : null}
-          isPlaying={props.match ? true : false} />
+          xIsNext={match ? match.xIsNext : null}
+          isPlaying={match ? true : false}
+        />
         <CardInfo
-          player={props.players.length > 1 ? props.players[1] : null}
+          player={players.length > 1 ? players[1] : null}
           x={false}
-          xIsNext={props.match ? props.match.xIsNext : null}
-          isPlaying={props.match ? true : false} />
+          xIsNext={match ? match.xIsNext : null}
+          isPlaying={match ? true : false}
+        />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
           <Button
             style={{ display: showButton ? '' : 'none' }}
@@ -82,11 +102,11 @@ function UserInfo(props) {
         <Card style={{ width: '100%', height: '30%' }}>
           <div>Đang xem</div>
           <ul>
-            {props.audiences ? (
-              props.audiences.map((au, i) => <li key={i}>{au.name}</li>)
+            {audiences ? (
+              audiences.map((au, i) => <li key={i}>{au.name}</li>)
             ) : (
-                <li>Không có khán giả</li>
-              )}
+              <li>Không có khán giả</li>
+            )}
           </ul>
         </Card>
       </Card>
@@ -102,4 +122,4 @@ function UserInfo(props) {
 //   xIsNext: state.game.xIsNext
 // })
 
-export default (UserInfo)
+export default UserInfo;

@@ -55,65 +55,37 @@ const GamePage = (props) => {
   const [xIsNext, setXIsNext] = useState(null);
   const [match, setMatch] = useState(null);
 
-  const getCurrentMatch = useCallback((idOfRoom) => {
-    console.log('get curr match');
-    api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
-      console.log(res.data);
-      if (res.data.success) {
-        setMatch(res.data.match);
-        // setHistory(res.data.match.history);
-        // setXIsNext(res.data.match.xIsNext);
-        //setPlayers(res.data.match.players);
-        return true
-      }
-      return false;
-    });
-  }, [roomId]);
-
+  const getCurrentMatch = useCallback(
+    (idOfRoom) => {
+      console.log('get curr match');
+      api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
+        console.log(res.data);
+        if (res.data.success) {
+          setMatch(res.data.match);
+          // setHistory(res.data.match.history);
+          // setXIsNext(res.data.match.xIsNext);
+          //setPlayers(res.data.match.players);
+          return true;
+        }
+        return false;
+      });
+    },
+    [roomId]
+  );
 
   const addAudience = useCallback(
     async () => {
       const userId = getUserIdFromStorage();
       try {
         await api.joinRoom(userId, roomId);
-        // getUserById(userId).then((res) => {
-        //   setAudiences(addItem(audiences, res.data.user));
-        // });
       } catch (error) {
         console.log(error);
         alert(error);
       }
-
-      // const join = () => {
-      //   api.joinRoom(userId, roomId).then((res) => {
-      //     // getUserById(userId).then((res) => {
-      //     //   setAudiences(addItem(audiences, res.data.user));
-      //     // });
-      //   });
-      // };
-      // //Nếu đã là player thì ko là audience
-      // let isAu = true; //
-      // roomPlayers.forEach((player) => {
-      //   if (player.user._id === userId) {
-      //     isAu = false;
-      //   }
-      // });
-      // if (isAu) join(); //tham gia vào audience
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [roomId]
   );
-
-  // const removeAudience = useCallback(() => {
-  //   const userId = getUserIdFromStorage();
-  //   api.outRoom(userId, roomId).then((res) => {
-  //     console.log('out success');
-  //     if (res.data) {
-  //       let socket = getSocket();
-  //       socket.emit('audience-out', { userId });
-  //     }
-  //   });
-  // }, [roomId]);
 
   const getRoomInfo = useCallback(async () => {
     setIsLoading(true);
@@ -160,6 +132,7 @@ const GamePage = (props) => {
     // });
     if (socket) {
       socket.on('room-data', ({ room }) => {
+        console.log(room);
         setAudiences(room.audiences);
         setRoom(room);
         setNumPeopleInRoom(room.players.length + room.audiences.length);
@@ -170,17 +143,17 @@ const GamePage = (props) => {
 
   useEffect(() => {
     socket.on('match-start-update', async ({ matchId }) => {
-      console.log('match-start-update')
-      const res = await api.getMatchById(matchId)
-      console.log(matchId)
+      console.log('match-start-update');
+      const res = await api.getMatchById(matchId);
+      console.log(matchId);
       setMatch(res.data.match);
-    })
-    socket.on('join-players-queue-update', async ({ userId }) => {
-      console.log('join-players-queue-update')
-      const res = await getUserById(userId)
-      setPlayers([...players, { user: res.data.user, isReady: true }])
-    })
-  }, [players])
+    });
+    // socket.on('join-players-queue-update', async ({ userId }) => {
+    //   console.log('join-players-queue-update');
+    //   const res = await getUserById(userId);
+    //   setPlayers([...players, { user: res.data.user, isReady: true }]);
+    // });
+  }, [players, socket]);
 
   useEffect(() => {
     async function doStuff() {
@@ -201,8 +174,6 @@ const GamePage = (props) => {
       }
     };
   }, [getRoomInfo, addAudience, location, socket]);
-
-
 
   const emitHistory = useCallback((history) => {
     setHistory(history);
@@ -239,6 +210,9 @@ const GamePage = (props) => {
           players={players}
           setPlayers={setPlayers}
           audiences={audiences}
+          setAudiences={setAudiences}
+          setNumPeopleInRoom={setNumPeopleInRoom}
+          setRoom={setRoom}
         />
       </Col>
       <Col span={6}>
