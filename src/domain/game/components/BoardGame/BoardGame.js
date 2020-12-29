@@ -14,20 +14,18 @@ import { forEach, map } from 'lodash';
 
 const boardSize = 17;
 
-function BoardGame(props) {
+const BoardGame = React.memo((props) => {
   const [disable, setDisable] = useState(true); //disable board and waiting
   const reactHistory = useHistory();
+  const [rerender, setRerender] = useState(false)
 
   //Check đúng userId và lượt đi, mở ô cho đánh
   const setPlaying = (xIsNext) => {
     const userId = getUserIdFromStorage();
-    console.log(props.match)
     if (props.players.length === 2 && xIsNext !== null) {
-      console.log(props.players)
       if ((props.players[0].user._id === userId && xIsNext) ||
         (props.players[1].user._id === userId && !xIsNext)) {
         setDisable(false);
-        console.log("setPlaying call")
       }
     }
   }
@@ -47,13 +45,11 @@ function BoardGame(props) {
   }, [props.match])
 
   useEffect(() => {
-    console.log("useEffect boardgame call")
     receiveMove()
     if (props.match) {
       setPlaying(props.match.xIsNext)
     }
   }, [props.match])
-
 
 
   const sendMove = (i) => {
@@ -75,21 +71,21 @@ function BoardGame(props) {
     return null;
   }
 
-  const checkWinSquare = (i) => {
+  const checkWinSquare = useCallback((i) => {
     if (props.match) {
       props.match.winRaw.forEach(sq => {
         return sq === i
       })
     }
     return false
-  }
+  }, [props.match])
 
   const renderSquare = (i) => {
     return (
       <Square
         key={i}
         index={i}
-        isWin={checkWinSquare(i)}
+        winRaw={checkWinSquare(i)}
         value={getSquareValue(i)}
         onClick={() => handleSquareClick(i)}
         disable={disable}
@@ -101,6 +97,7 @@ function BoardGame(props) {
 
 
   const handleSquareClick = async (i) => {
+
     if (props.match) {
       const newHistory = props.match.history.slice();
       //Nếu bước chưa tồn tại
@@ -145,7 +142,6 @@ function BoardGame(props) {
   return (
     <div>
       <div className="game-info">
-        {console.log("boardgame")}
         {console.log(props.match)}
         {console.log("xIsNext: " + (props.match ? props.match.xIsNext : null) + " disable: " + disable)}
         <div>{status}</div>
@@ -155,7 +151,7 @@ function BoardGame(props) {
       </table>
     </div>
   );
-}
+})
 
 // const mapStateToProps = (state) => ({
 //   players: state.game.players,

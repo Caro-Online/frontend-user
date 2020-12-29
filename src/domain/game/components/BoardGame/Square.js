@@ -4,7 +4,6 @@ import x from '../../../../shared/assets/images/x.png'
 import o from '../../../../shared/assets/images/o.png'
 export default function Square(props) {
     const handleClick = () => {
-
         if (!props.disable) {
             console.log("click");
             props.setDisable(!props.disable)
@@ -24,7 +23,7 @@ export default function Square(props) {
     }
 
     return (
-        <td className="square" onClick={handleClick} style={{ backgroundColor: props.isWin ? 'yellow' : '' }}>
+        <td className="square" onClick={handleClick} style={{ backgroundColor: props.isWin ? "blue" : '' }}>
             { returnItem()}
         </td >
     );

@@ -37,7 +37,7 @@ import { connect } from 'react-redux';
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
 
-const GamePage = (props) => {
+const GamePage = React.memo((props) => {
   const params = useParams();
   const location = useLocation();
   const { roomId } = params;
@@ -53,9 +53,7 @@ const GamePage = (props) => {
   const [winRaw, setWinRaw] = useState(null)
 
   const getCurrentMatch = useCallback((idOfRoom) => {
-    console.log('get curr match');
     api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
-      console.log(res.data);
       if (res.data.success) {
         setMatch(res.data.match);
         // setHistory(res.data.match.history);
@@ -164,13 +162,10 @@ const GamePage = (props) => {
 
   useEffect(() => {
     socket.on('match-start-update', async ({ matchId }) => {
-      console.log('match-start-update')
       const res = await api.getMatchById(matchId)
-      console.log(matchId)
       setMatch(res.data.match);
     })
     socket.on('join-players-queue-update', async ({ userId }) => {
-      console.log('join-players-queue-update')
       const res = await getUserById(userId)
       setPlayers([...players, { user: res.data.user, isReady: true }])
     })
@@ -178,7 +173,7 @@ const GamePage = (props) => {
   }, [players])
   useEffect(() => {
     socket.on('have-winner', async ({ check }) => {
-      console.log(check)
+      console.log({ ...match })
       if (check) {
         setMatch({ ...match, winner: check.winner, winRaw: check.winRaw })
       }
@@ -212,8 +207,6 @@ const GamePage = (props) => {
 
   let content = (
     <Row gutter={8}>
-      {console.log(props.history)}
-      {console.log('gamepage')}
       <Col className="game-board" span={12}>
         <BoardGame
           match={match}
@@ -351,7 +344,7 @@ const GamePage = (props) => {
   }
 
   return content;
-};
+});
 
 const mapStateToProps = (state) => ({
   socket: state.auth.socket,
