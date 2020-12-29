@@ -10,7 +10,7 @@ import gameService from './gameService';
 import { updateNextPlayer } from '../../../../store/actions/game.action';
 import { getUserIdFromStorage } from '../../../../shared/utils/utils';
 import api from '../../apiGame'
-import { map } from 'lodash';
+import { forEach, map } from 'lodash';
 
 const boardSize = 17;
 
@@ -59,7 +59,7 @@ function BoardGame(props) {
   const sendMove = (i) => {
     props.socket.emit('send-move', {
       move: i,
-      roomId: props.room.roomId,
+      matchId: props.match._id,
     });
   };
 
@@ -75,11 +75,21 @@ function BoardGame(props) {
     return null;
   }
 
+  const checkWinSquare = (i) => {
+    if (props.match) {
+      props.match.winRaw.forEach(sq => {
+        return sq === i
+      })
+    }
+    return false
+  }
+
   const renderSquare = (i) => {
     return (
       <Square
         key={i}
         index={i}
+        isWin={checkWinSquare(i)}
         value={getSquareValue(i)}
         onClick={() => handleSquareClick(i)}
         disable={disable}
@@ -90,14 +100,14 @@ function BoardGame(props) {
 
 
 
-  const handleSquareClick = (i) => {
+  const handleSquareClick = async (i) => {
     if (props.match) {
       const newHistory = props.match.history.slice();
       //Nếu bước chưa tồn tại
       if (!getSquareValue(i)) {
         newHistory.push(i)
         props.setMatch({ ...props.match, history: newHistory, xIsNext: !props.match.xIsNext })
-        api.addMove(props.match._id, i, !props.xIsNext)//add to db
+        await api.addMove(props.match._id, i, !props.xIsNext)//add to db
         sendMove(i);//socket emit
       }
     }
@@ -124,7 +134,6 @@ function BoardGame(props) {
     return board;
   };
 
-  let winner = null;
   let status;
   // if (props.room) {
   //   if (props.room.rule === 'BLOCK_TWO_SIDE') {
@@ -133,18 +142,11 @@ function BoardGame(props) {
   //     winner = gameService.checkWin(squares, boardSize);
   //   }
   // }
-  if (winner) {
-    if (winner === 'D') {
-    } else {
-      status = 'Winner: ' + winner;
-    }
-  } else {
-    status = 'Next player: ' + (props.match ? props.match.xIsNext ? 'X' : 'O' : null);
-  }
   return (
     <div>
       <div className="game-info">
         {console.log("boardgame")}
+        {console.log(props.match)}
         {console.log("xIsNext: " + (props.match ? props.match.xIsNext : null) + " disable: " + disable)}
         <div>{status}</div>
       </div>

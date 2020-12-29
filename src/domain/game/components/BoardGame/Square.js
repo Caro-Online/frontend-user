@@ -24,7 +24,7 @@ export default function Square(props) {
     }
 
     return (
-        <td className="square" onClick={handleClick} >
+        <td className="square" onClick={handleClick} style={{ backgroundColor: props.isWin ? 'yellow' : '' }}>
             { returnItem()}
         </td >
     );
