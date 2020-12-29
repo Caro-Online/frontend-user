@@ -37,7 +37,7 @@ import { connect } from 'react-redux';
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
 
-const GamePage = (props) => {
+const GamePage = React.memo((props) => {
   const params = useParams();
   const location = useLocation();
   const { roomId } = params;
@@ -46,32 +46,25 @@ const GamePage = (props) => {
   const [room, setRoom] = useState(null);
   const [idOfRoom, setIdOfRoom] = useState(null);
   const [numPeopleInRoom, setNumPeopleInRoom] = useState(0);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [locationToJump, setLocationToJump] = useState(1);
   const [audiences, setAudiences] = useState([]);
-  const [history, setHistory] = useState([]);
   const [players, setPlayers] = useState([]);
-  const [xIsNext, setXIsNext] = useState(null);
   const [match, setMatch] = useState(null);
+  const [winRaw, setWinRaw] = useState(null)
 
-  const getCurrentMatch = useCallback(
-    (idOfRoom) => {
-      console.log('get curr match');
-      api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
-        console.log(res.data);
-        if (res.data.success) {
-          setMatch(res.data.match);
-          // setHistory(res.data.match.history);
-          // setXIsNext(res.data.match.xIsNext);
-          //setPlayers(res.data.match.players);
-          return true;
-        }
-        return false;
-      });
-    },
-    [roomId]
-  );
+  const getCurrentMatch = useCallback((idOfRoom) => {
+    api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
+      if (res.data.success) {
+        setMatch(res.data.match);
+        // setHistory(res.data.match.history);
+        // setXIsNext(res.data.match.xIsNext);
+        //setPlayers(res.data.match.players);
+        return true
+      }
+      return false;
+    });
+  }, [roomId]);
+
 
   const addAudience = useCallback(
     async () => {
@@ -99,7 +92,6 @@ const GamePage = (props) => {
         setAudiences(room.audiences);
         setNumPeopleInRoom(room.players.length + room.audiences.length);
         setRoom(room);
-        setIsSuccess(true);
         getCurrentMatch(room._id);
         if (socket) {
           socket.emit(
@@ -117,12 +109,10 @@ const GamePage = (props) => {
         }
       } else {
         setNotFound(true);
-        setIsSuccess(false);
       }
     } catch (error) {
       console.log(error);
       setIsLoading(false);
-      setIsSuccess(false);
     }
   }, [roomId, setPlayers, socket]);
 
@@ -143,17 +133,23 @@ const GamePage = (props) => {
 
   useEffect(() => {
     socket.on('match-start-update', async ({ matchId }) => {
-      console.log('match-start-update');
-      const res = await api.getMatchById(matchId);
-      console.log(matchId);
+      const res = await api.getMatchById(matchId)
       setMatch(res.data.match);
-    });
-    // socket.on('join-players-queue-update', async ({ userId }) => {
-    //   console.log('join-players-queue-update');
-    //   const res = await getUserById(userId);
-    //   setPlayers([...players, { user: res.data.user, isReady: true }]);
-    // });
-  }, [players, socket]);
+    })
+    socket.on('join-players-queue-update', async ({ userId }) => {
+      const res = await getUserById(userId)
+      setPlayers([...players, { user: res.data.user, isReady: true }])
+    })
+
+  }, [players])
+  useEffect(() => {
+    socket.on('have-winner', async ({ check }) => {
+      console.log({ ...match })
+      if (check) {
+        setMatch({ ...match, winner: check.winner, winRaw: check.winRaw })
+      }
+    })
+  }, [match])
 
   useEffect(() => {
     async function doStuff() {
@@ -175,9 +171,6 @@ const GamePage = (props) => {
     };
   }, [getRoomInfo, addAudience, location, socket]);
 
-  const emitHistory = useCallback((history) => {
-    setHistory(history);
-  }, []);
 
   // const jumpTo = useCallback((move) => {
   //   setLocationToJump(move);
@@ -185,18 +178,12 @@ const GamePage = (props) => {
 
   let content = (
     <Row gutter={8}>
-      {console.log(props.history)}
-      {console.log('gamepage')}
       <Col className="game-board" span={12}>
         <BoardGame
           match={match}
           setMatch={setMatch}
           socket={socket}
           room={room}
-          // history={history}
-          // setHistory={setHistory}
-          // xIsNext={xIsNext}
-          // setXIsNext={setXIsNext}
           players={players}
         />
       </Col>
@@ -331,7 +318,7 @@ const GamePage = (props) => {
   }
 
   return content;
-};
+});
 
 const mapStateToProps = (state) => ({
   socket: state.auth.socket,
