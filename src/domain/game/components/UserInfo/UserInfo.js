@@ -35,14 +35,15 @@ function UserInfo(props) {
   const joinPlayerQueueHanler = async () => {
     const userId = getUserIdFromStorage();
     const res = await api.joinPlayerQueue(userId, props.roomId)
-    const { success } = res;
-    if (success) {
+    if (res.data.success) {
+      console.log("join queue success")
       const res = await getUserById(userId);
-      let socket = getSocket();
-      socket.emit('join-player-queue', { userId });
-      props.setPlayers([...props.players, res.data.user])
+      const resp = await api.createMatch(props.idOfRoom, [...props.players, res.data.user])
+      props.setPlayers([...props.players, { user: res.data.user, isReady: true }])
+      props.setMatch(resp.data.match)
       setShowButton(false)
-      api.createMatch(props.idOfRoom, [...props.players, res.data.user])
+      props.socket.emit('join-players-queue', { userId });
+      props.socket.emit('match-start', { matchId: resp.data.match._id });
     }
   };
 
@@ -59,8 +60,16 @@ function UserInfo(props) {
   return (
     <div className="user-info">
       <Card className="card-group">
-        <CardInfo user={props.players.length > 0 ? props.players[0].user : null} x={true} xIsNext={props.xIsNext} />
-        <CardInfo user={props.players.length > 1 ? props.players[1].user : null} x={false} xIsNext={props.xIsNext} />
+        <CardInfo
+          player={props.players.length > 0 ? props.players[0] : null}
+          x={true}
+          xIsNext={props.match ? props.match.xIsNext : null}
+          isPlaying={props.match ? true : false} />
+        <CardInfo
+          player={props.players.length > 1 ? props.players[1] : null}
+          x={false}
+          xIsNext={props.match ? props.match.xIsNext : null}
+          isPlaying={props.match ? true : false} />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
           <Button
             style={{ display: showButton ? '' : 'none' }}

@@ -21,8 +21,8 @@ function BoardGame(props) {
   //Check đúng userId và lượt đi, mở ô cho đánh
   const setPlaying = (xIsNext) => {
     const userId = getUserIdFromStorage();
-    console.log(props.players)
-    if (props.players.length === 2) {
+    console.log(props.match)
+    if (props.players.length === 2 && xIsNext !== null) {
       console.log(props.players)
       if ((props.players[0].user._id === userId && xIsNext) ||
         (props.players[1].user._id === userId && !xIsNext)) {
@@ -32,28 +32,27 @@ function BoardGame(props) {
     }
   }
 
-  const receiveMove = () => {
-    if (props.socket) {
+  const receiveMove = useCallback(() => {
+    if (props.socket && props.match) {
       props.socket.on('receive-move', (message) => {
         const { move } = message;
-        const newHistory = props.history.slice();
+        const newHistory = props.match.history.slice();
         newHistory.push(move)
-        props.setHistory(newHistory)
-        props.setXIsNext(!props.xIsNext)
-        setPlaying(!props.xIsNext);//check userId vaf xIsNext
+        props.setMatch({ ...props.match, history: newHistory, xIsNext: !props.match.xIsNext })
+        // props.setHistory(newHistory)
+        // props.setXIsNext(!props.xIsNext)
+        setPlaying(!props.match.xIsNext);//check userId vaf xIsNext
       });
     }
-  }
-
-
-  useEffect(() => {
-    receiveMove()
-  }, [props.history])
+  }, [props.match])
 
   useEffect(() => {
     console.log("useEffect boardgame call")
-    setPlaying(props.xIsNext)
-  }, [])
+    receiveMove()
+    if (props.match) {
+      setPlaying(props.match.xIsNext)
+    }
+  }, [props.match])
 
 
 
@@ -65,9 +64,9 @@ function BoardGame(props) {
   };
 
   const getSquareValue = (i) => {
-    if (props.history) {
-      for (let k = 0; k < props.history.length; k++) {
-        if (props.history[k] === i) {
+    if (props.match) {
+      for (let k = 0; k < props.match.history.length; k++) {
+        if (props.match.history[k] === i) {
           return k % 2 === 0 ? 'X' : 'O';
         }
       }
@@ -92,15 +91,17 @@ function BoardGame(props) {
 
 
   const handleSquareClick = (i) => {
-    const newHistory = props.history.slice();
-    //Nếu bước chưa tồn tại
-    newHistory.push(i)
-    props.setHistory(newHistory)
-    if (!getSquareValue(i)) {
-      api.addMove(props.matchId, i, !props.xIsNext)
-      props.setXIsNext(!props.xIsNext);
-      sendMove(i);//socket
+    if (props.match) {
+      const newHistory = props.match.history.slice();
+      //Nếu bước chưa tồn tại
+      if (!getSquareValue(i)) {
+        newHistory.push(i)
+        props.setMatch({ ...props.match, history: newHistory, xIsNext: !props.match.xIsNext })
+        api.addMove(props.match._id, i, !props.xIsNext)//add to db
+        sendMove(i);//socket emit
+      }
     }
+
   };
 
   const renderBoardRow = (i) => {
@@ -138,13 +139,13 @@ function BoardGame(props) {
       status = 'Winner: ' + winner;
     }
   } else {
-    status = 'Next player: ' + (props.xIsNext ? 'X' : 'O');
+    status = 'Next player: ' + (props.match ? props.match.xIsNext ? 'X' : 'O' : null);
   }
   return (
     <div>
       <div className="game-info">
         {console.log("boardgame")}
-        {console.log("xIsNext: " + props.xIsNext + " disable: " + disable)}
+        {console.log("xIsNext: " + (props.match ? props.match.xIsNext : null) + " disable: " + disable)}
         <div>{status}</div>
       </div>
       <table className="board">

@@ -52,24 +52,23 @@ const GamePage = (props) => {
   const [audiences, setAudiences] = useState([]);
   const [history, setHistory] = useState([]);
   const [players, setPlayers] = useState([]);
-  const [xIsNext, setXIsNext] = useState(true);
+  const [xIsNext, setXIsNext] = useState(null);
   const [match, setMatch] = useState(null);
 
-  const getCurrentMatch = (idOfRoom) => {
+  const getCurrentMatch = useCallback((idOfRoom) => {
     console.log('get curr match');
     api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
-      //lần promise thứ 2 k set state đc
-      console.log(res.data); // k hiển thị
+      console.log(res.data);
       if (res.data.success) {
         setMatch(res.data.match);
-        setHistory(res.data.match.history);
-        setXIsNext(res.data.match.xIsNext);
+        // setHistory(res.data.match.history);
+        // setXIsNext(res.data.match.xIsNext);
         //setPlayers(res.data.match.players);
         return true
       }
       return false;
     });
-  };
+  }, [roomId]);
 
 
   const addAudience = useCallback(
@@ -170,6 +169,20 @@ const GamePage = (props) => {
   }, [audiences, setPlayers, socket]);
 
   useEffect(() => {
+    socket.on('match-start-update', async ({ matchId }) => {
+      console.log('match-start-update')
+      const res = await api.getMatchById(matchId)
+      console.log(matchId)
+      setMatch(res.data.match);
+    })
+    socket.on('join-players-queue-update', async ({ userId }) => {
+      console.log('join-players-queue-update')
+      const res = await getUserById(userId)
+      setPlayers([...players, { user: res.data.user, isReady: true }])
+    })
+  }, [players])
+
+  useEffect(() => {
     async function doStuff() {
       // Nếu là người tạo phòng thì ko add vào audiences , còn lại add vào audiences của phòng trong db
       if (!location.state) {
@@ -205,24 +218,27 @@ const GamePage = (props) => {
       {console.log('gamepage')}
       <Col className="game-board" span={12}>
         <BoardGame
-          matchId={match ? match._id : null}
+          match={match}
+          setMatch={setMatch}
           socket={socket}
           room={room}
-          history={history}
-          setHistory={setHistory}
-          xIsNext={xIsNext}
-          setXIsNext={setXIsNext}
+          // history={history}
+          // setHistory={setHistory}
+          // xIsNext={xIsNext}
+          // setXIsNext={setXIsNext}
           players={players}
         />
       </Col>
       <Col span={6}>
         <UserInfo
+          socket={socket}
           roomId={roomId}
           idOfRoom={idOfRoom}
+          match={match}
+          setMatch={setMatch}
           players={players}
           setPlayers={setPlayers}
           audiences={audiences}
-          xIsNext={xIsNext}
         />
       </Col>
       <Col span={6}>

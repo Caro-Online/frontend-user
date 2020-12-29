@@ -67,6 +67,14 @@ const createMatch = (roomId, players) => {
   return axios.post(`${API}/match`, { roomId, players }, config);
 }
 
+const getMatchById = (matchId) => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.get(`${API}/match/${matchId}`, config);
+}
+
 const api = {
   getAllRoom,
   getRoomInfoById,
@@ -75,7 +83,8 @@ const api = {
   outRoom,
   getCurrentMatchByIdOfRoom,
   addMove,
-  createMatch
+  createMatch,
+  getMatchById
 };
 
 export default api;

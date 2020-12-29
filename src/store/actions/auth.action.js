@@ -17,7 +17,7 @@ import {
 const processResponseWhenLoginSuccess = (dispatch, response) => {
   if (response.data) {
     const { token, user } = response.data;
-    const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+    const expirationDate = new Date(new Date().getTime() + 3600 * 1000 * 5);
     setTokenToStorage(token);
     setExpirationDateToStorage(expirationDate);
     setUserToStorage(user);
