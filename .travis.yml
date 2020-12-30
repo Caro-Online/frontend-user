@@ -12,15 +12,15 @@ before_install:
   - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
 
 script:
-  - docker build -t vanhiep778/caro-admin -f Dockerfile .
-  - docker tag vanhiep778/caro-admin registry.heroku.com/admin-caroo/web
+  - docker build -t vanhiep778/caro-game -f Dockerfile .
+  - docker tag vanhiep778/caro-game registry.heroku.com/caro-gamee/web
 
 deploy:
   provider: script
   script:
     # push to dockerhub & heroku
-    docker push vanhiep778/caro-admin;
-    docker push registry.heroku.com/admin-caroo/web;
-    heroku container:release web --app admin-caroo
+    docker push vanhiep778/caro-game;
+    docker push registry.heroku.com/caro-gamee/web;
+    heroku container:release web --app caro-gamee
   on:
     branch: main
