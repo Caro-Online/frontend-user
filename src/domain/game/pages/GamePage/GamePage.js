@@ -50,7 +50,7 @@ const GamePage = React.memo((props) => {
   const [audiences, setAudiences] = useState([]);
   const [players, setPlayers] = useState([]);
   const [match, setMatch] = useState(null);
-  const [winRaw, setWinRaw] = useState(null)
+  const [winRaw, setWinRaw] = useState(null);
 
   const getCurrentMatch = useCallback((idOfRoom) => {
     api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
@@ -59,18 +59,21 @@ const GamePage = React.memo((props) => {
         // setHistory(res.data.match.history);
         // setXIsNext(res.data.match.xIsNext);
         //setPlayers(res.data.match.players);
-        return true
+        return true;
       }
       return false;
     });
-  }, [roomId]);
-
+  }, []);
 
   const addAudience = useCallback(
     async () => {
       const userId = getUserIdFromStorage();
       try {
-        await api.joinRoom(userId, roomId);
+        const response = await api.joinRoom(userId, roomId);
+        const { success } = response.data;
+        if (!success) {
+          setNotFound(true);
+        }
       } catch (error) {
         console.log(error);
         alert(error);
@@ -87,11 +90,11 @@ const GamePage = React.memo((props) => {
       const { room, success } = response.data;
       setIsLoading(false);
       if (success) {
-        setPlayers(room.players);
-        setIdOfRoom(room._id);
         setAudiences(room.audiences);
-        setNumPeopleInRoom(room.players.length + room.audiences.length);
+        setIdOfRoom(room._id);
         setRoom(room);
+        setNumPeopleInRoom(room.players.length + room.audiences.length);
+        setPlayers(room.players);
         getCurrentMatch(room._id);
         if (socket) {
           socket.emit(
@@ -114,16 +117,14 @@ const GamePage = React.memo((props) => {
       console.log(error);
       setIsLoading(false);
     }
-  }, [roomId, setPlayers, socket]);
+  }, [roomId, socket, getCurrentMatch]);
 
   useEffect(() => {
-    // socket.on('new-audience', ({ user }) => {
-    //   setAudiences([...audiences, user]);
-    // });
     if (socket) {
       socket.on('room-data', ({ room }) => {
         console.log(room);
         setAudiences(room.audiences);
+        setIdOfRoom(room._id);
         setRoom(room);
         setNumPeopleInRoom(room.players.length + room.audiences.length);
         setPlayers(room.players);
@@ -133,23 +134,19 @@ const GamePage = React.memo((props) => {
 
   useEffect(() => {
     socket.on('match-start-update', async ({ matchId }) => {
-      const res = await api.getMatchById(matchId)
+      const res = await api.getMatchById(matchId);
       setMatch(res.data.match);
-    })
-    socket.on('join-players-queue-update', async ({ userId }) => {
-      const res = await getUserById(userId)
-      setPlayers([...players, { user: res.data.user, isReady: true }])
-    })
+    });
+  }, [players, socket]);
 
-  }, [players])
   useEffect(() => {
     socket.on('have-winner', async ({ check }) => {
-      console.log({ ...match })
+      console.log({ ...match });
       if (check) {
-        setMatch({ ...match, winner: check.winner, winRaw: check.winRaw })
+        setMatch({ ...match, winner: check.winner, winRaw: check.winRaw });
       }
-    })
-  }, [match])
+    });
+  }, [match, socket]);
 
   useEffect(() => {
     async function doStuff() {
@@ -170,7 +167,6 @@ const GamePage = React.memo((props) => {
       }
     };
   }, [getRoomInfo, addAudience, location, socket]);
-
 
   // const jumpTo = useCallback((move) => {
   //   setLocationToJump(move);

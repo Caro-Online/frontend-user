@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 import {
   PageHeader,
   Button,
@@ -39,7 +41,7 @@ import api from '../../apiGame';
 
 const { Title } = Typography;
 
-const Rooms = (props) => {
+const Rooms = ({ socket }) => {
   let searchInput = '';
   const [rooms, setRooms] = useState([]);
   const [waitingRooms, setWaitingRooms] = useState([]);
@@ -53,6 +55,28 @@ const Rooms = (props) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const history = useHistory();
+
+  const calculateNumPeople = useCallback((room) => {
+    let numPeople = [];
+    for (let i = 0; i < room.players.length; i++) {
+      numPeople.push('1');
+    }
+    for (let i = 0; i < room.audiences.length; i++) {
+      numPeople.push('1');
+    }
+    return numPeople;
+  }, []);
+
+  const setPlayingAndWaitingRooms = useCallback((updatedRooms) => {
+    const waitingRooms = updatedRooms.filter((room) => {
+      return room.status === 'WAITING';
+    });
+    const playingRooms = updatedRooms.filter((room) => {
+      return room.status === 'PLAYING';
+    });
+    setWaitingRooms(waitingRooms);
+    setPlayingRooms(playingRooms);
+  }, []);
 
   const onClickJoinRoomByIdHandler = useCallback(() => {
     setOpenInputRoomIdModal(true);
@@ -89,6 +113,38 @@ const Rooms = (props) => {
   );
 
   useEffect(() => {
+    if (socket) {
+      // Lắng nghe sự kiện room-update để update lại thông tin phòng
+      socket.on('room-update', ({ room }) => {
+        let roomNeedToUpdate = rooms.find(
+          (eachRoom) => eachRoom.roomId === room.roomId
+        );
+        roomNeedToUpdate = room;
+        const indexRoomNeedToUpdate = rooms.findIndex(
+          (eachRoom) => eachRoom.roomId === room.roomId
+        );
+        roomNeedToUpdate.numPeople = calculateNumPeople(roomNeedToUpdate);
+        roomNeedToUpdate.key = room._id;
+
+        let updatedRooms = _.cloneDeep(rooms);
+        updatedRooms[indexRoomNeedToUpdate] = roomNeedToUpdate;
+        setRooms(updatedRooms);
+        setPlayingAndWaitingRooms(updatedRooms);
+      });
+      //Lắng nghe sự kiện new-room để thêm phòng mới
+      socket.on('new-room', ({ room }) => {
+        let addedRoom = { ...room };
+        addedRoom.numPeople = calculateNumPeople(room);
+        addedRoom.key = room._id;
+        let updatedRooms = _.cloneDeep(rooms);
+        updatedRooms = [...updatedRooms, addedRoom];
+        setRooms(updatedRooms);
+        setPlayingAndWaitingRooms(updatedRooms);
+      });
+    }
+  }, [socket, rooms, calculateNumPeople, setPlayingAndWaitingRooms]);
+
+  useEffect(() => {
     setIsLoading(true);
     api
       .getAllRoom()
@@ -96,31 +152,21 @@ const Rooms = (props) => {
         setIsLoading(false);
         if (res.data.success) {
           const rooms = res.data.rooms.map((room) => {
-            let numPeople = [];
-            for (let i = 0; i < room.players.length; i++) {
-              numPeople.push('1');
-            }
-            for (let i = 0; i < room.audiences.length; i++) {
-              numPeople.push('1');
-            }
-            return { ...room, key: room._id, numPeople: numPeople };
+            return {
+              ...room,
+              key: room._id,
+              numPeople: calculateNumPeople(room),
+            };
           });
           setRooms(rooms);
-          const waitingRooms = rooms.filter((room) => {
-            return room.status === 'WAITING';
-          });
-          const playingRooms = rooms.filter((room) => {
-            return room.status === 'PLAYING';
-          });
-          setWaitingRooms(waitingRooms);
-          setPlayingRooms(playingRooms);
+          setPlayingAndWaitingRooms(rooms);
         }
       })
       .catch((error) => {
         console.log(error);
         setIsLoading(false);
       });
-  }, []);
+  }, [calculateNumPeople, setPlayingAndWaitingRooms]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -504,4 +550,8 @@ const Rooms = (props) => {
   return content;
 };
 
-export default Rooms;
+const mapStateToProps = (state) => ({
+  socket: state.auth.socket,
+});
+
+export default connect(mapStateToProps)(Rooms);

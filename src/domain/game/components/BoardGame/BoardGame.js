@@ -71,21 +71,21 @@ const BoardGame = React.memo((props) => {
     return null;
   }
 
-  const checkWinSquare = useCallback((i) => {
-    if (props.match) {
-      props.match.winRaw.forEach(sq => {
-        return sq === i
-      })
-    }
-    return false
-  }, [props.match])
+  // const checkWinSquare = useCallback((i) => {
+  //   if (props.match) {
+  //     props.match.winRaw.forEach(sq => {
+  //       return sq === i
+  //     })
+  //   }
+  //   return false
+  // }, [props.match])
 
   const renderSquare = (i) => {
     return (
       <Square
         key={i}
         index={i}
-        winRaw={checkWinSquare(i)}
+        // winRaw={checkWinSquare(i)}
         value={getSquareValue(i)}
         onClick={() => handleSquareClick(i)}
         disable={disable}
