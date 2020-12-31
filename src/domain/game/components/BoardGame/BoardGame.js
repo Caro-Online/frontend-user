@@ -41,12 +41,6 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
   // }, [match, setMatch, setPlaying, socket]);
 
   useEffect(() => {
-    if (match) {
-      setPlaying(match.xIsNext);
-    }
-  }, [match, setPlaying]);
-
-  useEffect(() => {
     if (socket && match) {
       socket.on('receive-move', (message) => {
         const { move, socketId } = message;
@@ -59,7 +53,10 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
         setPlaying(!match.xIsNext); //check userId vaf xIsNext
       });
     }
-  }, [socket]);
+    if (match) {
+      setPlaying(match.xIsNext);
+    }
+  }, [match, setMatch, setPlaying, socket]);
 
   const sendMove = (i) => {
     socket.emit('send-move', {
