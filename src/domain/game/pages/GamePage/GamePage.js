@@ -141,9 +141,9 @@ const GamePage = React.memo((props) => {
 
   useEffect(() => {
     socket.on('have-winner', async ({ check }) => {
-      console.log({ ...match });
       if (check) {
         setMatch({ ...match, winner: check.winner, winRaw: check.winRaw });
+        console.log({ ...match, winner: check.winner, winRaw: check.winRaw });
       }
     });
   }, [match, socket]);

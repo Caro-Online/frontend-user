@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Card, Avatar, Button } from 'antd';
 import {
   EditOutlined,
@@ -44,7 +44,7 @@ function UserInfo({
     if (players.length === 2) setShowButton(false);
   }, [players]);
 
-  const joinPlayerQueueHanler = async () => {
+  const joinPlayerQueueHanler = useCallback(async () => {
     const userId = getUserIdFromStorage();
     const res = await api.joinPlayerQueue(userId, roomId);
     const { success, room } = res.data;
@@ -63,7 +63,17 @@ function UserInfo({
       setShowButton(false);
       socket.emit('match-start', { matchId: resp.data.match._id });
     }
-  };
+  }, [
+    idOfRoom,
+    players,
+    roomId,
+    setAudiences,
+    setMatch,
+    setNumPeopleInRoom,
+    setPlayers,
+    setRoom,
+    socket,
+  ]);
 
   //ĐƯA RA NGOÀI BOARD GAME
   // useEffect(() => {
@@ -122,4 +132,4 @@ function UserInfo({
 //   xIsNext: state.game.xIsNext
 // })
 
-export default UserInfo;
+export default React.memo(UserInfo);
