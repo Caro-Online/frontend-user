@@ -44,7 +44,7 @@ function UserInfo({
     if (players.length === 2) setShowButton(false);
   }, [players]);
 
-  const joinPlayerQueueHanler = useCallback(async () => {
+  const joinPlayerQueueHandler = useCallback(async () => {
     const userId = getUserIdFromStorage();
     const res = await api.joinPlayerQueue(userId, roomId);
     const { success, room } = res.data;
@@ -59,8 +59,10 @@ function UserInfo({
         response1.data.user,
       ]);
       setPlayers([...players, { user: response1.data.user, isReady: true }]);
+      console.log('Match', resp.data.match);
       setMatch(resp.data.match);
       setShowButton(false);
+      // Thằng vào sau emit match start
       socket.emit('match-start', { matchId: resp.data.match._id });
     }
   }, [
@@ -104,7 +106,7 @@ function UserInfo({
           <Button
             style={{ display: showButton ? '' : 'none' }}
             type="primary"
-            onClick={joinPlayerQueueHanler}
+            onClick={joinPlayerQueueHandler}
           >
             Vào chơi
           </Button>

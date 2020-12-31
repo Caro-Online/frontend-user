@@ -122,7 +122,6 @@ const GamePage = React.memo((props) => {
   useEffect(() => {
     if (socket) {
       socket.on('room-data', ({ room }) => {
-        console.log(room);
         setAudiences(room.audiences);
         setIdOfRoom(room._id);
         setRoom(room);
@@ -139,14 +138,13 @@ const GamePage = React.memo((props) => {
     });
   }, [players, socket]);
 
+  //
   useEffect(() => {
-    socket.on('have-winner', async ({ check }) => {
-      if (check) {
-        setMatch({ ...match, winner: check.winner, winRaw: check.winRaw });
-        console.log({ ...match, winner: check.winner, winRaw: check.winRaw });
-      }
+    socket.on('have-winner', async ({ updatedMatch }) => {
+      setMatch({ ...updatedMatch });
     });
-  }, [match, socket]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
 
   useEffect(() => {
     async function doStuff() {

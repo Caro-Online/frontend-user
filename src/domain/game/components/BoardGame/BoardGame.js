@@ -18,7 +18,6 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
   const [disable, setDisable] = useState(true); //disable board and waiting
   const reactHistory = useHistory();
   const [rerender, setRerender] = useState(false);
-  console.log(2);
 
   //Check đúng userId và lượt đi, mở ô cho đánh
   const setPlaying = useCallback(
@@ -36,46 +35,50 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
     [players]
   );
 
-  // const receiveMove = useCallback(() => {
-
-  // }, [match, setMatch, setPlaying, socket]);
+  useEffect(() => {
+    // Nếu match start thì lắng nghe sự kiện receive-move
+    socket.on('match-start', async ({ matchId }) => {
+      console.log('In here');
+      socket.on('receive-move', ({ updatedMatch }) => {
+        console.log('ReceiveMove');
+        // Cập nhật lại match cho các client trong room
+        setMatch({ ...updatedMatch });
+        setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket, setMatch, setPlaying]);
 
   useEffect(() => {
-    if (socket && match) {
-      socket.on('receive-move', (message) => {
-        const { move, socketId } = message;
-        console.log(move, socketId);
-        const newHistory = match.history.slice();
-        newHistory.push(move);
-        setMatch({ ...match, history: newHistory, xIsNext: !match.xIsNext });
-        // setHistory(newHistory)
-        // setXIsNext(!xIsNext)
-        setPlaying(!match.xIsNext); //check userId vaf xIsNext
-      });
-    }
     if (match) {
       setPlaying(match.xIsNext);
     }
   }, [match, setMatch, setPlaying, socket]);
 
-  const sendMove = (i) => {
-    socket.emit('send-move', {
-      move: i,
-      matchId: match._id,
-    });
-  };
+  const emitSendMove = useCallback(
+    () => {
+      socket.emit('send-move', {
+        matchId: match._id,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [socket, match]
+  );
 
-  const getSquareValue = (i) => {
-    if (match) {
-      for (let k = 0; k < match.history.length; k++) {
-        if (match.history[k] === i) {
-          return k % 2 === 0 ? 'X' : 'O';
+  const getSquareValue = useCallback(
+    (i) => {
+      if (match) {
+        for (let k = 0; k < match.history.length; k++) {
+          if (match.history[k] === i) {
+            return k % 2 === 0 ? 'X' : 'O';
+          }
         }
+        return null;
       }
       return null;
-    }
-    return null;
-  };
+    },
+    [match]
+  );
 
   // const checkWinSquare = useCallback((i) => {
   //   if (match) {
@@ -108,7 +111,7 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
         newHistory.push(i);
         setMatch({ ...match, history: newHistory, xIsNext: !match.xIsNext });
         await api.addMove(match._id, i, !match.xIsNext); //add to db
-        sendMove(i); //socket emit
+        emitSendMove(i); //socket emit
       }
     }
   };
