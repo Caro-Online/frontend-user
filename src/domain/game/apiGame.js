@@ -90,6 +90,14 @@ const getMatchById = (matchId) => {
   return axios.get(`${API}/match/${matchId}`, config);
 };
 
+const updateRoomStatus = (roomId, status) => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.put(`${API}/room/${roomId}/update-status`, { status }, config);
+};
+
 const api = {
   getAllRoom,
   getRoomInfoById,
@@ -101,6 +109,7 @@ const api = {
   createMatch,
   getMatchById,
   getRandomRoom,
+  updateRoomStatus,
 };
 
 export default api;
