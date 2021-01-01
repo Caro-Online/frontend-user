@@ -47,9 +47,6 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
           setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
         }
       });
-      socket.on('have-winner', ({ updatedMatch }) => {
-        setMatch({ ...updatedMatch });
-      });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, setMatch, setPlaying]);
