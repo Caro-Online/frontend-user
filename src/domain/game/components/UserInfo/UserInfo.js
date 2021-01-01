@@ -95,6 +95,11 @@ function UserInfo({
     }
     return null;
   };
+  //Bắt sự kiện click bắt đầu khi kết thúc ván
+  const onStartClick = () => {
+    const userId = getUserIdFromStorage();
+    api.updatePlayerIsReady(roomId, userId, true);
+  }
 
   return (
     <div className="user-info">
@@ -106,6 +111,8 @@ function UserInfo({
           isPlaying={match ? true : false}
           timeExp={match ? (match.timeExp ? match.timeExp : null) : null}
           matchId={match ? match._id : null}
+          isMatchEnd={match ? (match.winner ? true : false) : false}
+          onStartClick={onStartClick}
         />
         <CardInfo
           player={players.length > 1 ? players[1] : null}
@@ -114,6 +121,9 @@ function UserInfo({
           isPlaying={match ? true : false}
           timeExp={match ? (match.timeExp ? match.timeExp : null) : null}
           matchId={match ? match._id : null}
+          roomId={roomId}
+          isMatchEnd={match ? (match.winner ? true : false) : false}
+          onStartClick={onStartClick}
         />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
           <Button
@@ -130,8 +140,8 @@ function UserInfo({
             {audiences ? (
               audiences.map((au, i) => <li key={i}>{au.name}</li>)
             ) : (
-              <li>Không có khán giả</li>
-            )}
+                <li>Không có khán giả</li>
+              )}
           </ul>
         </Card>
       </Card>

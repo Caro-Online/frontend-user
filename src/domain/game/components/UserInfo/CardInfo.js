@@ -1,17 +1,19 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import moment from 'moment';
-import { Col, Card, Avatar, Statistic } from 'antd';
+import { Col, Card, Avatar, Statistic, Button } from 'antd';
 import api from '../../apiGame';
 
 import ximage from '../../../../shared/assets/images/x.png';
 import o from '../../../../shared/assets/images/o.png';
 import { StarFilled } from '@ant-design/icons';
 import { connect } from 'react-redux';
+import { getUserIdFromStorage } from '../../../../shared/utils/utils';
 
 const { Countdown } = Statistic;
 const { Meta } = Card;
 
-function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket }) {
+function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket, isMatchEnd, onStartClick }) {
+  const [visibleButton, setVisibleButton] = useState(true);
   const getIconNext = useCallback(() => {
     if (xIsNext === x) {
       return <StarFilled style={{ color: 'yellow' }} />;
@@ -60,6 +62,27 @@ function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket }) {
     }
   }, [isPlaying, player]);
 
+  const handleClickButtonStart = () => {
+    setVisibleButton(false);
+    onStartClick();
+  }
+
+  const renderButtonStart = () => { //Nút chơi lại hiển thị khi ván chơi kết thúc
+    const userId = getUserIdFromStorage();
+    if (isMatchEnd && player.user._id === userId) {//Nếu match kết thúc mới render
+      return <>
+        <Button
+          dis
+          onClick={handleClickButtonStart}
+          type="primary"
+          style={{ display: visibleButton ? '' : 'none' }}>
+          Start
+        </Button>
+        <div>20 giây</div>
+      </>
+    }
+  }
+
   return (
     <Card
       style={{
@@ -77,6 +100,7 @@ function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket }) {
       <img path="../../shared/assets/images/x.png" />
       {getIconNext()}
       {getCountdownNext()}
+      {renderButtonStart()}
     </Card>
   );
 }
