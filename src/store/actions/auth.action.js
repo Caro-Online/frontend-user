@@ -34,12 +34,6 @@ const processErrWhenLoginFail = (dispatch, err) => {
   dispatch(authFail(err.response.data.message));
 };
 
-// export const setAuthRedirectPath = () => {
-//   return {
-//     type: actionTypes.SET_AUTH_REDIRECT_PATH,
-//   };
-// };
-
 export const authClearError = () => {
   return {
     type: actionTypes.AUTH_CLEAR_ERRROR,
@@ -70,6 +64,13 @@ export const authFail = (error) => {
 export const logout = () => {
   return {
     type: actionTypes.AUTH_LOGOUT,
+  };
+};
+
+export const setIsAutoLogin = (value) => {
+  return {
+    type: actionTypes.SET_IS_AUTO_LOGIN,
+    value,
   };
 };
 
@@ -124,10 +125,12 @@ export const authCheckState = () => {
   return (dispatch) => {
     const token = getTokenFromStorage();
     if (!token) {
+      dispatch(setIsAutoLogin(false));
       dispatch(logout());
     } else {
       const expirationDate = new Date(getExpirationDateFromStorage());
       if (expirationDate <= new Date()) {
+        dispatch(setIsAutoLogin(false));
         dispatch(logout());
       } else {
         const userId = getUserIdFromStorage();
@@ -149,6 +152,7 @@ export const authCheckState = () => {
             console.log(error);
           });
         dispatch(setSocket(userId));
+        dispatch(setIsAutoLogin(false));
         console.log(userId);
         console.log('AutoLogin success');
         // let socket = initSocket(getUserIdFromStorage());

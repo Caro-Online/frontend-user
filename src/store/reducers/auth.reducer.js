@@ -9,6 +9,7 @@ const initialState = {
   error: null,
   loading: false,
   authRedirectPath: null,
+  isAutoLogin: true,
 };
 
 const authStart = (state, action) => {
@@ -54,6 +55,10 @@ const setSocket = (state, action) => {
   return updateObject(state, { socket: initSocket(action.userId) });
 };
 
+const setIsAutoLogin = (state, action) => {
+  return updateObject(state, { isAutoLogin: action.value });
+};
+
 const removeSocket = (state, action) => {
   return updateObject(state, { socket: null });
 };
@@ -78,6 +83,8 @@ const reducer = (state = initialState, action) => {
       return setSocket(state, action);
     case actionTypes.REMOVE_SOCKET:
       return removeSocket(state, action);
+    case actionTypes.SET_IS_AUTO_LOGIN:
+      return setIsAutoLogin(state, action);
     default:
       return state;
   }

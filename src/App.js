@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { Layout } from 'antd';
+import { Layout, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 // import 'antd/dist/antd.css';
@@ -9,7 +9,7 @@ import { initSocket } from './shared/utils/socket.io-client';
 import * as actions from './store/actions';
 import { getUserIdFromStorage } from './shared/utils/utils';
 
-import PrivateRoute from './shared/components/Route/PrivatetRoute'
+import PrivateRoute from './shared/components/Route/PrivatetRoute';
 import PublicRoute from './shared/components/Route/PublicRoute';
 import MainHeader from './shared/components/MainHeader/MainHeader';
 import Home from './domain/home/pages/Home';
@@ -30,7 +30,7 @@ const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 
 const { Content } = Layout;
 const App = (props) => {
-  const { isAuthenticated, onTryAutoLogin, socket } = props;
+  const { isAuthenticated, onTryAutoLogin, socket, isAutoLogin } = props;
 
   useEffect(() => {
     onTryAutoLogin();
@@ -50,33 +50,25 @@ const App = (props) => {
   let routes = (
     <Switch>
       <Route path="/" exact component={Home} />
-      <PublicRoute
-        path="/register" exact >
+      <PublicRoute path="/register" exact>
         <Register />
       </PublicRoute>
-      <PublicRoute
-        path="/confirm-registration/:emailVerifyToken"
-        exact>
+      <PublicRoute path="/confirm-registration/:emailVerifyToken" exact>
         <ConfirmRegistration />
       </PublicRoute>
-      <PublicRoute
-        path="/login" exact >
+      <PublicRoute path="/login" exact>
         <Login />
       </PublicRoute>
-      <PublicRoute
-        path="/reset-password" exact>
+      <PublicRoute path="/reset-password" exact>
         <ResetPassword />
       </PublicRoute>
-      <PublicRoute
-        path="/reset-password/:resetToken"
-        exact>
+      <PublicRoute path="/reset-password/:resetToken" exact>
         <UpdatePassword />
       </PublicRoute>
-      //private route
       <PrivateRoute path="/logout" exact>
         <Logout />
       </PrivateRoute>
-      <PrivateRoute path="/rooms" exact >
+      <PrivateRoute path="/rooms" exact>
         <Rooms />
       </PrivateRoute>
       <PrivateRoute path="/room/:roomId" exact>
@@ -85,6 +77,10 @@ const App = (props) => {
       <Redirect to="/" />
     </Switch>
   );
+
+  if (isAutoLogin) {
+    routes = <LoadingOutlined style={{ fontSize: 100 }} spin />;
+  }
 
   return (
     <Layout>
@@ -110,6 +106,7 @@ const App = (props) => {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.token !== null,
+    isAutoLogin: state.auth.isAutoLogin,
     socket: state.auth.socket,
   };
 };
