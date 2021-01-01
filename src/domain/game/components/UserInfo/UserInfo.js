@@ -55,8 +55,8 @@ function UserInfo({
       setRoom(room);
       const response1 = await getUserById(userId);
       const resp = await api.createMatch(idOfRoom, [
-        ...players,
-        response1.data.user,
+        players[0].user._id,
+        userId,
       ]);
       setPlayers([...players, { user: response1.data.user, isReady: true }]);
       console.log('Match', resp.data.match);
@@ -117,8 +117,8 @@ function UserInfo({
             {audiences ? (
               audiences.map((au, i) => <li key={i}>{au.name}</li>)
             ) : (
-              <li>Không có khán giả</li>
-            )}
+                <li>Không có khán giả</li>
+              )}
           </ul>
         </Card>
       </Card>
