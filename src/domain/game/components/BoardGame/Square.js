@@ -25,7 +25,7 @@ const Square = ({ disable, setDisable, isWin, value, onClick }) => {
     <td
       className="square"
       onClick={handleClick}
-      style={{ backgroundColor: isWin ? 'blue' : '' }}
+      style={{ backgroundColor: isWin ? 'yellow' : '' }}
     >
       {returnItem()}
     </td>
