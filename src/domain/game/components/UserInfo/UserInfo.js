@@ -31,6 +31,7 @@ function UserInfo({
   setAudiences,
   setNumPeopleInRoom,
   setRoom,
+  setDisable,
 }) {
   const [showButton, setShowButton] = useState(true);
 
@@ -58,7 +59,7 @@ function UserInfo({
         players[0].user._id,
         userId,
       ]);
-      await api.updateRoomStatus(roomId, 'PLAYING');//update lại trạng thái của room là playing 
+      await api.updateRoomStatus(roomId, 'PLAYING'); //update lại trạng thái của room là playing
       setPlayers([...players, { user: response1.data.user, isReady: true }]);
       setMatch(resp.data.match);
       setShowButton(false);
@@ -106,6 +107,8 @@ function UserInfo({
           isPlaying={match ? true : false}
           timeExp={match ? (match.timeExp ? match.timeExp : null) : null}
           matchId={match ? match._id : null}
+          setMatch={setMatch}
+          setDisable={setDisable}
         />
         <CardInfo
           player={players.length > 1 ? players[1] : null}
@@ -114,6 +117,8 @@ function UserInfo({
           isPlaying={match ? true : false}
           timeExp={match ? (match.timeExp ? match.timeExp : null) : null}
           matchId={match ? match._id : null}
+          setMatch={setMatch}
+          setDisable={setDisable}
         />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
           <Button

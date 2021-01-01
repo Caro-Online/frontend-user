@@ -22,16 +22,10 @@ const Message = ({ message: { text, userId, userName, createdAt }, name }) => {
     const behindTString = createdAt.split('-')[2].split('T')[1];
     createdHour = +behindTString.split(':')[0] + 7;
     createdMinute = +behindTString.split(':')[1];
-    if (createdMonth < 10) {
-      createdMonth = '0' + createdMonth;
-    }
-    if (createdDay < 10) {
-      createdDay = '0' + createdDay;
-    }
-    if (createdHour < 10) {
+    if (+createdHour < 10) {
       createdHour = '0' + createdHour;
     }
-    if (createdMinute < 10) {
+    if (+createdMinute < 10) {
       createdMinute = '0' + createdMinute;
     }
     date = [createdDay, createdMonth, year];

@@ -10,6 +10,7 @@ import {
   Descriptions,
   // Card,
   Statistic,
+  message as antMessage,
 } from 'antd';
 import { FaTrophy, FaUsers, FaInfoCircle } from 'react-icons/fa';
 
@@ -51,8 +52,9 @@ const GamePage = React.memo((props) => {
   const [players, setPlayers] = useState([]);
   const [match, setMatch] = useState(null);
   const [winRaw, setWinRaw] = useState(null);
+  const [disable, setDisable] = useState(true); //disable board and waiting
 
-  const getCurrentMatch = useCallback((idOfRoom) => {
+  const setCurrentMatch = useCallback((idOfRoom) => {
     api.getCurrentMatchByIdOfRoom(idOfRoom).then((res) => {
       if (res.data.success) {
         setMatch(res.data.match);
@@ -64,24 +66,6 @@ const GamePage = React.memo((props) => {
       return false;
     });
   }, []);
-
-  const addAudience = useCallback(
-    async () => {
-      const userId = getUserIdFromStorage();
-      try {
-        const response = await api.joinRoom(userId, roomId);
-        const { success } = response.data;
-        if (!success) {
-          setNotFound(true);
-        }
-      } catch (error) {
-        console.log(error);
-        alert(error);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [roomId]
-  );
 
   const getRoomInfo = useCallback(async () => {
     setIsLoading(true);
@@ -95,29 +79,17 @@ const GamePage = React.memo((props) => {
         setRoom(room);
         setNumPeopleInRoom(room.players.length + room.audiences.length);
         setPlayers(room.players);
-        getCurrentMatch(room._id);
-        if (socket) {
-          socket.emit(
-            'join',
-            {
-              userId: getUserIdFromStorage(),
-              roomId: room.roomId,
-            },
-            (error) => {
-              if (error) {
-                alert(error);
-              }
-            }
-          );
-        }
+        return room;
       } else {
         setNotFound(true);
+        return null;
       }
     } catch (error) {
       console.log(error);
       setIsLoading(false);
+      return null;
     }
-  }, [roomId, socket, getCurrentMatch]);
+  }, [roomId]);
 
   useEffect(() => {
     if (socket) {
@@ -147,14 +119,72 @@ const GamePage = React.memo((props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
+  const addAudience = useCallback(
+    async () => {
+      const userId = getUserIdFromStorage();
+      try {
+        const response = await api.joinRoom(userId, roomId);
+        const { success, message, room } = response.data;
+        if (!success) {
+          antMessage.error(message);
+          return null;
+        }
+        return room;
+      } catch (err) {
+        console.log(err);
+        antMessage.error(err);
+        return null;
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   useEffect(() => {
     async function doStuff() {
-      // Nếu là người tạo phòng thì ko add vào audiences , còn lại add vào audiences của phòng trong db
-      if (!location.state) {
-        await addAudience();
+      // Lấy thông tin của phòng về
+      const room = await getRoomInfo();
+      // Lấy thông tin match hiện tại đang chơi (nếu có) và set vào match
+      setCurrentMatch(room._id);
+
+      // Xét xem khi f5 lại user có phải player hay không, nếu ko có trong players thì add vào audiences
+      const userId = getUserIdFromStorage();
+      let userInPlayers = false;
+      room.players.forEach((player) => {
+        if (player.user._id.toString() === userId.toString()) {
+          userInPlayers = true;
+        }
+      });
+      // Nếu user không nằm trong players thì đây là audience mới vào hoặc audience cũ f5 lại
+      // Thêm audience mới vào room.audiences
+      if (!userInPlayers) {
+        const responseRoom = await addAudience();
+        if (responseRoom) {
+          // Set lại thông tin
+          setAudiences(responseRoom.audiences);
+          setIdOfRoom(responseRoom._id);
+          setRoom(responseRoom);
+          setNumPeopleInRoom(
+            responseRoom.players.length + responseRoom.audiences.length
+          );
+          setPlayers(responseRoom.players);
+        }
       }
-      // Lấy thông tin của phòng về để set state
-      getRoomInfo();
+      // Emit lai thong tin phong cho cac client khac
+      if (socket) {
+        socket.emit(
+          'join',
+          {
+            userId: getUserIdFromStorage(),
+            roomId: room.roomId,
+          },
+          (error) => {
+            if (error) {
+              alert(error);
+            }
+          }
+        );
+      }
     }
     doStuff();
     return () => {
@@ -165,7 +195,7 @@ const GamePage = React.memo((props) => {
         });
       }
     };
-  }, [getRoomInfo, addAudience, location, socket]);
+  }, [getRoomInfo, addAudience, location, socket, setCurrentMatch]);
 
   // const jumpTo = useCallback((move) => {
   //   setLocationToJump(move);
@@ -180,6 +210,8 @@ const GamePage = React.memo((props) => {
           socket={socket}
           room={room}
           players={players}
+          disable={disable}
+          setDisable={setDisable}
         />
       </Col>
       <Col span={6}>
@@ -195,6 +227,7 @@ const GamePage = React.memo((props) => {
           setAudiences={setAudiences}
           setNumPeopleInRoom={setNumPeopleInRoom}
           setRoom={setRoom}
+          setDisable={setDisable}
         />
       </Col>
       <Col span={6}>
