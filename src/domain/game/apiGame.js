@@ -17,6 +17,13 @@ const getRoomInfoById = (id) => {
   };
   return axios.get(`${API}/room/${id}`, config);
 };
+const getRandomRoom = () => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.get(`${API}/room/random`, config);
+};
 
 const joinRoom = (userId, roomId) => {
   const token = getTokenFromStorage();
@@ -92,6 +99,14 @@ const endMatch = (matchId, loserId) => {
   return axios.put(`${API}/match/${matchId}/end-match`, { loserId }, config);
 };
 
+const updateRoomStatus = (roomId, status) => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.put(`${API}/room/${roomId}/update-status`, { status }, config);
+};
+
 const api = {
   getAllRoom,
   getRoomInfoById,
@@ -103,6 +118,8 @@ const api = {
   createMatch,
   getMatchById,
   endMatch,
+  getRandomRoom,
+  updateRoomStatus,
 };
 
 export default api;

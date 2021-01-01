@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { SiHappycow } from 'react-icons/si';
-import { useHistory, useLocation } from 'react-router-dom';
+import React, { useCallback, useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { SiHappycow } from "react-icons/si";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   Form,
   Input,
@@ -12,25 +12,29 @@ import {
   Switch,
   Typography,
   Alert,
-} from 'antd';
+  Divider,
+  Row,
+  Col,
+  Space,
+} from "antd";
 import {
   LockOutlined,
   EyeTwoTone,
   EyeInvisibleOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
-import Modal from '../../../shared/components/Modal/Modal';
-import InputRoomIdModal from '../../../shared/components/InputRoomIdModal/InputRoomIdModal';
+import Modal from "../../../shared/components/Modal/Modal";
+import InputRoomIdModal from "../../../shared/components/InputRoomIdModal/InputRoomIdModal";
 
-import { API } from '../../../config';
-import './Home.css';
+import { API } from "../../../config";
+import "./Home.css";
 import {
   getUserIdFromStorage,
   getTokenFromStorage,
   getUsernameFromStorage,
-} from '../../../shared/utils/utils';
-
-const { Title } = Typography;
+} from "../../../shared/utils/utils";
+import api from "../../game/apiGame";
+const { Title, Text } = Typography;
 
 const { Option } = Select;
 
@@ -40,33 +44,51 @@ const Home = (props) => {
   const history = useHistory();
 
   const [openCreateRoomModal, setOpenCreateRoomModal] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const [openInputRoomIdModal, setOpenInputRoomIdModal] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
-
   const [havePassword, setHavePassword] = useState(false);
-
   useEffect(() => {
     if (location.state) {
       if (location.state.returnFromResetPassword)
-        message.success('Email đặt lại mật khẩu đã được gửi đi!');
+        message.success("Email đặt lại mật khẩu đã được gửi đi!");
       else if (location.state.returnFromUpdatePassword) {
-        message.success('Mật khẩu của bạn đã được thay đổi!');
+        message.success("Mật khẩu của bạn đã được thay đổi!");
       }
     }
   }, [location]);
 
   const onClickLoginButtonHandler = () => {
-    history.push('/login');
+    history.push("/login");
   };
 
   const onClickRegisterButtonHandler = () => {
-    history.push('/register');
+    history.push("/register");
   };
 
-  const onClickPlayNowButtonHandler = () => {};
+  const onClickPlayNowButtonHandler = () => {
+    setShowDialog(true);
+    api
+      .getRandomRoom()
+      .then((res) => {
+        const data = res.data;
+        const { roomId } = data.room;
+        setIsLoading(false);
+        if (roomId && !showDialog) {
+          history.push(`room/${roomId}`);
+        }
+        console.log(`getRandomRoom`, data, roomId, showDialog);
+      })
+      .catch((err) => console.error(err));
+  };
+  const onCloseDialog = () => {
+    setShowDialog(false);
+    console.log(`setShowDialog`, showDialog);
+  };
 
   const onClickFindRoomsHandler = () => {
-    history.push('/rooms');
+    history.push("/rooms");
   };
 
   const onClickCreateRoomButtonHandler = () => {
@@ -90,7 +112,7 @@ const Home = (props) => {
       const { name, rule, roomPassword } = values;
       setIsLoading(true);
       fetch(`${API}/room`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           name,
           rule,
@@ -98,7 +120,7 @@ const Home = (props) => {
           roomPassword,
         }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${getTokenFromStorage()}`,
         },
       })
@@ -134,7 +156,7 @@ const Home = (props) => {
       </h2>
       <button
         className="login-btn"
-        style={{ marginBottom: '16px' }}
+        style={{ marginBottom: "16px" }}
         onClick={onClickLoginButtonHandler}
       >
         Đăng nhập
@@ -178,7 +200,7 @@ const Home = (props) => {
           Tạo phòng
         </Title>
         {isLoading ? (
-          <Spin style={{ fontSize: '64px' }} />
+          <Spin style={{ fontSize: "64px" }} />
         ) : (
           <Form
             name="normal_register"
@@ -191,14 +213,14 @@ const Home = (props) => {
               rules={[
                 {
                   required: true,
-                  message: 'Tên phòng không được bỏ trống',
+                  message: "Tên phòng không được bỏ trống",
                 },
               ]}
             >
               <Input
                 type="text"
                 placeholder="Phòng của tui"
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
               />
             </Form.Item>
             <Form.Item name="rule" label="Luật chơi" initialValue={true}>
@@ -221,7 +243,7 @@ const Home = (props) => {
                 label="Mật khẩu"
                 name="roomPassword"
                 rules={[
-                  { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                  { required: true, message: "Mật khẩu không được bỏ trống!" },
                 ]}
               >
                 <Input.Password
@@ -237,9 +259,9 @@ const Home = (props) => {
             <Form.Item>
               <div
                 style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
                 }}
               >
                 <Button
@@ -262,7 +284,21 @@ const Home = (props) => {
           </Form>
         )}
       </Modal>
-
+      <Modal show={showDialog}>
+        <Row justify="center">
+          <Space align="center">
+            <Col style={{ margin: "8px 0" }} span={24}>
+              <Spin tip="Đang tìm phòng..."></Spin>
+            </Col>
+          </Space>
+          <Col span={24}>
+            <Divider style={{ margin: "8px 0" }}></Divider>
+            <Button type="primary" block danger onClick={onCloseDialog}>
+              Huỷ
+            </Button>
+          </Col>
+        </Row>
+      </Modal>
       <InputRoomIdModal
         show={openInputRoomIdModal}
         onClose={closeInputRoomIdModal}
@@ -279,3 +315,29 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, null)(Home);
+
+export const useRoomRandomApi = (onSearch) => {
+  const [roomId, setRoomId] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const getRandomRoom = () => {
+      setIsLoading(true);
+      api
+        .getRandomRoom()
+        .then((res) => {
+          const data = res.data;
+          const { roomId } = data.room;
+          setRoomId(roomId);
+          setIsLoading(false);
+
+          console.log(`getRandomRoom`, data);
+        })
+        .catch((err) => console.error(err));
+    };
+    getRandomRoom();
+    // Passing URL as a dependency
+  }, [onSearch]);
+
+  // Return 'isLoading' not the 'setIsLoading' function
+  return [roomId, isLoading];
+};

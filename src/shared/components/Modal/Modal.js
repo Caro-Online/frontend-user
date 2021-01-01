@@ -1,9 +1,9 @@
-import React, { memo } from 'react';
-import { createPortal } from 'react-dom';
+import React, { memo } from "react";
+import { createPortal } from "react-dom";
 
-import Backdrop from '../Backdrop/Backdrop';
+import Backdrop from "../Backdrop/Backdrop";
 
-import './Modal.css';
+import "./Modal.css";
 
 const Modal = memo((props) => {
   return (
@@ -14,13 +14,13 @@ const Modal = memo((props) => {
         <div
           className="my-modal"
           style={{
-            transform: props.show ? 'translateY(0)' : 'translateY(-100vh)',
+            transform: props.show ? "translateY(0)" : "translateY(-100vh)",
             opacity: props.show ? 1 : 0,
           }}
         >
           {props.children}
         </div>,
-        document.getElementById('modal-hook')
+        document.getElementById("modal-hook")
       )}
     </>
   );

@@ -58,6 +58,7 @@ function UserInfo({
         players[0].user._id,
         userId,
       ]);
+      await api.updateRoomStatus(roomId, 'PLAYING');//update lại trạng thái của room là playing 
       setPlayers([...players, { user: response1.data.user, isReady: true }]);
       setMatch(resp.data.match);
       setShowButton(false);

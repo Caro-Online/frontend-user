@@ -51,6 +51,7 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
         setMatch({ ...updatedMatch });
       });
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, setMatch, setPlaying]);
 
