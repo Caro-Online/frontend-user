@@ -9,7 +9,8 @@ import { initSocket } from './shared/utils/socket.io-client';
 import * as actions from './store/actions';
 import { getUserIdFromStorage } from './shared/utils/utils';
 
-import PrivateRoute from './shared/components/PrivateRoute/PrivatetRoute';
+import PrivateRoute from './shared/components/Route/PrivatetRoute'
+import PublicRoute from './shared/components/Route/PublicRoute';
 import MainHeader from './shared/components/MainHeader/MainHeader';
 import Home from './domain/home/pages/Home';
 import GamePage from './domain/game/pages/GamePage/GamePage';
@@ -50,34 +51,42 @@ const App = (props) => {
 
   let routes = (
     <Switch>
-      <Route path="/register" exact component={Register} />
-      <Route
-        path="/confirm-registration/:emailVerifyToken"
-        exact
-        component={ConfirmRegistration}
-      />
-      <Route path="/login" exact component={Login} />
-      <Route path="/reset-password" exact component={ResetPassword} />
-      <Route
-        path="/reset-password/:resetToken"
-        exact
-        component={UpdatePassword}
-      />
       <Route path="/" exact component={Home} />
-      {/* <Redirect to="/" /> */}
+      <PublicRoute
+        path="/register" exact >
+        <Register />
+      </PublicRoute>
+      <PublicRoute
+        path="/confirm-registration/:emailVerifyToken"
+        exact>
+        <ConfirmRegistration />
+      </PublicRoute>
+      <PublicRoute
+        path="/login" exact >
+        <Login />
+      </PublicRoute>
+      <PublicRoute
+        path="/reset-password" exact>
+        <ResetPassword />
+      </PublicRoute>
+      <PublicRoute
+        path="/reset-password/:resetToken"
+        exact>
+        <UpdatePassword />
+      </PublicRoute>
+      //private route
+      <PrivateRoute path="/logout" exact>
+        <Logout />
+      </PrivateRoute>
+      <PrivateRoute path="/rooms" exact >
+        <Rooms />
+      </PrivateRoute>
+      <PrivateRoute path="/room/:roomId" exact>
+        <GamePage />
+      </PrivateRoute>
+      <Redirect to="/" />
     </Switch>
   );
-  if (isAuthenticated) {
-    routes = (
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/logout" exact component={Logout} />
-        <Route path="/rooms" exact component={Rooms} />
-        <Route path="/room/:roomId" exact component={GamePage} />
-        <Redirect to="/" />
-      </Switch>
-    );
-  }
 
   return (
     <Layout>

@@ -37,17 +37,20 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
 
   useEffect(() => {
     // Nếu match start thì lắng nghe sự kiện receive-move
-    socket.on('match-start', async ({ matchId }) => {
-      console.log('In here');
-      socket.on('receive-move', ({ updatedMatch }) => {
-        console.log('ReceiveMove');
-        // Cập nhật lại match cho các client trong room
-        setMatch({ ...updatedMatch });
-        if (!updatedMatch.winner) {
-          setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
-        }
+    if (socket) {
+      socket.on('match-start', async ({ matchId }) => {
+        console.log('In here');
+        socket.on('receive-move', ({ updatedMatch }) => {
+          console.log('ReceiveMove');
+          // Cập nhật lại match cho các client trong room
+          setMatch({ ...updatedMatch });
+          if (!updatedMatch.winner) {
+            setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
+          }
+        });
       });
-    });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, setMatch, setPlaying]);
 

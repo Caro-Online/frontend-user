@@ -132,18 +132,24 @@ const GamePage = React.memo((props) => {
   }, [audiences, setPlayers, socket]);
 
   useEffect(() => {
-    socket.on('match-start-update', async ({ matchId }) => {
-      const res = await api.getMatchById(matchId);
-      setMatch(res.data.match);
-    });
+    if (socket) {
+      socket.on('match-start-update', async ({ matchId }) => {
+        const res = await api.getMatchById(matchId);
+        setMatch(res.data.match);
+      });
+    }
+
   }, [players, socket]);
 
   //
   useEffect(() => {
-    socket.on('have-winner', async ({ updatedMatch }) => {
-      console.log("have winner")
-      setMatch({ ...updatedMatch });
-    });
+    if (socket) {
+      socket.on('have-winner', async ({ updatedMatch }) => {
+        console.log("have winner")
+        setMatch({ ...updatedMatch });
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
