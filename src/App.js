@@ -1,37 +1,45 @@
-import React, { Suspense, lazy, useEffect } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import { Layout } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { connect } from 'react-redux';
+import React, { Suspense, lazy, useEffect, useState } from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { Layout } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { connect } from "react-redux";
 // import 'antd/dist/antd.css';
-import './App.css';
-import { initSocket } from './shared/utils/socket.io-client';
-import * as actions from './store/actions';
-import { getUserIdFromStorage } from './shared/utils/utils';
+import "./App.css";
+import { initSocket } from "./shared/utils/socket.io-client";
+import * as actions from "./store/actions";
+import {
+  getUsernameFromStorage,
+  getUserIdFromStorage,
+} from "src/shared/utils/utils";
 
-import PrivateRoute from './shared/components/Route/PrivatetRoute'
-import PublicRoute from './shared/components/Route/PublicRoute';
-import MainHeader from './shared/components/MainHeader/MainHeader';
-import Home from './domain/home/pages/Home';
-import GamePage from './domain/game/pages/GamePage/GamePage';
-const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
-const Register = lazy(() => import('./domain/user/pages/Register/Register'));
+import { useHistory } from "react-router-dom";
+import PrivateRoute from "./shared/components/Route/PrivatetRoute";
+import PublicRoute from "./shared/components/Route/PublicRoute";
+import MainHeader from "./shared/components/MainHeader/MainHeader";
+import Home from "./domain/home/pages/Home";
+import GamePage from "./domain/game/pages/GamePage/GamePage";
+import { invitationSocket } from "src/shared/components/Invitation/api";
+import { InvitationDialog } from "src/shared/components/Invitation";
+const Logout = lazy(() => import("./domain/user/pages/Logout/Logout"));
+const Register = lazy(() => import("./domain/user/pages/Register/Register"));
 const ConfirmRegistration = lazy(() =>
-  import('./domain/user/pages/ConfirmRegistration/ConfirmRegistration')
+  import("./domain/user/pages/ConfirmRegistration/ConfirmRegistration")
 );
-const Login = lazy(() => import('./domain/user/pages/Login/Login'));
+const Login = lazy(() => import("./domain/user/pages/Login/Login"));
 const ResetPassword = lazy(() =>
-  import('./domain/user/pages/ResetPassword/ResetPassword')
+  import("./domain/user/pages/ResetPassword/ResetPassword")
 );
 const UpdatePassword = lazy(() =>
-  import('./domain/user/pages/UpdatePassword/UpdatePassword')
+  import("./domain/user/pages/UpdatePassword/UpdatePassword")
 );
-const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
+const Rooms = lazy(() => import("./domain/game/pages/Rooms/Rooms"));
 
 const { Content } = Layout;
 const App = (props) => {
   const { isAuthenticated, onTryAutoLogin, socket } = props;
-
+  const [showInvitation, setShowInvitation] = useState(false);
+  const [invitedData, setInvitedData] = useState();
+  const history = useHistory();
   useEffect(() => {
     onTryAutoLogin();
   }, [onTryAutoLogin]);
@@ -46,39 +54,49 @@ const App = (props) => {
       };
     }
   }, [isAuthenticated, socket]);
-
+  useEffect(() => {
+    const data = {
+      invitedId: getUserIdFromStorage(),
+      invitedName: getUsernameFromStorage(),
+    };
+    invitationSocket(data, (err, data) => {
+      console.log(`invitationSocket`, data);
+      setShowInvitation(true);
+      setInvitedData(data);
+      setTimeout(() => setShowInvitation(false), 10000);
+    });
+  }, []);
   console.log(isAuthenticated);
-
+  const onCancelInvitation = () => {
+    setShowInvitation(false);
+  };
+  const onJoinRoom = (roomId) => {
+    history.push(`room/${roomId}`);
+    setShowInvitation(false);
+  };
   let routes = (
     <Switch>
       <Route path="/" exact component={Home} />
-      <PublicRoute
-        path="/register" exact >
+      <PublicRoute path="/register" exact>
         <Register />
       </PublicRoute>
-      <PublicRoute
-        path="/confirm-registration/:emailVerifyToken"
-        exact>
+      <PublicRoute path="/confirm-registration/:emailVerifyToken" exact>
         <ConfirmRegistration />
       </PublicRoute>
-      <PublicRoute
-        path="/login" exact >
+      <PublicRoute path="/login" exact>
         <Login />
       </PublicRoute>
-      <PublicRoute
-        path="/reset-password" exact>
+      <PublicRoute path="/reset-password" exact>
         <ResetPassword />
       </PublicRoute>
-      <PublicRoute
-        path="/reset-password/:resetToken"
-        exact>
+      <PublicRoute path="/reset-password/:resetToken" exact>
         <UpdatePassword />
       </PublicRoute>
-      //private route
+      {/* // private route */}
       <PrivateRoute path="/logout" exact>
         <Logout />
       </PrivateRoute>
-      <PrivateRoute path="/rooms" exact >
+      <PrivateRoute path="/rooms" exact>
         <Rooms />
       </PrivateRoute>
       <PrivateRoute path="/room/:roomId" exact>
@@ -91,8 +109,14 @@ const App = (props) => {
   return (
     <Layout>
       <MainHeader />
+      <InvitationDialog
+        value={showInvitation}
+        data={invitedData}
+        onCancel={onCancelInvitation}
+        onJoin={onJoinRoom}
+      />
       <Suspense fallback={<LoadingOutlined style={{ fontSize: 100 }} spin />}>
-        <Content style={{ backgroundColor: 'white' }}>{routes}</Content>
+        <Content style={{ backgroundColor: "white" }}>{routes}</Content>
       </Suspense>
       {/* <Footer
         style={{
