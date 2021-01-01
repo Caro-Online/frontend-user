@@ -45,6 +45,9 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
         setMatch({ ...updatedMatch });
         setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
       });
+      socket.on('have-winner', ({ updatedMatch }) => {
+        setMatch({ ...updatedMatch });
+      });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, setMatch, setPlaying]);
@@ -80,21 +83,28 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
     [match]
   );
 
-  // const checkWinSquare = useCallback((i) => {
-  //   if (match) {
-  //     match.winRaw.forEach(sq => {
-  //       return sq === i
-  //     })
-  //   }
-  //   return false
-  // }, [match])
+  let checkWinSquare = (i) => {
+    let isWin = false;
+    if (match) {
+      match.winRaw.forEach(sq => {
+        if (sq === i) {
+          console.log(i)
+          isWin = true;//nếu index có trong winraw trả về true
+          return;
+        }
+      })
+    }
+    return isWin;
+  }
 
   const renderSquare = (i) => {
+    let isWin = checkWinSquare(i);
+
     return (
       <Square
         key={i}
         index={i}
-        // winRaw={checkWinSquare(i)}
+        isWin={isWin}// nếu ô nằm trong winraw thì highlight
         value={getSquareValue(i)}
         onClick={() => handleSquareClick(i)}
         disable={disable}
@@ -147,13 +157,7 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
   return (
     <div>
       <div className="game-info">
-        {/* {console.log(match)}
-          {console.log(
-            'xIsNext: ' +
-              (match ? match.xIsNext : null) +
-              ' disable: ' +
-              disable
-          )} */}
+        {console.log(match)}
         <div>{status}</div>
       </div>
       <table className="board">

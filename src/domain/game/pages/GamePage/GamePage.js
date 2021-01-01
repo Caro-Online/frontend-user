@@ -141,6 +141,7 @@ const GamePage = React.memo((props) => {
   //
   useEffect(() => {
     socket.on('have-winner', async ({ updatedMatch }) => {
+      console.log("have winner")
       setMatch({ ...updatedMatch });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
