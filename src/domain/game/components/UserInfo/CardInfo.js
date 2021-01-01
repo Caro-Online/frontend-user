@@ -1,31 +1,64 @@
-import React from 'react';
-import { Col, Card, Avatar } from 'antd';
-import x from '../../../../shared/assets/images/x.png';
+import React, { useCallback } from 'react';
+import moment from 'moment';
+import { Col, Card, Avatar, Statistic } from 'antd';
+import api from '../../apiGame';
+
+import ximage from '../../../../shared/assets/images/x.png';
 import o from '../../../../shared/assets/images/o.png';
 import { StarFilled } from '@ant-design/icons';
 import { connect } from 'react-redux';
+
+const { Countdown } = Statistic;
 const { Meta } = Card;
-function CardInfo(props) {
-  const getIconNext = () => {
-    if (props.xIsNext === props.x) {
+
+function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket }) {
+  const getIconNext = useCallback(() => {
+    if (xIsNext === x) {
       return <StarFilled style={{ color: 'yellow' }} />;
     }
     return <div></div>;
-  };
+  }, [x, xIsNext]);
 
-  const getStatus = () => {
-    if (props.player) {
-      if (props.isPlaying) {
+  const getCountdownNext = useCallback(() => {
+    if (!timeExp) {
+      return <div></div>;
+    }
+    const deadline = moment.utc(timeExp).valueOf();
+    if (xIsNext === x) {
+      return (
+        <Countdown
+          title="Thời gian còn lại"
+          value={deadline}
+          format="ss:SS"
+          onFinish={async () => {
+            // Xử thua cho user đó
+            // Gửi api update lại phòng
+            await api.endMatch(matchId, player.user._id);
+            // Emit sự kiện end-match để các client khác trong phòng update lại thông tin
+            socket.emit('end-match', {
+              matchId: matchId,
+            });
+          }}
+        />
+      );
+    }
+    return <div></div>;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [x, xIsNext, timeExp, matchId, socket]);
+
+  const getStatus = useCallback(() => {
+    if (player) {
+      if (isPlaying) {
         return 'Đang chơi';
       } else {
-        if (props.player.isReady) {
+        if (player.isReady) {
           return 'Đang đợi';
         }
       }
     } else {
       return 'Còn trống';
     }
-  };
+  }, [isPlaying, player]);
 
   return (
     <Card
@@ -36,15 +69,22 @@ function CardInfo(props) {
       }}
     >
       <Meta
-        avatar={<Avatar src={props.x ? x : o} />}
-        title={props.player ? props.player.user.name : ''}
+        avatar={<Avatar src={x ? ximage : o} />}
+        title={player ? player.user.name : ''}
         description={getStatus()}
       />
-      {/* {console.log(props.user)} */}
+      {/* {console.log(user)} */}
       <img path="../../shared/assets/images/x.png" />
       {getIconNext()}
+      {getCountdownNext()}
     </Card>
   );
 }
 
-export default CardInfo;
+const mapStateToProps = (state) => {
+  return {
+    socket: state.auth.socket,
+  };
+};
+
+export default connect(mapStateToProps)(CardInfo);

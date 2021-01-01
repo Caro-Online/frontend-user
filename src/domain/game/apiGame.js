@@ -38,10 +38,14 @@ const joinPlayerQueue = (userId, roomId) => {
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-  return axios.put(`${API}/room/${roomId}/join-player-queue`, { userId }, config);
+  return axios.put(
+    `${API}/room/${roomId}/join-player-queue`,
+    { userId },
+    config
+  );
 };
 
-const joinRoomById = (roomId) => { };
+const joinRoomById = (roomId) => {};
 
 const getCurrentMatchByIdOfRoom = (roomId) => {
   const token = getTokenFromStorage();
@@ -56,8 +60,12 @@ const addMove = (matchId, index, xIsNext) => {
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-  return axios.post(`${API}/match/addmove`, { matchId, index, xIsNext }, config);
-}
+  return axios.post(
+    `${API}/match/addmove`,
+    { matchId, index, xIsNext },
+    config
+  );
+};
 
 const createMatch = (roomId, players) => {
   const token = getTokenFromStorage();
@@ -65,7 +73,7 @@ const createMatch = (roomId, players) => {
     headers: { Authorization: `Bearer ${token}` },
   };
   return axios.post(`${API}/match`, { roomId, players }, config);
-}
+};
 
 const getMatchById = (matchId) => {
   const token = getTokenFromStorage();
@@ -73,7 +81,16 @@ const getMatchById = (matchId) => {
     headers: { Authorization: `Bearer ${token}` },
   };
   return axios.get(`${API}/match/${matchId}`, config);
-}
+};
+
+// Kết thúc ván đấu do hết thời gian
+const endMatch = (matchId, loserId) => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.put(`${API}/match/${matchId}/end-match`, { loserId }, config);
+};
 
 const api = {
   getAllRoom,
@@ -84,7 +101,8 @@ const api = {
   getCurrentMatchByIdOfRoom,
   addMove,
   createMatch,
-  getMatchById
+  getMatchById,
+  endMatch,
 };
 
 export default api;

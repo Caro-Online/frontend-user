@@ -24,7 +24,6 @@ const processResponseWhenLoginSuccess = (dispatch, response) => {
     dispatch(authSuccess(token, user._id));
     dispatch(checkAuthTimeout(3600));
     dispatch(setAuthRedirectPath());
-    console.log(user._id);
     dispatch(setSocket(user._id));
   }
 };

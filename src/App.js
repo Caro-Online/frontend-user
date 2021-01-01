@@ -46,8 +46,6 @@ const App = (props) => {
     }
   }, [isAuthenticated, socket]);
 
-  console.log(isAuthenticated);
-
   let routes = (
     <Switch>
       <Route path="/register" exact component={Register} />

@@ -59,7 +59,6 @@ function UserInfo({
         userId,
       ]);
       setPlayers([...players, { user: response1.data.user, isReady: true }]);
-      console.log('Match', resp.data.match);
       setMatch(resp.data.match);
       setShowButton(false);
       // Thằng vào sau emit match start
@@ -93,8 +92,8 @@ function UserInfo({
         return match.xIsNext;
       }
     }
-    return null
-  }
+    return null;
+  };
 
   return (
     <div className="user-info">
@@ -104,12 +103,16 @@ function UserInfo({
           x={true}
           xIsNext={getXIsNext()}
           isPlaying={match ? true : false}
+          timeExp={match ? (match.timeExp ? match.timeExp : null) : null}
+          matchId={match ? match._id : null}
         />
         <CardInfo
           player={players.length > 1 ? players[1] : null}
           x={false}
           xIsNext={getXIsNext()}
           isPlaying={match ? true : false}
+          timeExp={match ? (match.timeExp ? match.timeExp : null) : null}
+          matchId={match ? match._id : null}
         />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
           <Button
@@ -126,8 +129,8 @@ function UserInfo({
             {audiences ? (
               audiences.map((au, i) => <li key={i}>{au.name}</li>)
             ) : (
-                <li>Không có khán giả</li>
-              )}
+              <li>Không có khán giả</li>
+            )}
           </ul>
         </Card>
       </Card>

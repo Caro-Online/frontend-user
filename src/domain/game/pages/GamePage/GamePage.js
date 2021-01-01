@@ -136,12 +136,12 @@ const GamePage = React.memo((props) => {
       const res = await api.getMatchById(matchId);
       setMatch(res.data.match);
     });
-  }, [players, socket]);
-
-  //
-  useEffect(() => {
-    socket.on('have-winner', async ({ updatedMatch }) => {
-      console.log("have winner")
+    socket.on('have-winner', ({ updatedMatch }) => {
+      console.log('have winner');
+      setMatch({ ...updatedMatch });
+    });
+    socket.on('end-match', ({ updatedMatch }) => {
+      console.log('end match');
       setMatch({ ...updatedMatch });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

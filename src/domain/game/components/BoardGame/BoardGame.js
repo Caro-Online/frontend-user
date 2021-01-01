@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 import Square from './Square';
 
@@ -38,7 +39,6 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
   useEffect(() => {
     // Nếu match start thì lắng nghe sự kiện receive-move
     socket.on('match-start', async ({ matchId }) => {
-      console.log('In here');
       socket.on('receive-move', ({ updatedMatch }) => {
         console.log('ReceiveMove');
         // Cập nhật lại match cho các client trong room
@@ -90,16 +90,16 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
   let checkWinSquare = (i) => {
     let isWin = false;
     if (match) {
-      match.winRaw.forEach(sq => {
+      match.winRaw.forEach((sq) => {
         if (sq === i) {
-          console.log(i)
-          isWin = true;//nếu index có trong winraw trả về true
+          console.log(i);
+          isWin = true; //nếu index có trong winraw trả về true
           return;
         }
-      })
+      });
     }
     return isWin;
-  }
+  };
 
   const renderSquare = (i) => {
     let isWin = checkWinSquare(i);
@@ -108,7 +108,7 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
       <Square
         key={i}
         index={i}
-        isWin={isWin}// nếu ô nằm trong winraw thì highlight
+        isWin={isWin} // nếu ô nằm trong winraw thì highlight
         value={getSquareValue(i)}
         onClick={() => handleSquareClick(i)}
         disable={disable}
@@ -123,9 +123,16 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
       //Nếu bước chưa tồn tại
       if (!getSquareValue(i)) {
         newHistory.push(i);
-        setMatch({ ...match, history: newHistory, xIsNext: !match.xIsNext });
         await api.addMove(match._id, i, !match.xIsNext); //add to db
         emitSendMove(i); //socket emit
+        const date = new Date(Date.now() + 20 * 1000);
+        const timeExp = moment.utc(date).format();
+        setMatch({
+          ...match,
+          history: newHistory,
+          xIsNext: !match.xIsNext,
+          timeExp: timeExp,
+        });
       }
     }
   };
@@ -161,7 +168,6 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
   return (
     <div>
       <div className="game-info">
-        {console.log(match)}
         <div>{status}</div>
       </div>
       <table className="board">
