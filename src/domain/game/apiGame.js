@@ -1,6 +1,6 @@
-import { API } from "../../config";
-import axios from "axios";
-import { getTokenFromStorage } from "../../shared/utils/utils";
+import { API } from '../../config';
+import axios from 'axios';
+import { getTokenFromStorage } from '../../shared/utils/utils';
 
 const getAllRoom = () => {
   const token = getTokenFromStorage();
@@ -90,6 +90,15 @@ const getMatchById = (matchId) => {
   return axios.get(`${API}/match/${matchId}`, config);
 };
 
+// Kết thúc ván đấu do hết thời gian
+const endMatch = (matchId, loserId) => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.put(`${API}/match/${matchId}/end-match`, { loserId }, config);
+};
+
 const updateRoomStatus = (roomId, status) => {
   const token = getTokenFromStorage();
   const config = {
@@ -108,6 +117,7 @@ const api = {
   addMove,
   createMatch,
   getMatchById,
+  endMatch,
   getRandomRoom,
   updateRoomStatus,
 };

@@ -36,7 +36,7 @@ const Rooms = lazy(() => import("./domain/game/pages/Rooms/Rooms"));
 
 const { Content } = Layout;
 const App = (props) => {
-  const { isAuthenticated, onTryAutoLogin, socket } = props;
+  const { isAuthenticated, onTryAutoLogin, socket, isAutoLogin } = props;
   const [showInvitation, setShowInvitation] = useState(false);
   const [invitedData, setInvitedData] = useState();
   const history = useHistory();
@@ -92,7 +92,6 @@ const App = (props) => {
       <PublicRoute path="/reset-password/:resetToken" exact>
         <UpdatePassword />
       </PublicRoute>
-      {/* // private route */}
       <PrivateRoute path="/logout" exact>
         <Logout />
       </PrivateRoute>
@@ -105,6 +104,10 @@ const App = (props) => {
       <Redirect to="/" />
     </Switch>
   );
+
+  if (isAutoLogin) {
+    routes = <LoadingOutlined style={{ fontSize: 100 }} spin />;
+  }
 
   return (
     <Layout>
@@ -136,6 +139,7 @@ const App = (props) => {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.token !== null,
+    isAutoLogin: state.auth.isAutoLogin,
     socket: state.auth.socket,
   };
 };
