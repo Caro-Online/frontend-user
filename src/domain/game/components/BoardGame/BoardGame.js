@@ -43,7 +43,9 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
         console.log('ReceiveMove');
         // Cập nhật lại match cho các client trong room
         setMatch({ ...updatedMatch });
-        setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
+        if (!updatedMatch.winner) {
+          setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
+        }
       });
       socket.on('have-winner', ({ updatedMatch }) => {
         setMatch({ ...updatedMatch });
@@ -54,7 +56,9 @@ const BoardGame = React.memo(({ players, match, socket, setMatch }) => {
 
   useEffect(() => {
     if (match) {
-      setPlaying(match.xIsNext);
+      if (!match.winner) {
+        setPlaying(match.xIsNext);
+      }
     }
   }, [match, setMatch, setPlaying, socket]);
 

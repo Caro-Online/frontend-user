@@ -87,19 +87,28 @@ function UserInfo({
   //   });
   // });
 
+  const getXIsNext = () => {
+    if (match) {
+      if (!match.winner) {
+        return match.xIsNext;
+      }
+    }
+    return null
+  }
+
   return (
     <div className="user-info">
       <Card className="card-group">
         <CardInfo
           player={players.length > 0 ? players[0] : null}
           x={true}
-          xIsNext={match ? match.xIsNext : null}
+          xIsNext={getXIsNext()}
           isPlaying={match ? true : false}
         />
         <CardInfo
           player={players.length > 1 ? players[1] : null}
           x={false}
-          xIsNext={match ? match.xIsNext : null}
+          xIsNext={getXIsNext()}
           isPlaying={match ? true : false}
         />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
