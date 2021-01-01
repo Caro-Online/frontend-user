@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Card, Avatar, Button } from 'antd';
 import {
   EditOutlined,
@@ -44,7 +44,7 @@ function UserInfo({
     if (players.length === 2) setShowButton(false);
   }, [players]);
 
-  const joinPlayerQueueHanler = async () => {
+  const joinPlayerQueueHandler = useCallback(async () => {
     const userId = getUserIdFromStorage();
     const res = await api.joinPlayerQueue(userId, roomId);
     const { success, room } = res.data;
@@ -55,15 +55,27 @@ function UserInfo({
       setRoom(room);
       const response1 = await getUserById(userId);
       const resp = await api.createMatch(idOfRoom, [
-        ...players,
-        response1.data.user,
+        players[0].user._id,
+        userId,
       ]);
       setPlayers([...players, { user: response1.data.user, isReady: true }]);
+      console.log('Match', resp.data.match);
       setMatch(resp.data.match);
       setShowButton(false);
+      // Thằng vào sau emit match start
       socket.emit('match-start', { matchId: resp.data.match._id });
     }
-  };
+  }, [
+    idOfRoom,
+    players,
+    roomId,
+    setAudiences,
+    setMatch,
+    setNumPeopleInRoom,
+    setPlayers,
+    setRoom,
+    socket,
+  ]);
 
   //ĐƯA RA NGOÀI BOARD GAME
   // useEffect(() => {
@@ -94,7 +106,7 @@ function UserInfo({
           <Button
             style={{ display: showButton ? '' : 'none' }}
             type="primary"
-            onClick={joinPlayerQueueHanler}
+            onClick={joinPlayerQueueHandler}
           >
             Vào chơi
           </Button>
@@ -105,8 +117,8 @@ function UserInfo({
             {audiences ? (
               audiences.map((au, i) => <li key={i}>{au.name}</li>)
             ) : (
-              <li>Không có khán giả</li>
-            )}
+                <li>Không có khán giả</li>
+              )}
           </ul>
         </Card>
       </Card>
@@ -122,4 +134,4 @@ function UserInfo({
 //   xIsNext: state.game.xIsNext
 // })
 
-export default UserInfo;
+export default React.memo(UserInfo);
