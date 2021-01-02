@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import moment from 'moment';
 import { Col, Card, Avatar, Statistic, Button } from 'antd';
 import api from '../../apiGame';
@@ -20,6 +20,9 @@ function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket, isM
     }
     return <div></div>;
   }, [x, xIsNext]);
+  useEffect(() => {
+    setVisibleButton(true);
+  }, [matchId])
 
   const getCountdownNext = useCallback(() => {
     if (!timeExp) {
@@ -54,13 +57,15 @@ function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket, isM
         return 'Đang chơi';
       } else {
         if (player.isReady) {
-          return 'Đang đợi';
+          return 'Sẵn sàng';
+        } else {
+          return 'Đang đợi...'
         }
       }
     } else {
       return 'Còn trống';
     }
-  }, [isPlaying, player]);
+  }, [isPlaying, player, isMatchEnd]);
 
   const handleClickButtonStart = () => {
     setVisibleButton(false);

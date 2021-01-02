@@ -77,15 +77,15 @@ function UserInfo({
     socket,
   ]);
 
-  //ĐƯA RA NGOÀI BOARD GAME
-  // useEffect(() => {
-  //   let socket = getSocket();
-  //   socket.on('join-match-update', (message) => {
-  //     getUserById(message.userId).then((res) => {
-  //       setUser2(res.data.user);
-  //     });
-  //   });
-  // });
+  useEffect(() => {
+    if (socket) {
+      socket.on('update-player-ready', ({ room }) => {
+        console.log("update-player-ready");
+        setPlayers(room.players)
+      })
+    }
+  }, [socket, setRoom])
+
 
   const getXIsNext = () => {
     if (match) {
@@ -96,10 +96,12 @@ function UserInfo({
     return null;
   };
   //Bắt sự kiện click bắt đầu khi kết thúc ván
-  const onStartClick = () => {
+  const onStartClick = useCallback(async () => {
     const userId = getUserIdFromStorage();
-    api.updatePlayerIsReady(roomId, userId, true);
-  }
+    const res = await api.updatePlayerIsReady(roomId, userId, true);//trả về  room để update user status
+    setPlayers(res.data.room.players)
+    socket.emit('set-player-ready', { userId });
+  }, [setPlayers, socket])
 
   return (
     <div className="user-info">
