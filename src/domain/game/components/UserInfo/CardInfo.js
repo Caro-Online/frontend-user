@@ -37,7 +37,7 @@ function CardInfo({
   }, [matchId]);
 
   const getCountdownNext = useCallback(() => {
-    if (!timeExp) {
+    if (!timeExp && !isMatchEnd) {
       return <div></div>;
     }
     const deadline = moment.utc(timeExp).valueOf();
@@ -83,7 +83,7 @@ function CardInfo({
     } else {
       return 'Còn trống';
     }
-  }, [isPlaying, player, isMatchEnd]);
+  }, [isPlaying, player]);
 
   const handleClickButtonStart = () => {
     setVisibleButton(false);
@@ -95,6 +95,7 @@ function CardInfo({
     const userId = getUserIdFromStorage();
     if (player) {
       if (isMatchEnd && player.user._id === userId) {
+        const deadline = moment.utc(timeExp).valueOf();
         //Nếu match kết thúc mới render
         return (
           <>
@@ -103,9 +104,17 @@ function CardInfo({
               type="primary"
               style={{ display: visibleButton ? '' : 'none' }}
             >
-              Start
+              Sẵn sàng
             </Button>
-            <div>20 giây</div>
+            <Countdown
+              value={deadline}
+              prefix="Bạn còn "
+              format="ss"
+              suffix="giây để sẵn sàng"
+              onFinish={async () => {
+                console.log('Helo there');
+              }}
+            />
           </>
         );
       }

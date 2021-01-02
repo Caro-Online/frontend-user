@@ -12,14 +12,13 @@ import { updateNextPlayer } from '../../../../store/actions/game.action';
 import { getUserIdFromStorage } from '../../../../shared/utils/utils';
 import api from '../../apiGame';
 import { forEach, map } from 'lodash';
-import loading from 'src/shared/assets/images/loading.svg'
+import loading from 'src/shared/assets/images/loading.svg';
 
 const boardSize = 17;
 
 const BoardGame = React.memo(
   ({ players, match, socket, setMatch, disable, setDisable }) => {
     const reactHistory = useHistory();
-
 
     //Check đúng userId và lượt đi, mở ô cho đánh
     const setPlaying = useCallback(
@@ -31,7 +30,6 @@ const BoardGame = React.memo(
             (players[1].user._id === userId && !xIsNext)
           ) {
             setDisable(false);
-
           }
         }
       },
@@ -42,7 +40,6 @@ const BoardGame = React.memo(
       // Nếu match start thì lắng nghe sự kiện receive-move
       const matchStartListener = async ({ matchId }) => {
         socket.on('receive-move', receiveMoveListener);
-        socket.on('have-winner', haveWinnerListener);
       };
 
       const receiveMoveListener = ({ updatedMatch }) => {
@@ -54,14 +51,10 @@ const BoardGame = React.memo(
         }
       };
 
-      const haveWinnerListener = ({ updatedMatch }) => {
-        setMatch({ ...updatedMatch });
-      };
       socket.on('match-start', matchStartListener);
       return () => {
         socket.off('match-start', matchStartListener);
         socket.off('receive-move', receiveMoveListener);
-        socket.off('have-winner', haveWinnerListener);
       };
     }, [socket, setMatch, setPlaying]);
 
@@ -189,8 +182,13 @@ const BoardGame = React.memo(
     return (
       <div>
         <div className="game-info">
-          {!disable ? <div className="your-turn">Đến lượt bạn <img src={loading} /></div> :
-            <div className="your-turn"></div>}
+          {!disable ? (
+            <div className="your-turn">
+              Đến lượt bạn <img src={loading} />
+            </div>
+          ) : (
+            <div className="your-turn"></div>
+          )}
         </div>
         <table className="board">
           <tbody>{renderBoard()}</tbody>
