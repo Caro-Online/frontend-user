@@ -22,9 +22,9 @@ const processResponseWhenLoginSuccess = (dispatch, response) => {
     setExpirationDateToStorage(expirationDate);
     setUserToStorage(user);
     dispatch(authSuccess(token, user._id));
+    dispatch(setSocket(user._id));
     dispatch(checkAuthTimeout(3600));
     dispatch(setAuthRedirectPath());
-    dispatch(setSocket(user._id));
   }
 };
 

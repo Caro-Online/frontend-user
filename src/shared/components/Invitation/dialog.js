@@ -1,14 +1,18 @@
 import React from "react";
 import { ImUserPlus } from "react-icons/im";
-import { Button, Spin, Divider, Row, Col, Space } from "antd";
+import { Button, Spin, Divider, Row, Col, Space, Statistic } from "antd";
 import Modal from "../../../shared/components/Modal/Modal";
+const { Countdown } = Statistic;
 const InvitationDialog = ({ value, data, onCancel, onJoin }) => {
-
   const onClickJoin = () => {
     const roomId = data?.roomId;
     if (value && roomId) {
       onJoin(roomId);
     }
+  };
+  const deadline = Date.now() + 10 * 1000;
+  const onFinish = () => {
+    onCancel();
   };
   return (
     <div>
@@ -29,7 +33,26 @@ const InvitationDialog = ({ value, data, onCancel, onJoin }) => {
               }}
             >
               <Button type="dashed" danger onClick={onCancel}>
-                Huỷ
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  (
+                  <Countdown
+                    valueStyle={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "gray",
+                    }}
+                    value={deadline}
+                    onFinish={onFinish}
+                    format="ss"
+                  />
+                  ) Huỷ
+                </div>
               </Button>
               <Button
                 type="primary"
