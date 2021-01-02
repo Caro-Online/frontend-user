@@ -3,6 +3,8 @@ sudo: required
 
 services:
   - docker
+env:
+  - API_URL=https://api-serverr.herokuapp.com/
 
 before_install:
   # install heroku CLI
