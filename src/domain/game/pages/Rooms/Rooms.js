@@ -15,6 +15,7 @@ import {
   Input,
   Alert,
   Space,
+  message as antMessage,
 } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { useHistory } from 'react-router-dom';
@@ -113,36 +114,58 @@ const Rooms = ({ socket }) => {
   );
 
   useEffect(() => {
-    if (socket) {
-      // Lắng nghe sự kiện room-update để update lại thông tin phòng
-      socket.on('room-update', ({ room }) => {
-        let roomNeedToUpdate = rooms.find(
-          (eachRoom) => eachRoom.roomId === room.roomId
-        );
-        roomNeedToUpdate = room;
-        const indexRoomNeedToUpdate = rooms.findIndex(
-          (eachRoom) => eachRoom.roomId === room.roomId
-        );
-        roomNeedToUpdate.numPeople = calculateNumPeople(roomNeedToUpdate);
-        roomNeedToUpdate.key = room._id;
+    let roomUpdateListener, newRoomListener;
+    async function doStuff() {
+      if (socket) {
+        try {
+          // Lấy thông tin tất cả các phòng về
+          const response = await api.getAllRoom();
+          const { rooms } = response.data;
+          // Lắng nghe sự kiện room-update để update lại thông tin phòng
+          roomUpdateListener = ({ room }) => {
+            let roomNeedToUpdate = rooms.find(
+              (eachRoom) => eachRoom.roomId === room.roomId
+            );
+            roomNeedToUpdate = room;
+            const indexRoomNeedToUpdate = rooms.findIndex(
+              (eachRoom) => eachRoom.roomId === room.roomId
+            );
+            roomNeedToUpdate.numPeople = calculateNumPeople(roomNeedToUpdate);
+            roomNeedToUpdate.key = room._id;
 
-        let updatedRooms = _.cloneDeep(rooms);
-        updatedRooms[indexRoomNeedToUpdate] = roomNeedToUpdate;
-        setRooms(updatedRooms);
-        setPlayingAndWaitingRooms(updatedRooms);
-      });
-      //Lắng nghe sự kiện new-room để thêm phòng mới
-      socket.on('new-room', ({ room }) => {
-        let addedRoom = { ...room };
-        addedRoom.numPeople = calculateNumPeople(room);
-        addedRoom.key = room._id;
-        let updatedRooms = _.cloneDeep(rooms);
-        updatedRooms = [...updatedRooms, addedRoom];
-        setRooms(updatedRooms);
-        setPlayingAndWaitingRooms(updatedRooms);
-      });
+            let updatedRooms = _.cloneDeep(rooms);
+            updatedRooms[indexRoomNeedToUpdate] = roomNeedToUpdate;
+            setRooms(updatedRooms);
+            setPlayingAndWaitingRooms(updatedRooms);
+          };
+          socket.on('room-update', roomUpdateListener);
+          //Lắng nghe sự kiện new-room để thêm phòng mới
+          newRoomListener = ({ room }) => {
+            let addedRoom = { ...room };
+            addedRoom.numPeople = calculateNumPeople(room);
+            addedRoom.key = room._id;
+            let updatedRooms = _.cloneDeep(rooms);
+            updatedRooms = [...updatedRooms, addedRoom];
+            setRooms(updatedRooms);
+            setPlayingAndWaitingRooms(updatedRooms);
+          };
+          socket.on('new-room', newRoomListener);
+        } catch (err) {
+          console.log(err);
+          antMessage.error(err);
+        }
+      }
     }
-  }, [socket, rooms, calculateNumPeople, setPlayingAndWaitingRooms]);
+    doStuff();
+    return () => {
+      if (roomUpdateListener) {
+        socket.off('room-update', roomUpdateListener);
+      }
+      if (newRoomListener) {
+        socket.off('new-room', newRoomListener);
+      }
+    };
+  }, [socket, calculateNumPeople, setPlayingAndWaitingRooms]);
 
   useEffect(() => {
     setIsLoading(true);

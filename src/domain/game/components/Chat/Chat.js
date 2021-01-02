@@ -35,6 +35,9 @@ const Chat = ({ room }) => {
       console.log(message);
       setMessages((messages) => [...messages, message]);
     });
+    return () => {
+      socket.off('message');
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

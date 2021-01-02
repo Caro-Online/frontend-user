@@ -38,19 +38,30 @@ const BoardGame = React.memo(
 
     useEffect(() => {
       // Nếu match start thì lắng nghe sự kiện receive-move
-      socket.on('match-start', async ({ matchId }) => {
-        socket.on('receive-move', ({ updatedMatch }) => {
-          console.log('ReceiveMove');
-          // Cập nhật lại match cho các client trong room
-          setMatch({ ...updatedMatch });
-          if (!updatedMatch.winner) {
-            setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
-          }
-        });
-        socket.on('have-winner', ({ updatedMatch }) => {
-          setMatch({ ...updatedMatch });
-        });
-      });
+      const matchStartListener = async ({ matchId }) => {
+        socket.on('receive-move', receiveMoveListener);
+        socket.on('have-winner', haveWinnerListener);
+      };
+
+      const receiveMoveListener = ({ updatedMatch }) => {
+        console.log('ReceiveMove');
+        // Cập nhật lại match cho các client trong room
+        setMatch({ ...updatedMatch });
+        if (!updatedMatch.winner) {
+          setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
+        }
+      };
+
+      const haveWinnerListener = ({ updatedMatch }) => {
+        setMatch({ ...updatedMatch });
+      };
+      socket.on('match-start', matchStartListener);
+      return () => {
+        socket.off('match-start', matchStartListener);
+        socket.off('receive-move', receiveMoveListener);
+        socket.off('have-winner', haveWinnerListener);
+        console.log('Remove event');
+      };
     }, [socket, setMatch, setPlaying]);
 
     useEffect(() => {

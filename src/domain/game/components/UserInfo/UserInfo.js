@@ -47,24 +47,27 @@ function UserInfo({
 
   const joinPlayerQueueHandler = useCallback(async () => {
     const userId = getUserIdFromStorage();
+    // Update room out audiences thêm vào players
     const res = await api.joinPlayerQueue(userId, roomId);
     const { success, room } = res.data;
     if (success) {
-      console.log('join queue success');
       setAudiences(room.audiences);
-      setNumPeopleInRoom(room.audiences.length + room.players.length);
+      // setNumPeopleInRoom(room.audiences.length + room.players.length);
       setRoom(room);
       const response1 = await getUserById(userId);
-      const resp = await api.createMatch(idOfRoom, [
-        players[0].user._id,
-        userId,
-      ]);
-      await api.updateRoomStatus(roomId, 'PLAYING'); //update lại trạng thái của room là playing
       setPlayers([...players, { user: response1.data.user, isReady: true }]);
-      setMatch(resp.data.match);
-      setShowButton(false);
-      // Thằng vào sau emit match start
-      socket.emit('match-start', { matchId: resp.data.match._id });
+      // Nếu có 2 người trong players thì bắt đầu game luôn
+      if (players.length + 1 === 2) {
+        const resp = await api.createMatch(idOfRoom, [
+          players[0].user._id,
+          userId,
+        ]);
+        await api.updateRoomStatus(roomId, 'PLAYING'); //update lại trạng thái của room là playing
+        setMatch(resp.data.match);
+        setShowButton(false);
+        // Thằng vào sau emit match start
+        socket.emit('match-start', { matchId: resp.data.match._id });
+      }
     }
   }, [
     idOfRoom,
@@ -72,21 +75,10 @@ function UserInfo({
     roomId,
     setAudiences,
     setMatch,
-    setNumPeopleInRoom,
     setPlayers,
     setRoom,
     socket,
   ]);
-
-  //ĐƯA RA NGOÀI BOARD GAME
-  // useEffect(() => {
-  //   let socket = getSocket();
-  //   socket.on('join-match-update', (message) => {
-  //     getUserById(message.userId).then((res) => {
-  //       setUser2(res.data.user);
-  //     });
-  //   });
-  // });
 
   const getXIsNext = () => {
     if (match) {

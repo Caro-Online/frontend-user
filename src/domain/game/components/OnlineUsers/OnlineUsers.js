@@ -32,13 +32,13 @@ const { Text } = Typography;
 
 let socket;
 
-const modifyUsersStatus = (response, data, setUsers, status) => {
-  const modifyUsers = _.cloneDeep(response.users);
+const modifyUsersStatus = (users, data, setUsers, status) => {
+  const modifyUsers = _.cloneDeep(users);
   const index = modifyUsers.findIndex(
     (user) => user._id.toString() === data.userId.toString()
   );
   const modifyUser = _.cloneDeep(modifyUsers[index]);
-  modifyUser.status = 'ONLINE';
+  modifyUser.status = status;
   modifyUsers[index] = modifyUser;
   setUsers(modifyUsers);
 };
@@ -48,6 +48,7 @@ const OnlineUsers = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    let userOnlineListener, userOfflineListener;
     setIsLoading(true);
     fetch(`${API}/user`, {
       method: 'GET',
@@ -71,19 +72,28 @@ const OnlineUsers = (props) => {
           setIsLoading(false);
           setUsers(users);
           socket = getSocket();
-          socket.on('user-online', (data) => {
-            modifyUsersStatus(response, data, setUsers, 'ONLINE');
-          });
-          socket.on('user-offline', (data) => {
-            console.log('Processing user offline event');
-            modifyUsersStatus(response, data, setUsers, 'OFFLINE');
-          });
+          userOnlineListener = (data) => {
+            modifyUsersStatus(users, data, setUsers, 'ONLINE');
+          };
+          socket.on('user-online', userOnlineListener);
+          userOfflineListener = (data) => {
+            modifyUsersStatus(users, data, setUsers, 'OFFLINE');
+          };
+          socket.on('user-offline', userOfflineListener);
         }
       })
       .catch((error) => {
         console.log(error);
         setIsLoading(false);
       });
+    return () => {
+      if (userOnlineListener) {
+        socket.off('user-online', userOnlineListener);
+      }
+      if (userOfflineListener) {
+        socket.off('user-offline', userOfflineListener);
+      }
+    };
   }, []);
 
   let content = null;

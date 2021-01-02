@@ -31,6 +31,14 @@ export const getUserById = (userId) => {
   };
   return axios.get(`${API}/user/${userId}`, config);
 };
+
+export const getOnlineUsers = () => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.get(`${API}/user`, config);
+};
 // export const updateStatusToOnline = (userId) => {
 //   return axios.put(`${API}/user/${userId}/update-status`);
 // };

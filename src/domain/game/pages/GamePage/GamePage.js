@@ -12,6 +12,7 @@ import {
   Statistic,
   message as antMessage,
 } from 'antd';
+import { connect } from 'react-redux';
 import { FaTrophy, FaUsers, FaInfoCircle } from 'react-icons/fa';
 
 // Components
@@ -33,7 +34,6 @@ import {
   addItem,
   getUserIdFromStorage,
 } from '../../../../shared/utils/utils';
-import { connect } from 'react-redux';
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -92,30 +92,42 @@ const GamePage = React.memo((props) => {
   }, [roomId]);
 
   useEffect(() => {
+    const roomDataListener = ({ room }) => {
+      setAudiences(room.audiences);
+      setIdOfRoom(room._id);
+      setRoom(room);
+      setNumPeopleInRoom(room.players.length + room.audiences.length);
+      setPlayers(room.players);
+    };
     if (socket) {
-      socket.on('room-data', ({ room }) => {
-        setAudiences(room.audiences);
-        setIdOfRoom(room._id);
-        setRoom(room);
-        setNumPeopleInRoom(room.players.length + room.audiences.length);
-        setPlayers(room.players);
-      });
+      socket.on('room-data', roomDataListener);
     }
-  }, [audiences, setPlayers, socket]);
+    return () => {
+      socket.off('room-data', roomDataListener);
+    };
+  }, [setPlayers, socket]);
 
   useEffect(() => {
-    socket.on('match-start-update', async ({ matchId }) => {
+    const matchStartUpdateListener = async ({ matchId }) => {
       const res = await api.getMatchById(matchId);
       setMatch(res.data.match);
-    });
-    socket.on('have-winner', ({ updatedMatch }) => {
+    };
+    socket.on('match-start-update', matchStartUpdateListener);
+    const haveWinnerListener = ({ updatedMatch }) => {
       console.log('have winner');
       setMatch({ ...updatedMatch });
-    });
-    socket.on('end-match', ({ updatedMatch }) => {
+    };
+    socket.on('have-winner', haveWinnerListener);
+    const endMatchListener = ({ updatedMatch }) => {
       console.log('end match');
       setMatch({ ...updatedMatch });
-    });
+    };
+    socket.on('end-match', endMatchListener);
+    return () => {
+      socket.off('match-state-update', matchStartUpdateListener);
+      socket.off('have-winner', haveWinnerListener);
+      socket.off('end-match', endMatchListener);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
