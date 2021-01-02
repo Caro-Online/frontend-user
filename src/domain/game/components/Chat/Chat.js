@@ -1,5 +1,6 @@
 //Library
 import React, { useCallback, useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { MessageFilled } from '@ant-design/icons';
 
 //Components
@@ -15,31 +16,32 @@ import {
   getUsernameFromStorage,
 } from '../../../../shared/utils/utils';
 
-const Chat = ({ room }) => {
+const Chat = ({ room, socket }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    let socket = getSocket();
-    const responseMessages = room.chat.map((chat) => {
-      return {
-        userId: chat.user._id,
-        userName: chat.user.name,
-        text: chat.content,
-        createdAt: chat.createdAt,
-      };
-    });
-    setMessages([...responseMessages]);
-    socket.on('message', (message) => {
+    const messageListener = (message) => {
       console.log('Receive message');
       console.log(message);
       setMessages((messages) => [...messages, message]);
-    });
-    return () => {
-      socket.off('message');
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (socket) {
+      const responseMessages = room.chat.map((chat) => {
+        return {
+          userId: chat.user._id,
+          userName: chat.user.name,
+          text: chat.content,
+          createdAt: chat.createdAt,
+        };
+      });
+      setMessages([...responseMessages]);
+      socket.on('message', messageListener);
+    }
+    return () => {
+      socket.off('message', messageListener);
+    };
+  }, [socket, room.chat]);
 
   const sendMessage = useCallback(
     (event) => {
@@ -82,4 +84,10 @@ const Chat = ({ room }) => {
   );
 };
 
-export default React.memo(Chat);
+const mapStateToProps = (state) => {
+  return {
+    socket: state.auth.socket,
+  };
+};
+
+export default connect(mapStateToProps)(React.memo(Chat));
