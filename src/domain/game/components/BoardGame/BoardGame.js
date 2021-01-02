@@ -12,13 +12,14 @@ import { updateNextPlayer } from '../../../../store/actions/game.action';
 import { getUserIdFromStorage } from '../../../../shared/utils/utils';
 import api from '../../apiGame';
 import { forEach, map } from 'lodash';
+import loading from 'src/shared/assets/images/loading.svg'
 
 const boardSize = 17;
 
 const BoardGame = React.memo(
   ({ players, match, socket, setMatch, disable, setDisable }) => {
     const reactHistory = useHistory();
-    const [rerender, setRerender] = useState(false);
+
 
     //Check đúng userId và lượt đi, mở ô cho đánh
     const setPlaying = useCallback(
@@ -30,6 +31,7 @@ const BoardGame = React.memo(
             (players[1].user._id === userId && !xIsNext)
           ) {
             setDisable(false);
+
           }
         }
       },
@@ -187,7 +189,8 @@ const BoardGame = React.memo(
     return (
       <div>
         <div className="game-info">
-          <div>{status}</div>
+          {!disable ? <div className="your-turn">Đến lượt bạn <img src={loading} /></div> :
+            <div className="your-turn"></div>}
         </div>
         <table className="board">
           <tbody>{renderBoard()}</tbody>
