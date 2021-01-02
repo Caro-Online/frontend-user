@@ -1,17 +1,14 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
-import { Layout } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
-import { connect } from "react-redux";
-// import 'antd/dist/antd.css';
-import "./App.css";
-import { initSocket } from "./shared/utils/socket.io-client";
-import * as actions from "./store/actions";
+import React, { Suspense, lazy, useEffect, useState } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { Layout } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { connect } from 'react-redux';
+import './App.css';
+import * as actions from './store/actions';
 import {
   getUsernameFromStorage,
   getUserIdFromStorage,
-} from "src/shared/utils/utils";
-
+} from 'src/shared/utils/utils';
 
 import { useHistory } from 'react-router-dom';
 import PrivateRoute from './shared/components/Route/PrivatetRoute';
@@ -25,17 +22,16 @@ require('dotenv').config();
 const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
 const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const ConfirmRegistration = lazy(() =>
-  import("./domain/user/pages/ConfirmRegistration/ConfirmRegistration")
+  import('./domain/user/pages/ConfirmRegistration/ConfirmRegistration')
 );
-const Login = lazy(() => import("./domain/user/pages/Login/Login"));
+const Login = lazy(() => import('./domain/user/pages/Login/Login'));
 const ResetPassword = lazy(() =>
-  import("./domain/user/pages/ResetPassword/ResetPassword")
+  import('./domain/user/pages/ResetPassword/ResetPassword')
 );
 const UpdatePassword = lazy(() =>
-  import("./domain/user/pages/UpdatePassword/UpdatePassword")
+  import('./domain/user/pages/UpdatePassword/UpdatePassword')
 );
-const Rooms = lazy(() => import("./domain/game/pages/Rooms/Rooms"));
-
+const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
 
 const { Content } = Layout;
 const App = (props) => {
@@ -123,7 +119,7 @@ const App = (props) => {
         onJoin={onJoinRoom}
       />
       <Suspense fallback={<LoadingOutlined style={{ fontSize: 100 }} spin />}>
-        <Content style={{ backgroundColor: "white" }}>{routes}</Content>
+        <Content style={{ backgroundColor: 'white' }}>{routes}</Content>
       </Suspense>
       {/* <Footer
         style={{

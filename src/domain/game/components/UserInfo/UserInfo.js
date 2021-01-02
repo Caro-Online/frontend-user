@@ -81,12 +81,11 @@ function UserInfo({
   useEffect(() => {
     if (socket) {
       socket.on('update-player-ready', ({ room }) => {
-        console.log("update-player-ready");
-        setPlayers(room.players)
-      })
+        console.log('update-player-ready');
+        setPlayers(room.players);
+      });
     }
-  }, [socket, setRoom])
-
+  }, [socket, setRoom, setPlayers]);
 
   const getXIsNext = () => {
     if (match) {
@@ -99,10 +98,10 @@ function UserInfo({
   //Bắt sự kiện click bắt đầu khi kết thúc ván
   const onStartClick = useCallback(async () => {
     const userId = getUserIdFromStorage();
-    const res = await api.updatePlayerIsReady(roomId, userId, true);//trả về  room để update user status
-    setPlayers(res.data.room.players)
+    const res = await api.updatePlayerIsReady(roomId, userId, true); //trả về  room để update user status
+    setPlayers(res.data.room.players);
     socket.emit('set-player-ready', { userId });
-  }, [setPlayers, socket])
+  }, [setPlayers, socket, roomId]);
 
   return (
     <div className="user-info">
@@ -147,8 +146,8 @@ function UserInfo({
             {audiences ? (
               audiences.map((au, i) => <li key={i}>{au.name}</li>)
             ) : (
-                <li>Không có khán giả</li>
-              )}
+              <li>Không có khán giả</li>
+            )}
           </ul>
         </Card>
       </Card>
