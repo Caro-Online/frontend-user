@@ -1,38 +1,38 @@
-import React, { Suspense, lazy, useEffect, useState } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import { Layout } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { connect } from 'react-redux';
+import React, { Suspense, lazy, useEffect, useState } from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { Layout } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { connect } from "react-redux";
 // import 'antd/dist/antd.css';
-import './App.css';
-import { initSocket } from './shared/utils/socket.io-client';
-import * as actions from './store/actions';
+import "./App.css";
+import { initSocket } from "./shared/utils/socket.io-client";
+import * as actions from "./store/actions";
 import {
   getUsernameFromStorage,
   getUserIdFromStorage,
-} from 'src/shared/utils/utils';
+} from "src/shared/utils/utils";
 
-import { useHistory } from 'react-router-dom';
-import PrivateRoute from './shared/components/Route/PrivatetRoute';
-import PublicRoute from './shared/components/Route/PublicRoute';
-import MainHeader from './shared/components/MainHeader/MainHeader';
-import Home from './domain/home/pages/Home';
-import GamePage from './domain/game/pages/GamePage/GamePage';
-import { invitationSocket } from 'src/shared/components/Invitation/api';
-import { InvitationDialog } from 'src/shared/components/Invitation';
-const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
-const Register = lazy(() => import('./domain/user/pages/Register/Register'));
+import { useHistory } from "react-router-dom";
+import PrivateRoute from "./shared/components/Route/PrivatetRoute";
+import PublicRoute from "./shared/components/Route/PublicRoute";
+import MainHeader from "./shared/components/MainHeader/MainHeader";
+import Home from "./domain/home/pages/Home";
+import GamePage from "./domain/game/pages/GamePage/GamePage";
+import { invitationSocket } from "src/shared/components/Invitation/api";
+import { InvitationDialog } from "src/shared/components/Invitation";
+const Logout = lazy(() => import("./domain/user/pages/Logout/Logout"));
+const Register = lazy(() => import("./domain/user/pages/Register/Register"));
 const ConfirmRegistration = lazy(() =>
-  import('./domain/user/pages/ConfirmRegistration/ConfirmRegistration')
+  import("./domain/user/pages/ConfirmRegistration/ConfirmRegistration")
 );
-const Login = lazy(() => import('./domain/user/pages/Login/Login'));
+const Login = lazy(() => import("./domain/user/pages/Login/Login"));
 const ResetPassword = lazy(() =>
-  import('./domain/user/pages/ResetPassword/ResetPassword')
+  import("./domain/user/pages/ResetPassword/ResetPassword")
 );
 const UpdatePassword = lazy(() =>
-  import('./domain/user/pages/UpdatePassword/UpdatePassword')
+  import("./domain/user/pages/UpdatePassword/UpdatePassword")
 );
-const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
+const Rooms = lazy(() => import("./domain/game/pages/Rooms/Rooms"));
 
 const { Content } = Layout;
 const App = (props) => {
@@ -51,35 +51,29 @@ const App = (props) => {
       };
     }
   }, [isAuthenticated, socket]);
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     invitationIO();
-  //   }
-  // }, [isAuthenticated]);
 
-  // const invitationIO = () => {
-  //   const data = {
-  //     invitedId: getUserIdFromStorage(),
-  //     invitedName: getUsernameFromStorage(),
-  //   };
-  //   invitationSocket(data, (err, data) => {
-  //     console.log(`invitationSocket`, data);
-  //     setShowInvitation(true);
-  //     setInvitedData(data);
-  //     setTimeout(() => setShowInvitation(false), 10000);
-  //   });
-  // };
-  // if (isAuthenticated) {
-  //   invitationIO();
-  // }
-  console.log(isAuthenticated);
-  // const onCancelInvitation = () => {
-  //   setShowInvitation(false);
-  // };
-  // const onJoinRoom = (roomId) => {
-  //   history.push(`room/${roomId}`);
-  //   setShowInvitation(false);
-  // };
+  const invitationIO = () => {
+    const data = {
+      invitedId: getUserIdFromStorage(),
+      invitedName: getUsernameFromStorage(),
+    };
+    invitationSocket(data, (err, data) => {
+      console.log(`invitationSocket`, data);
+      setShowInvitation(true);
+      setInvitedData(data);
+    });
+  };
+  if (isAuthenticated) {
+    invitationIO();
+  }
+  console.log(1, `isAuthenticated`, isAuthenticated);
+  const onCancelInvitation = () => {
+    setShowInvitation(false);
+  };
+  const onJoinRoom = (roomId) => {
+    history.push(`room/${roomId}`);
+    setShowInvitation(false);
+  };
   let routes = (
     <Switch>
       <Route path="/" exact component={Home} />
@@ -118,14 +112,14 @@ const App = (props) => {
   return (
     <Layout>
       <MainHeader />
-      {/* <InvitationDialog
+      <InvitationDialog
         value={showInvitation}
         data={invitedData}
         onCancel={onCancelInvitation}
         onJoin={onJoinRoom}
-      /> */}
+      />
       <Suspense fallback={<LoadingOutlined style={{ fontSize: 100 }} spin />}>
-        <Content style={{ backgroundColor: 'white' }}>{routes}</Content>
+        <Content style={{ backgroundColor: "white" }}>{routes}</Content>
       </Suspense>
       {/* <Footer
         style={{
