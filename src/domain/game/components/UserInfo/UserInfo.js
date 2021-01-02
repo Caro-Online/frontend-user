@@ -78,15 +78,15 @@ function UserInfo({
     socket,
   ]);
 
-  //ĐƯA RA NGOÀI BOARD GAME
-  // useEffect(() => {
-  //   let socket = getSocket();
-  //   socket.on('join-match-update', (message) => {
-  //     getUserById(message.userId).then((res) => {
-  //       setUser2(res.data.user);
-  //     });
-  //   });
-  // });
+  useEffect(() => {
+    if (socket) {
+      socket.on('update-player-ready', ({ room }) => {
+        console.log("update-player-ready");
+        setPlayers(room.players)
+      })
+    }
+  }, [socket, setRoom])
+
 
   const getXIsNext = () => {
     if (match) {
@@ -96,6 +96,13 @@ function UserInfo({
     }
     return null;
   };
+  //Bắt sự kiện click bắt đầu khi kết thúc ván
+  const onStartClick = useCallback(async () => {
+    const userId = getUserIdFromStorage();
+    const res = await api.updatePlayerIsReady(roomId, userId, true);//trả về  room để update user status
+    setPlayers(res.data.room.players)
+    socket.emit('set-player-ready', { userId });
+  }, [setPlayers, socket])
 
   return (
     <div className="user-info">
@@ -109,6 +116,8 @@ function UserInfo({
           matchId={match ? match._id : null}
           setMatch={setMatch}
           setDisable={setDisable}
+          isMatchEnd={match ? (match.winner ? true : false) : false}
+          onStartClick={onStartClick}
         />
         <CardInfo
           player={players.length > 1 ? players[1] : null}
@@ -119,6 +128,9 @@ function UserInfo({
           matchId={match ? match._id : null}
           setMatch={setMatch}
           setDisable={setDisable}
+          roomId={roomId}
+          isMatchEnd={match ? (match.winner ? true : false) : false}
+          onStartClick={onStartClick}
         />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
           <Button
@@ -135,8 +147,8 @@ function UserInfo({
             {audiences ? (
               audiences.map((au, i) => <li key={i}>{au.name}</li>)
             ) : (
-              <li>Không có khán giả</li>
-            )}
+                <li>Không có khán giả</li>
+              )}
           </ul>
         </Card>
       </Card>
