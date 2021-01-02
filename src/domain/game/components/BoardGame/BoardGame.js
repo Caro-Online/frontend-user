@@ -60,7 +60,6 @@ const BoardGame = React.memo(
         socket.off('match-start', matchStartListener);
         socket.off('receive-move', receiveMoveListener);
         socket.off('have-winner', haveWinnerListener);
-        console.log('Remove event');
       };
     }, [socket, setMatch, setPlaying]);
 

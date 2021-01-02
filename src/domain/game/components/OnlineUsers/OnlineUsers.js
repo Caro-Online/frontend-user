@@ -1,5 +1,5 @@
 //Library
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   List,
   Avatar,
@@ -11,26 +11,24 @@ import {
   Col,
   Statistic,
   Typography,
-} from "antd";
-import { LoadingOutlined, UserOutlined } from "@ant-design/icons";
-import { ImUserPlus } from "react-icons/im";
-import { FaGamepad, FaCalendarAlt, FaTrophy } from "react-icons/fa";
-import _ from "lodash";
-import InvitationButton from "src/shared/components/Invitation";
+} from 'antd';
+import { LoadingOutlined, UserOutlined } from '@ant-design/icons';
+import { ImUserPlus } from 'react-icons/im';
+import { FaGamepad, FaCalendarAlt, FaTrophy } from 'react-icons/fa';
+import _ from 'lodash';
+import InvitationButton from 'src/shared/components/Invitation';
 //Others
-import "antd/dist/antd.css";
-import "./OnlineUsers.css";
-import { API } from "../../../../config";
-import { getSocket } from "../../../../shared/utils/socket.io-client";
+import 'antd/dist/antd.css';
+import './OnlineUsers.css';
+import { API } from '../../../../config';
 import {
   getUserIdFromStorage,
   getTokenFromStorage,
   getUserImageUrlFromStorage,
-} from "../../../../shared/utils/utils";
+} from '../../../../shared/utils/utils';
+import { connect } from 'react-redux';
 
 const { Text } = Typography;
-
-let socket;
 
 const modifyUsersStatus = (users, data, setUsers, status) => {
   const modifyUsers = _.cloneDeep(users);
@@ -43,7 +41,7 @@ const modifyUsersStatus = (users, data, setUsers, status) => {
   setUsers(modifyUsers);
 };
 
-const OnlineUsers = ({ roomId }) => {
+const OnlineUsers = ({ roomId, socket }) => {
   const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   console.log(`OnlineUsers`, window.history);
@@ -51,9 +49,9 @@ const OnlineUsers = ({ roomId }) => {
     let userOnlineListener, userOfflineListener;
     setIsLoading(true);
     fetch(`${API}/user`, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${getTokenFromStorage()}`,
       },
     })
@@ -63,15 +61,14 @@ const OnlineUsers = ({ roomId }) => {
           setIsLoading(false);
         } else {
           const users = response.users.map((user) => {
-            const Year = user.createdAt.split("-")[0];
-            const createdMonth = user.createdAt.split("-")[1];
-            const createdDay = user.createdAt.split("-")[2].split("T")[0];
+            const Year = user.createdAt.split('-')[0];
+            const createdMonth = user.createdAt.split('-')[1];
+            const createdDay = user.createdAt.split('-')[2].split('T')[0];
             const date = [createdDay, createdMonth, Year];
-            return { ...user, createdAt: date.join("/") };
+            return { ...user, createdAt: date.join('/') };
           });
           setIsLoading(false);
           setUsers(users);
-          socket = getSocket();
           userOnlineListener = (data) => {
             modifyUsersStatus(users, data, setUsers, 'ONLINE');
           };
@@ -94,7 +91,7 @@ const OnlineUsers = ({ roomId }) => {
         socket.off('user-offline', userOfflineListener);
       }
     };
-  }, []);
+  }, [socket]);
 
   let content = null;
   if (users) {
@@ -104,7 +101,7 @@ const OnlineUsers = ({ roomId }) => {
         dataSource={users}
         renderItem={(user) => (
           <>
-            {user.status === "ONLINE" ? (
+            {user.status === 'ONLINE' ? (
               <List.Item
                 className="list-item-user"
                 actions={[
@@ -122,12 +119,12 @@ const OnlineUsers = ({ roomId }) => {
                   placement="left"
                   content={
                     <div className="popover-container">
-                      <Row gutter={8} style={{ width: "100%", height: "100%" }}>
+                      <Row gutter={8} style={{ width: '100%', height: '100%' }}>
                         <Col span={6}>
                           <Badge
                             status="success"
                             offset={[-10, 80]}
-                            style={{ width: "12px", height: "12px" }}
+                            style={{ width: '12px', height: '12px' }}
                           >
                             {user.imageUrl ? (
                               <Avatar
@@ -146,7 +143,7 @@ const OnlineUsers = ({ roomId }) => {
                         </Col>
                         <Col
                           span={18}
-                          style={{ width: "100%", height: "100%" }}
+                          style={{ width: '100%', height: '100%' }}
                         >
                           <h3>{user.name}</h3>
                           <Row>
@@ -182,7 +179,7 @@ const OnlineUsers = ({ roomId }) => {
                                   title="Tỉ lệ thắng"
                                   value={0}
                                   precision={2}
-                                  valueStyle={{ color: "#3f8600" }}
+                                  valueStyle={{ color: '#3f8600' }}
                                   suffix="%"
                                 />
                               ) : (
@@ -192,7 +189,7 @@ const OnlineUsers = ({ roomId }) => {
                                     user.matchHaveWon / user.matchHavePlayed
                                   }
                                   precision={2}
-                                  valueStyle={{ color: "#3f8600" }}
+                                  valueStyle={{ color: '#3f8600' }}
                                   suffix="%"
                                 />
                               )}
@@ -217,10 +214,10 @@ const OnlineUsers = ({ roomId }) => {
                     title={
                       <Text strong>
                         {user.name}
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
                           <FaTrophy
                             size="18"
-                            style={{ marginRight: "8px", color: "#f5af19" }}
+                            style={{ marginRight: '8px', color: '#f5af19' }}
                           />
                           <Text strong>{user.cup}</Text>
                         </div>
@@ -248,4 +245,10 @@ const OnlineUsers = ({ roomId }) => {
   return content;
 };
 
-export default OnlineUsers;
+const mapStateToProps = (state) => {
+  return {
+    socket: state.auth.socket,
+  };
+};
+
+export default connect(mapStateToProps)(OnlineUsers);

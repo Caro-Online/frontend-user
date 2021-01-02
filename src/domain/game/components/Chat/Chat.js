@@ -47,8 +47,6 @@ const Chat = ({ room, socket }) => {
     (event) => {
       event.preventDefault();
 
-      let socket = getSocket();
-
       if (message) {
         console.log('emit sendmessage');
         socket.emit(
@@ -58,7 +56,7 @@ const Chat = ({ room, socket }) => {
         );
       }
     },
-    [message]
+    [message, socket]
   );
 
   return (
