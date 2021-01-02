@@ -55,3 +55,13 @@
 .game-info {
     margin-left: 20px;
 }
+
+.your-turn{
+    font-size: 20px;
+}
+.your-turn img{
+    height: 30px;
+}
+.game-info{
+    height: 35px
+}
