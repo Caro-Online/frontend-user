@@ -12,16 +12,18 @@ import {
   getUserIdFromStorage,
 } from "src/shared/utils/utils";
 
-import { useHistory } from "react-router-dom";
-import PrivateRoute from "./shared/components/Route/PrivatetRoute";
-import PublicRoute from "./shared/components/Route/PublicRoute";
-import MainHeader from "./shared/components/MainHeader/MainHeader";
-import Home from "./domain/home/pages/Home";
-import GamePage from "./domain/game/pages/GamePage/GamePage";
-import { invitationSocket } from "src/shared/components/Invitation/api";
-import { InvitationDialog } from "src/shared/components/Invitation";
-const Logout = lazy(() => import("./domain/user/pages/Logout/Logout"));
-const Register = lazy(() => import("./domain/user/pages/Register/Register"));
+
+import { useHistory } from 'react-router-dom';
+import PrivateRoute from './shared/components/Route/PrivatetRoute';
+import PublicRoute from './shared/components/Route/PublicRoute';
+import MainHeader from './shared/components/MainHeader/MainHeader';
+import Home from './domain/home/pages/Home';
+import GamePage from './domain/game/pages/GamePage/GamePage';
+import { invitationSocket } from 'src/shared/components/Invitation/api';
+import { InvitationDialog } from 'src/shared/components/Invitation';
+require('dotenv').config();
+const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
+const Register = lazy(() => import('./domain/user/pages/Register/Register'));
 const ConfirmRegistration = lazy(() =>
   import("./domain/user/pages/ConfirmRegistration/ConfirmRegistration")
 );
@@ -33,6 +35,7 @@ const UpdatePassword = lazy(() =>
   import("./domain/user/pages/UpdatePassword/UpdatePassword")
 );
 const Rooms = lazy(() => import("./domain/game/pages/Rooms/Rooms"));
+
 
 const { Content } = Layout;
 const App = (props) => {
@@ -111,6 +114,7 @@ const App = (props) => {
 
   return (
     <Layout>
+      {console.log(process.env.REACT_APP_API_URL)}
       <MainHeader />
       <InvitationDialog
         value={showInvitation}
