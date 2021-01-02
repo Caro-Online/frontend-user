@@ -9,7 +9,6 @@
         "@testing-library/user-event": "^12.5.0",
         "antd": "^4.9.2",
         "axios": "^0.21.0",
-        "dotenv": "^8.2.0",
         "lodash": "^4.17.20",
         "moment": "^2.29.1",
         "react": "^17.0.1",
@@ -54,5 +53,8 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "devDependencies": {
+        "dotenv": "^8.2.0"
     }
 }

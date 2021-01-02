@@ -1,37 +1,37 @@
-import React, { Suspense, lazy, useEffect, useState } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import { Layout } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { connect } from 'react-redux';
-import './App.css';
-import * as actions from './store/actions';
+import React, { Suspense, lazy, useEffect, useState } from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { Layout } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { connect } from "react-redux";
+import "./App.css";
+import * as actions from "./store/actions";
 import {
   getUsernameFromStorage,
   getUserIdFromStorage,
-} from 'src/shared/utils/utils';
+} from "src/shared/utils/utils";
 
-import { useHistory } from 'react-router-dom';
-import PrivateRoute from './shared/components/Route/PrivatetRoute';
-import PublicRoute from './shared/components/Route/PublicRoute';
-import MainHeader from './shared/components/MainHeader/MainHeader';
-import Home from './domain/home/pages/Home';
-import GamePage from './domain/game/pages/GamePage/GamePage';
-import { invitationSocket } from 'src/shared/components/Invitation/api';
-import { InvitationDialog } from 'src/shared/components/Invitation';
-require('dotenv').config();
-const Logout = lazy(() => import('./domain/user/pages/Logout/Logout'));
-const Register = lazy(() => import('./domain/user/pages/Register/Register'));
+import { useHistory } from "react-router-dom";
+import PrivateRoute from "./shared/components/Route/PrivatetRoute";
+import PublicRoute from "./shared/components/Route/PublicRoute";
+import MainHeader from "./shared/components/MainHeader/MainHeader";
+import Home from "./domain/home/pages/Home";
+import GamePage from "./domain/game/pages/GamePage/GamePage";
+import { invitationSocket } from "src/shared/components/Invitation/api";
+import { InvitationDialog } from "src/shared/components/Invitation";
+require("dotenv").config();
+const Logout = lazy(() => import("./domain/user/pages/Logout/Logout"));
+const Register = lazy(() => import("./domain/user/pages/Register/Register"));
 const ConfirmRegistration = lazy(() =>
-  import('./domain/user/pages/ConfirmRegistration/ConfirmRegistration')
+  import("./domain/user/pages/ConfirmRegistration/ConfirmRegistration")
 );
-const Login = lazy(() => import('./domain/user/pages/Login/Login'));
+const Login = lazy(() => import("./domain/user/pages/Login/Login"));
 const ResetPassword = lazy(() =>
-  import('./domain/user/pages/ResetPassword/ResetPassword')
+  import("./domain/user/pages/ResetPassword/ResetPassword")
 );
 const UpdatePassword = lazy(() =>
-  import('./domain/user/pages/UpdatePassword/UpdatePassword')
+  import("./domain/user/pages/UpdatePassword/UpdatePassword")
 );
-const Rooms = lazy(() => import('./domain/game/pages/Rooms/Rooms'));
+const Rooms = lazy(() => import("./domain/game/pages/Rooms/Rooms"));
 
 const { Content } = Layout;
 const App = (props) => {
@@ -66,6 +66,7 @@ const App = (props) => {
     invitationIO();
   }
   console.log(1, `isAuthenticated`, isAuthenticated);
+  console.log(`REACT_APP_API_URL`, process.env.REACT_APP_API_URL);
   const onCancelInvitation = () => {
     setShowInvitation(false);
   };
@@ -110,7 +111,6 @@ const App = (props) => {
 
   return (
     <Layout>
-      {console.log(process.env.REACT_APP_API_URL)}
       <MainHeader />
       <InvitationDialog
         value={showInvitation}
@@ -119,7 +119,7 @@ const App = (props) => {
         onJoin={onJoinRoom}
       />
       <Suspense fallback={<LoadingOutlined style={{ fontSize: 100 }} spin />}>
-        <Content style={{ backgroundColor: 'white' }}>{routes}</Content>
+        <Content style={{ backgroundColor: "white" }}>{routes}</Content>
       </Suspense>
       {/* <Footer
         style={{

@@ -34,6 +34,7 @@ import {
   getUsernameFromStorage,
 } from "../../../shared/utils/utils";
 import api from "../../game/apiGame";
+import { AiOutlineReload } from "react-icons/ai";
 const { Title, Text } = Typography;
 
 const { Option } = Select;
@@ -46,9 +47,11 @@ const Home = (props) => {
   const [openCreateRoomModal, setOpenCreateRoomModal] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [openInputRoomIdModal, setOpenInputRoomIdModal] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
   const [havePassword, setHavePassword] = useState(false);
+
+  const [retry, setRetry] = useState(false);
+  const [tipContent, setTipContent] = useState("Đang tìm phòng...");
   useEffect(() => {
     if (location.state) {
       if (location.state.returnFromResetPassword)
@@ -69,6 +72,8 @@ const Home = (props) => {
 
   const onClickPlayNowButtonHandler = () => {
     setShowDialog(true);
+    setRetry(false);
+    setTipContent("Đang tìm phòng...");
     api
       .getRandomRoom()
       .then((res) => {
@@ -80,7 +85,12 @@ const Home = (props) => {
         }
         console.log(`getRandomRoom`, data, roomId, showDialog);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        setIsLoading(false);
+        setTipContent("Hiện tại không còn phòng trống, vui lòng thử lại...");
+        setRetry(true);
+        console.error(err);
+      });
   };
   const onCloseDialog = () => {
     setShowDialog(false);
@@ -288,14 +298,36 @@ const Home = (props) => {
         <Row justify="center">
           <Space align="center">
             <Col style={{ margin: "8px 0" }} span={24}>
-              <Spin tip="Đang tìm phòng..."></Spin>
+              <Spin tip={tipContent}></Spin>
             </Col>
           </Space>
           <Col span={24}>
             <Divider style={{ margin: "8px 0" }}></Divider>
-            <Button type="primary" block danger onClick={onCloseDialog}>
-              Huỷ
-            </Button>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                type="primary"
+                block={!retry}
+                danger
+                onClick={onCloseDialog}
+              >
+                Huỷ
+              </Button>
+              {retry && (
+                <Button
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginLeft: 8,
+                  }}
+                  type="primary"
+                  onClick={onClickPlayNowButtonHandler}
+                >
+                  <AiOutlineReload style={{ marginRight: 4 }} fontSize={14} />
+                  Thử lại
+                </Button>
+              )}
+            </div>
           </Col>
         </Row>
       </Modal>
@@ -315,29 +347,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, null)(Home);
-
-export const useRoomRandomApi = (onSearch) => {
-  const [roomId, setRoomId] = useState();
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    const getRandomRoom = () => {
-      setIsLoading(true);
-      api
-        .getRandomRoom()
-        .then((res) => {
-          const data = res.data;
-          const { roomId } = data.room;
-          setRoomId(roomId);
-          setIsLoading(false);
-
-          console.log(`getRandomRoom`, data);
-        })
-        .catch((err) => console.error(err));
-    };
-    getRandomRoom();
-    // Passing URL as a dependency
-  }, [onSearch]);
-
-  // Return 'isLoading' not the 'setIsLoading' function
-  return [roomId, isLoading];
-};
