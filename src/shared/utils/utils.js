@@ -20,35 +20,35 @@ export const addItem = (array, audience) => {
 };
 
 export const setTokenToStorage = (token) => {
-  localStorage.setItem('token', token);
+  localStorage.setItem("token", token);
 };
 
 export const removeTokenFromStorage = () => {
-  localStorage.removeItem('token');
+  localStorage.removeItem("token");
 };
 
 export const getTokenFromStorage = () => {
-  return localStorage.getItem('token');
+  return localStorage.getItem("token");
 };
 
 export const setUserToStorage = (user) => {
-  localStorage.setItem('user', JSON.stringify(user));
+  localStorage.setItem("user", JSON.stringify(user));
 };
 
 export const removeUserFromStorage = () => {
-  localStorage.removeItem('user');
+  localStorage.removeItem("user");
 };
 
 export const getUserFromStorage = () => {
-  return JSON.parse(localStorage.getItem('user'));
+  return JSON.parse(localStorage.getItem("user"));
 };
 
 export const getUserIdFromStorage = () => {
-  return getUserFromStorage()._id;
+  return getUserFromStorage()?._id;
 };
 
 export const getUsernameFromStorage = () => {
-  return getUserFromStorage().name;
+  return getUserFromStorage()?.name;
 };
 
 export const getUserImageUrlFromStorage = () => {
@@ -56,13 +56,13 @@ export const getUserImageUrlFromStorage = () => {
 };
 
 export const setExpirationDateToStorage = (expirationDate) => {
-  localStorage.setItem('expirationDate', expirationDate);
+  localStorage.setItem("expirationDate", expirationDate);
 };
 
 export const removeExpirationDateFromStorage = () => {
-  localStorage.removeItem('expirationDate');
+  localStorage.removeItem("expirationDate");
 };
 
 export const getExpirationDateFromStorage = () => {
-  return localStorage.getItem('expirationDate');
+  return localStorage.getItem("expirationDate");
 };

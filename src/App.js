@@ -53,19 +53,20 @@ const App = (props) => {
         socket.disconnect();
       };
     }
+    if (isAuthenticated) {
+      const data = {
+        invitedId: getUserIdFromStorage(),
+        invitedName: getUsernameFromStorage(),
+      };
+      invitationSocket(data, (err, data) => {
+        console.log(`invitationSocket`, data);
+        setShowInvitation(true);
+        setInvitedData(data);
+        setTimeout(() => setShowInvitation(false), 10000);
+      });
+    }
   }, [isAuthenticated, socket]);
-  useEffect(() => {
-    const data = {
-      invitedId: getUserIdFromStorage(),
-      invitedName: getUsernameFromStorage(),
-    };
-    invitationSocket(data, (err, data) => {
-      console.log(`invitationSocket`, data);
-      setShowInvitation(true);
-      setInvitedData(data);
-      setTimeout(() => setShowInvitation(false), 10000);
-    });
-  }, []);
+  // useEffect(() => {}, []);
   console.log(isAuthenticated);
   const onCancelInvitation = () => {
     setShowInvitation(false);
