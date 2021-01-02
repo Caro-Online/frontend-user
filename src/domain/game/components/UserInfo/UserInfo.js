@@ -79,12 +79,16 @@ function UserInfo({
   ]);
 
   useEffect(() => {
+    let updatePlayerReadyListener = ({ room }) => {
+      console.log('update-player-ready');
+      setPlayers(room.players);
+    };
     if (socket) {
-      socket.on('update-player-ready', ({ room }) => {
-        console.log('update-player-ready');
-        setPlayers(room.players);
-      });
+      socket.on('update-player-ready', updatePlayerReadyListener);
     }
+    return () => {
+      socket.off('update-player-ready', updatePlayerReadyListener);
+    };
   }, [socket, setRoom, setPlayers]);
 
   const getXIsNext = () => {

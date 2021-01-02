@@ -52,7 +52,7 @@ const joinPlayerQueue = (userId, roomId) => {
   );
 };
 
-const joinRoomById = (roomId) => { };
+const joinRoomById = (roomId) => {};
 
 const getCurrentMatchByIdOfRoom = (roomId) => {
   const token = getTokenFromStorage();
@@ -107,12 +107,24 @@ const updateRoomStatus = (roomId, status) => {
   return axios.put(`${API}/room/${roomId}/update-status`, { status }, config);
 };
 
+const updateRoomWhenPlayerNotReady = (roomId, userId) => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.put(`${API}/room/${roomId}/player-ready`, { userId }, config);
+};
+
 const updatePlayerIsReady = (roomId, userId, isReady) => {
   const token = getTokenFromStorage();
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-  return axios.put(`${API}/room/${roomId}/update-player-isready`, { userId, isReady }, config);
+  return axios.put(
+    `${API}/room/${roomId}/update-player-isready`,
+    { userId, isReady },
+    config
+  );
 };
 
 const api = {
@@ -129,6 +141,7 @@ const api = {
   getRandomRoom,
   updateRoomStatus,
   updatePlayerIsReady,
+  updateRoomWhenPlayerNotReady,
 };
 
 export default api;

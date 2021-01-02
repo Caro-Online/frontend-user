@@ -1,6 +1,14 @@
 import React, { useCallback, useState, useEffect } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import moment from 'moment';
-import { Col, Card, Avatar, Statistic, Button } from 'antd';
+import {
+  Col,
+  Card,
+  Avatar,
+  Statistic,
+  Button,
+  message as antMessage,
+} from 'antd';
 import api from '../../apiGame';
 
 import ximage from '../../../../shared/assets/images/x.png';
@@ -25,6 +33,9 @@ function CardInfo({
   setMatch,
   setDisable,
 }) {
+  const params = useParams();
+  const history = useHistory();
+  const { roomId } = params;
   const [visibleButton, setVisibleButton] = useState(true);
   const getIconNext = useCallback(() => {
     if (xIsNext === x) {
@@ -85,12 +96,14 @@ function CardInfo({
     }
   }, [isPlaying, player]);
 
-  const handleClickButtonStart = () => {
+  const handleClickButtonStart = useCallback(() => {
+    // Tắt hiển thị nút sẵn sàng
     setVisibleButton(false);
+    // Update lại isReady của user và emit cho các user khác biết
     onStartClick();
-  };
+  }, [onStartClick]);
 
-  const renderButtonStart = () => {
+  const renderButtonStart = useCallback(() => {
     //Nút chơi lại hiển thị khi ván chơi kết thúc
     const userId = getUserIdFromStorage();
     if (player) {
@@ -106,20 +119,43 @@ function CardInfo({
             >
               Sẵn sàng
             </Button>
-            <Countdown
-              value={deadline}
-              prefix="Bạn còn "
-              format="ss"
-              suffix="giây để sẵn sàng"
-              onFinish={async () => {
-                console.log('Helo there');
-              }}
-            />
+            {visibleButton ? (
+              <Countdown
+                value={deadline}
+                prefix="Bạn còn "
+                format="ss"
+                suffix="giây để sẵn sàng"
+                onFinish={async () => {
+                  // Gửi api update lại room
+                  // Cho user out khỏi phòng
+                  const response = await api.updateRoomWhenPlayerNotReady(
+                    roomId,
+                    userId
+                  );
+                  const { success, message } = response.data;
+                  if (success) {
+                    // Cho user quay ve rooms => fire sự kiện leaveroom
+                    history.push('/rooms');
+                  } else {
+                    console.log(message);
+                    antMessage.error(message);
+                  }
+                }}
+              />
+            ) : null}
           </>
         );
       }
     }
-  };
+  }, [
+    handleClickButtonStart,
+    isMatchEnd,
+    player,
+    roomId,
+    timeExp,
+    visibleButton,
+    socket,
+  ]);
 
   return (
     <Card
