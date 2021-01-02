@@ -116,81 +116,81 @@ const Login = (props) => {
             className="center"
           />
         ) : (
-          <Form {...layout} name="control-hooks" onFinish={onFinish}>
-            <Form.Item
-              name="email"
-              rules={[
-                { required: true, message: 'Email không được bỏ trống!' },
-              ]}
-            >
-              <Input
-                prefix={<MailOutlined className="site-form-item-icon" />}
-                type="email"
-                placeholder="Email"
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="password"
-              rules={[
-                { required: true, message: 'Mật khẩu không được bỏ trống!' },
-              ]}
-            >
-              <Input.Password
-                prefix={<LockOutlined className="site-form-item-icon" />}
-                placeholder="Mật khẩu"
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
-              />
-            </Form.Item>
-
-            <Form.Item {...tailLayout} className="login-form-button">
-              <Button type="primary" htmlType="submit">
-                Đăng nhập
-              </Button>
-
-              <GoogleLogin
-                clientId="990188398227-bb3t5mt068kdj4350d3mvmqhcqeftkl8.apps.googleusercontent.com"
-                render={(renderProps) => (
-                  <Button
-                    icon={<GooglePlusOutlined />}
-                    onClick={renderProps.onClick}
-                    disabled={renderProps.disabled}
-                    className="google-login mt-2"
-                  >
-                    Đăng nhập bằng Google
-                  </Button>
-                )}
-                onSuccess={responseSuccessGoogle}
-                cookiePolicy={'single_host_origin'}
-              />
-              <FacebookLogin
-                appId="891593248045556"
-                autoLoad={false}
-                fields="name,email,id"
-                callback={responseFacebook}
-                cssClass="facebook-login"
-                icon={<FacebookOutlined />}
-                textButton="&nbsp;&nbsp;Đăng nhập bằng Facebook"
-              />
-              <Button
-                className="redirect-to-register"
-                type="link"
-                htmlType="button"
+            <Form {...layout} name="control-hooks" onFinish={onFinish}>
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: 'Email không được bỏ trống!' },
+                ]}
               >
-                <Link to="/register">Bạn chưa có tài khoản? Đăng ký ngay!</Link>
-              </Button>
-              <Button
-                className="redirect-to-register"
-                type="link"
-                htmlType="button"
+                <Input
+                  prefix={<MailOutlined className="site-form-item-icon" />}
+                  type="email"
+                  placeholder="Email"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                ]}
               >
-                <Link to="/reset-password">Quên mật khẩu?</Link>
+                <Input.Password
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  placeholder="Mật khẩu"
+                  iconRender={(visible) =>
+                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  }
+                />
+              </Form.Item>
+
+              <Form.Item {...tailLayout} className="login-form-button">
+                <Button type="primary" htmlType="submit">
+                  Đăng nhập
               </Button>
-            </Form.Item>
-          </Form>
-        )}
+
+                <GoogleLogin
+                  clientId="1032785897839-f7ki1ppsk1bh0itmj2momm98qo09hcdc.apps.googleusercontent.com"
+                  render={(renderProps) => (
+                    <Button
+                      icon={<GooglePlusOutlined />}
+                      onClick={renderProps.onClick}
+                      disabled={renderProps.disabled}
+                      className="google-login mt-2"
+                    >
+                      Đăng nhập bằng Google
+                    </Button>
+                  )}
+                  onSuccess={responseSuccessGoogle}
+                  cookiePolicy={'single_host_origin'}
+                />
+                <FacebookLogin
+                  appId="891593248045556"
+                  autoLoad={false}
+                  fields="name,email,id"
+                  callback={responseFacebook}
+                  cssClass="facebook-login"
+                  icon={<FacebookOutlined />}
+                  textButton="&nbsp;&nbsp;Đăng nhập bằng Facebook"
+                />
+                <Button
+                  className="redirect-to-register"
+                  type="link"
+                  htmlType="button"
+                >
+                  <Link to="/register">Bạn chưa có tài khoản? Đăng ký ngay!</Link>
+                </Button>
+                <Button
+                  className="redirect-to-register"
+                  type="link"
+                  htmlType="button"
+                >
+                  <Link to="/reset-password">Quên mật khẩu?</Link>
+                </Button>
+              </Form.Item>
+            </Form>
+          )}
       </Card>
     </>
   );

@@ -42,7 +42,7 @@ const BoardGame = React.memo(
       // Nếu match start thì lắng nghe sự kiện receive-move
       const matchStartListener = async ({ matchId }) => {
         socket.on('receive-move', receiveMoveListener);
-        socket.on('have-winner', haveWinnerListener);
+        //socket.on('have-winner', haveWinnerListener);
       };
 
       const receiveMoveListener = ({ updatedMatch }) => {
@@ -54,14 +54,14 @@ const BoardGame = React.memo(
         }
       };
 
-      const haveWinnerListener = ({ updatedMatch }) => {
-        setMatch({ ...updatedMatch });
-      };
+      // const haveWinnerListener = ({ updatedMatch }) => {
+      //   setMatch({ ...updatedMatch });
+      // };
       socket.on('match-start', matchStartListener);
       return () => {
         socket.off('match-start', matchStartListener);
         socket.off('receive-move', receiveMoveListener);
-        socket.off('have-winner', haveWinnerListener);
+        //socket.off('have-winner', haveWinnerListener);
       };
     }, [socket, setMatch, setPlaying]);
 
