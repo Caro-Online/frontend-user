@@ -1,10 +1,9 @@
 import React from "react";
 import { ImUserPlus } from "react-icons/im";
 import { Button, Spin, Divider, Row, Col, Space } from "antd";
-import { useHistory } from "react-router-dom";
 import Modal from "../../../shared/components/Modal/Modal";
 const InvitationDialog = ({ value, data, onCancel, onJoin }) => {
-  const history = useHistory();
+
   const onClickJoin = () => {
     const roomId = data?.roomId;
     if (value && roomId) {

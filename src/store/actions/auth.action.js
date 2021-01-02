@@ -3,8 +3,8 @@ import {
   signinWithGoogle,
   signinWithFacebook,
   updateStatusToOnline,
-} from '../../domain/user/apiUser';
-import * as actionTypes from './actionTypes';
+} from "../../domain/user/apiUser";
+import * as actionTypes from "./actionTypes";
 import {
   setTokenToStorage,
   setExpirationDateToStorage,
@@ -12,7 +12,7 @@ import {
   getTokenFromStorage,
   getUserIdFromStorage,
   getExpirationDateFromStorage,
-} from '../../shared/utils/utils';
+} from "../../shared/utils/utils";
 
 const processResponseWhenLoginSuccess = (dispatch, response) => {
   if (response.data) {
@@ -31,7 +31,7 @@ const processResponseWhenLoginSuccess = (dispatch, response) => {
 const processErrWhenLoginFail = (dispatch, err) => {
   console.log(err.response);
   console.log(err);
-  dispatch(authFail(err.response.data.message));
+  dispatch(authFail(err.response?.data?.message));
 };
 
 export const authClearError = () => {
@@ -143,9 +143,9 @@ export const authCheckState = () => {
         updateStatusToOnline(userId)
           .then((response) => {
             if (response.data.success) {
-              console.log('Update status success');
+              console.log("Update status success");
             } else {
-              console.log('Update status failed');
+              console.log("Update status failed");
             }
           })
           .catch((error) => {
@@ -154,7 +154,7 @@ export const authCheckState = () => {
         dispatch(setSocket(userId));
         dispatch(setIsAutoLogin(false));
         console.log(userId);
-        console.log('AutoLogin success');
+        console.log("AutoLogin success");
         // let socket = initSocket(getUserIdFromStorage());
         // console.log('Emit user online');
         // socket.emit(
