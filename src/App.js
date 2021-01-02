@@ -100,7 +100,7 @@ const App = (props) => {
       <PrivateRoute path="/room/:roomId" exact>
         <GamePage />
       </PrivateRoute>
-      <Redirect to="/" />
+      {/* <Redirect to="/" /> */}
     </Switch>
   );
 
