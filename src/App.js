@@ -54,24 +54,24 @@ const App = (props) => {
       };
     }
   }, [isAuthenticated, socket]);
-  useEffect(() => {
-    if (isAuthenticated) {
-      invitationIO();
-    }
-  }, [isAuthenticated]);
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     invitationIO();
+  //   }
+  // }, [isAuthenticated]);
 
-  const invitationIO = () => {
-    const data = {
-      invitedId: getUserIdFromStorage(),
-      invitedName: getUsernameFromStorage(),
-    };
-    invitationSocket(data, (err, data) => {
-      console.log(`invitationSocket`, data);
-      setShowInvitation(true);
-      setInvitedData(data);
-      setTimeout(() => setShowInvitation(false), 10000);
-    });
-  };
+  // const invitationIO = () => {
+  //   const data = {
+  //     invitedId: getUserIdFromStorage(),
+  //     invitedName: getUsernameFromStorage(),
+  //   };
+  //   invitationSocket(data, (err, data) => {
+  //     console.log(`invitationSocket`, data);
+  //     setShowInvitation(true);
+  //     setInvitedData(data);
+  //     setTimeout(() => setShowInvitation(false), 10000);
+  //   });
+  // };
   // if (isAuthenticated) {
   //   invitationIO();
   // }
