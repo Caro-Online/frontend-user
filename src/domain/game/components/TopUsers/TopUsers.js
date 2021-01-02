@@ -1,5 +1,6 @@
 //Library
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import {
   List,
   Avatar,
@@ -31,7 +32,6 @@ import {
 
 const { Text } = Typography;
 
-let socket;
 // const abortController = new AbortController();
 
 const modifyUsersStatus = (users, data, setUsers, status) => {
@@ -45,7 +45,7 @@ const modifyUsersStatus = (users, data, setUsers, status) => {
   setUsers(modifyUsers);
 };
 
-const TopUsers = (props) => {
+const TopUsers = ({ socket }) => {
   const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -357,4 +357,10 @@ const TopUsers = (props) => {
   return content;
 };
 
-export default TopUsers;
+const mapStateToProps = (state) => {
+  return {
+    socket: state.auth.socket,
+  };
+};
+
+export default connect(mapStateToProps)(TopUsers);

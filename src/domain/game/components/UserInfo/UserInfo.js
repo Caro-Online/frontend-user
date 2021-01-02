@@ -29,7 +29,6 @@ function UserInfo({
   setPlayers,
   audiences,
   setAudiences,
-  setNumPeopleInRoom,
   setRoom,
   setDisable,
 }) {
@@ -52,7 +51,6 @@ function UserInfo({
     const { success, room } = res.data;
     if (success) {
       setAudiences(room.audiences);
-      // setNumPeopleInRoom(room.audiences.length + room.players.length);
       setRoom(room);
       const response1 = await getUserById(userId);
       setPlayers([...players, { user: response1.data.user, isReady: true }]);

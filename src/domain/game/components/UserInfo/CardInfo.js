@@ -12,8 +12,19 @@ import { getUserIdFromStorage } from '../../../../shared/utils/utils';
 const { Countdown } = Statistic;
 const { Meta } = Card;
 
-function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket, isMatchEnd, onStartClick, setMatch,
-  setDisable }) {
+function CardInfo({
+  xIsNext,
+  player,
+  isPlaying,
+  x,
+  timeExp,
+  matchId,
+  socket,
+  isMatchEnd,
+  onStartClick,
+  setMatch,
+  setDisable,
+}) {
   const [visibleButton, setVisibleButton] = useState(true);
   const getIconNext = useCallback(() => {
     if (xIsNext === x) {
@@ -23,7 +34,7 @@ function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket, isM
   }, [x, xIsNext]);
   useEffect(() => {
     setVisibleButton(true);
-  }, [matchId])
+  }, [matchId]);
 
   const getCountdownNext = useCallback(() => {
     if (!timeExp) {
@@ -39,12 +50,13 @@ function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket, isM
           suffix="giây"
           onFinish={async () => {
             // Xử thua cho user đó
-            // Gửi api update lại phòng
+            // Gửi api update lại trận đấu
             const response = await api.endMatch(matchId, player.user._id);
-            setMatch(response.data.match);
+            const { match } = response.data;
+            setMatch(match);
             setDisable(true);
-            console.log('set disable');
-            console.log(response.data.match);
+            // Emit check xem player nào out ra khỏi phòng trước đó => xóa player đó ra khỏi players trong room
+            socket.emit('check-player-out-during-play', { roomId: match.room });
             // Emit sự kiện end-match để các client khác trong phòng update lại thông tin
             socket.emit('end-match', {
               matchId: matchId,
@@ -65,7 +77,7 @@ function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket, isM
         if (player.isReady) {
           return 'Sẵn sàng';
         } else {
-          return 'Đang đợi...'
+          return 'Đang đợi...';
         }
       }
     } else {
@@ -76,23 +88,29 @@ function CardInfo({ xIsNext, player, isPlaying, x, timeExp, matchId, socket, isM
   const handleClickButtonStart = () => {
     setVisibleButton(false);
     onStartClick();
-  }
+  };
 
-  const renderButtonStart = () => { //Nút chơi lại hiển thị khi ván chơi kết thúc
+  const renderButtonStart = () => {
+    //Nút chơi lại hiển thị khi ván chơi kết thúc
     const userId = getUserIdFromStorage();
-    if (isMatchEnd && player.user._id === userId) {//Nếu match kết thúc mới render
-      return <>
-        <Button
-          dis
-          onClick={handleClickButtonStart}
-          type="primary"
-          style={{ display: visibleButton ? '' : 'none' }}>
-          Start
-        </Button>
-        <div>20 giây</div>
-      </>
+    if (player) {
+      if (isMatchEnd && player.user._id === userId) {
+        //Nếu match kết thúc mới render
+        return (
+          <>
+            <Button
+              onClick={handleClickButtonStart}
+              type="primary"
+              style={{ display: visibleButton ? '' : 'none' }}
+            >
+              Start
+            </Button>
+            <div>20 giây</div>
+          </>
+        );
+      }
     }
-  }
+  };
 
   return (
     <Card
