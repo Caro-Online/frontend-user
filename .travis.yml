@@ -23,8 +23,8 @@ deploy:
     # push to dockerhub & heroku
     docker push vanhiep778/caro-game;
     docker push registry.heroku.com/caro-gamee/web;
-    heroku config:set API_URL=https://api-serverr.herokuapp.com/
-    heroku config:set REACT_APP_API_URL=https://api-serverr.herokuapp.com/
+    heroku config:set API_URL=https://api-serverr.herokuapp.com;
+    heroku config:set REACT_APP_API_URL=https://api-serverr.herokuapp.com;
     heroku container:release web --app caro-gamee
   on:
     branch: main
