@@ -1,9 +1,10 @@
 import io from "socket.io-client";
+import { API } from 'src/config'
 
 let socket;
 
 export const initSocket = (userId) => {
-  socket = io("http://localhost:4000", { query: { userId } });
+  socket = io(API, { query: { userId } });
   console.log(socket);
   return socket;
 };
