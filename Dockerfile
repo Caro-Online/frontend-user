@@ -7,6 +7,7 @@ RUN yarn install; \
   yarn global add serve
 
 COPY . .
+COPY default.env ./.env
 RUN yarn build
 
 ENV NODE_ENV=production
