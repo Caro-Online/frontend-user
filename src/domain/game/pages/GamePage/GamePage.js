@@ -109,6 +109,7 @@ const GamePage = React.memo((props) => {
     socket.on('match-start-update', matchStartUpdateListener);
     const haveWinnerListener = ({ updatedMatch }) => {
       console.log('have winner');
+      console.log(updatedMatch);
       setMatch({ ...updatedMatch });
     };
     socket.on('have-winner', haveWinnerListener);
@@ -125,26 +126,22 @@ const GamePage = React.memo((props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
-  const addAudience = useCallback(
-    async () => {
-      const userId = getUserIdFromStorage();
-      try {
-        const response = await api.joinRoom(userId, roomId);
-        const { success, message, room } = response.data;
-        if (!success) {
-          antMessage.error(message);
-          return null;
-        }
-        return room;
-      } catch (err) {
-        console.log(err);
-        antMessage.error(err);
+  const addAudience = useCallback(async () => {
+    const userId = getUserIdFromStorage();
+    try {
+      const response = await api.joinRoom(userId, roomId);
+      const { success, message, room } = response.data;
+      if (!success) {
+        antMessage.error(message);
         return null;
       }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+      return room;
+    } catch (err) {
+      console.log(err);
+      antMessage.error(err);
+      return null;
+    }
+  }, []);
 
   useEffect(() => {
     async function doStuff() {

@@ -123,27 +123,26 @@ const BoardGame = React.memo(
           //Nếu bước chưa tồn tại
           if (!getSquareValue(i)) {
             newHistory.push(i);
-
             const date = new Date(Date.now() + countdownDuration * 1000);
             const timeExp = moment.utc(date).format();
-            setMatch({
+            const updatedMatch = {
               ...match,
               history: newHistory,
               xIsNext: !match.xIsNext,
               timeExp: timeExp,
-            });
+            };
+            setMatch(updatedMatch);
+            emitSendMove(updatedMatch);
             const response = await api.addMove(
               match._id,
               i,
               !match.xIsNext,
               roomId
             ); //add to db
-            const { match: updatedMatch, message } = response.data;
-            if (!updatedMatch) {
+            const { match: returnMatch, message } = response.data;
+            if (!returnMatch) {
               console.log(message);
               antMessage.error(message);
-            } else {
-              emitSendMove(updatedMatch);
             }
           }
         }
