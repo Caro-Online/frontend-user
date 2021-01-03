@@ -13,3 +13,12 @@ a.menu-item {
     flex-direction: row;
     align-items: center;
 }
+
+
+
+
+@media only screen and (max-width: 500px) {
+   .user-profile{
+       display: none !important;
+   }
+}

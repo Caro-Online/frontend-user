@@ -50,21 +50,21 @@ const NavigationItems = (props) => {
   if (isAuthenticated) {
     content = (
       <>
-        <Link to="/profile">
-          <Button
-            size="large"
-            shape="round"
-            type="primary"
-            style={{
-              marginRight: '4px',
-              padding: '4px 19px 4px  4px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            {getUserImageUrlFromStorage() ? (
-              <Avatar src={getUserImageUrlFromStorage()} />
-            ) : (
+        <Button
+          className="user-profile"
+          size="large"
+          shape="round"
+          type="primary"
+          style={{
+            marginRight: '4px',
+            padding: '4px 19px 4px  4px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          {getUserImageUrlFromStorage() ? (
+            <Avatar src={getUserImageUrlFromStorage()} />
+          ) : (
               <Avatar
                 style={{
                   color: '#f56a00',
@@ -76,9 +76,8 @@ const NavigationItems = (props) => {
                 {getUsernameFromStorage().split(' ')[0][0]}
               </Avatar>
             )}
-            {getUsernameFromStorage()}
-          </Button>
-        </Link>
+          {getUsernameFromStorage()}
+        </Button>
         <Dropdown overlay={menu} placement="bottomRight" arrow>
           <Button
             size="large"

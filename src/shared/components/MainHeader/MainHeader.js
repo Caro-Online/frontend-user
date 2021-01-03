@@ -18,7 +18,6 @@ const MainHeader = (props) => {
           <span style={{ marginLeft: '8px' }}>CaroOnline</span>
         </div>
       </Link>
-
       <NavigationItems />
     </Header>
   );

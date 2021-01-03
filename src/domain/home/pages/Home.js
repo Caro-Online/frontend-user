@@ -193,21 +193,21 @@ const Home = (props) => {
   if (isAuthenticated) {
     content = (
       <div className="home-container">
-        <h2>Chào mừng, {getUsernameFromStorage()}</h2>
+        <div className="wellcome" >Chào mừng, {getUsernameFromStorage()}</div>
         <button
-          className="home-button-auth"
+          className="menu-button"
           onClick={onClickPlayNowButtonHandler}
         >
           Chơi ngay
         </button>
-        <button className="home-button-auth" onClick={onClickFindRoomsHandler}>
+        <button className="menu-button" onClick={onClickFindRoomsHandler}>
           Tìm phòng
         </button>
-        <button className="home-button-auth" onClick={onClickJoinRoomHandler}>
+        <button className="menu-button" onClick={onClickJoinRoomHandler}>
           Tham gia phòng
         </button>
         <button
-          className="home-button-auth"
+          className="menu-button"
           onClick={onClickCreateRoomButtonHandler}
         >
           Tạo phòng
@@ -218,107 +218,107 @@ const Home = (props) => {
 
   return (
     <>
-      <Modal show={openCreateRoomModal} modalClosed={closeCreateRoomModal}>
-        <Title className="create-room-header" level={2}>
+      <Modal className="modal-home" show={openCreateRoomModal} modalClosed={closeCreateRoomModal}>
+        <Title className="create-room-header" level={4}>
           Tạo phòng
         </Title>
         {isLoading ? (
           <Spin style={{ fontSize: '64px' }} />
         ) : (
-          <Form
-            name="normal_register"
-            className="create-room-form"
-            onFinish={onSubmitCreateRoomHandler}
-          >
-            <Form.Item
-              label="Tên phòng"
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: 'Tên phòng không được bỏ trống',
-                },
-              ]}
+            <Form
+              name="normal_register"
+              className="create-room-form"
+              onFinish={onSubmitCreateRoomHandler}
             >
-              <Input
-                type="text"
-                placeholder="Phòng của tui"
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-            <Form.Item name="rule" label="Luật chơi" initialValue={true}>
-              <Select>
-                <Option value={true}>Chặn hai đầu không thắng</Option>
-                <Option value={false}>Chặn hai đầu thắng</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="countdownDuration"
-              label="Thời gian cho một nước"
-              initialValue={20}
-            >
-              <Select>
-                {countDownDurationArray.map((cd) => (
-                  <Option key={cd} value={cd * 5}>
-                    {cd * 5} giây
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              name="havePassword"
-              label="Đặt mật khẩu"
-              valuePropName="checked"
-            >
-              <Switch onChange={onSwitchChange} />
-            </Form.Item>
-
-            {havePassword ? (
               <Form.Item
-                label="Mật khẩu"
-                name="roomPassword"
+                label="Tên phòng"
+                name="name"
                 rules={[
-                  { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                  {
+                    required: true,
+                    message: 'Tên phòng không được bỏ trống',
+                  },
                 ]}
               >
-                <Input.Password
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  placeholder="daylamatkhau"
-                  iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
+                <Input
+                  type="text"
+                  placeholder="Phòng của tui"
+                  style={{ width: '100%' }}
                 />
               </Form.Item>
-            ) : null}
-
-            <Form.Item>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                }}
+              <Form.Item name="rule" label="Luật chơi" initialValue={true}>
+                <Select>
+                  <Option value={true}>Chặn hai đầu</Option>
+                  <Option value={false}>Không chặn hai đầu</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="countdownDuration"
+                label="Thời gian cho một nước"
+                initialValue={20}
               >
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="create-room-button"
+                <Select>
+                  {countDownDurationArray.map((cd) => (
+                    <Option key={cd} value={cd * 5}>
+                      {cd * 5} giây
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="havePassword"
+                label="Đặt mật khẩu"
+                valuePropName="checked"
+              >
+                <Switch onChange={onSwitchChange} />
+              </Form.Item>
+
+              {havePassword ? (
+                <Form.Item
+                  label="Mật khẩu"
+                  name="roomPassword"
+                  rules={[
+                    { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                  ]}
                 >
-                  Tạo
-                </Button>
-                <Button
-                  type="danger"
-                  htmlType="button"
-                  onClick={closeCreateRoomModal}
-                  className="abort-create-room-button"
+                  <Input.Password
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    placeholder="daylamatkhau"
+                    iconRender={(visible) =>
+                      visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                    }
+                  />
+                </Form.Item>
+              ) : null}
+
+              <Form.Item>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                  }}
                 >
-                  Hủy
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="create-room-button"
+                  >
+                    Tạo
                 </Button>
-              </div>
-            </Form.Item>
-          </Form>
-        )}
+                  <Button
+                    type="danger"
+                    htmlType="button"
+                    onClick={closeCreateRoomModal}
+                    className="abort-create-room-button"
+                  >
+                    Hủy
+                </Button>
+                </div>
+              </Form.Item>
+            </Form>
+          )}
       </Modal>
       <Modal show={showDialog}>
         <Row justify="center">
