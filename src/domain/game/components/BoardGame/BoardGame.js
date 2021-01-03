@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useHistory, useParams } from 'react-router-dom';
+import { message as antMessage } from 'antd';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -72,11 +73,14 @@ const BoardGame = React.memo(
       }
     }, [match, setMatch, setPlaying, socket]);
 
-    const emitSendMove = useCallback(() => {
-      socket.emit('send-move', {
-        matchId: match._id,
-      });
-    }, [socket, match]);
+    const emitSendMove = useCallback(
+      (updatedMatch) => {
+        socket.emit('send-move', {
+          match: updatedMatch,
+        });
+      },
+      [socket]
+    );
 
     const getSquareValue = useCallback(
       (i) => {
@@ -119,8 +123,7 @@ const BoardGame = React.memo(
           //Nếu bước chưa tồn tại
           if (!getSquareValue(i)) {
             newHistory.push(i);
-            await api.addMove(match._id, i, !match.xIsNext, roomId); //add to db
-            emitSendMove(i); //socket emit
+
             const date = new Date(Date.now() + countdownDuration * 1000);
             const timeExp = moment.utc(date).format();
             setMatch({
@@ -129,6 +132,19 @@ const BoardGame = React.memo(
               xIsNext: !match.xIsNext,
               timeExp: timeExp,
             });
+            const response = await api.addMove(
+              match._id,
+              i,
+              !match.xIsNext,
+              roomId
+            ); //add to db
+            const { match: updatedMatch, message } = response.data;
+            if (!updatedMatch) {
+              console.log(message);
+              antMessage.error(message);
+            } else {
+              emitSendMove(updatedMatch);
+            }
           }
         }
       },
