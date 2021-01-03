@@ -236,6 +236,7 @@ const GamePage = React.memo((props) => {
           disable={disable}
           setDisable={setDisable}
           countdownDuration={room ? room.countdownDuration : null}
+          rule={room ? room.rule : null}
         />
       </Col>
       <Col span={6}>

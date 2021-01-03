@@ -26,6 +26,7 @@ const BoardGame = React.memo(
     disable,
     setDisable,
     countdownDuration,
+    rule
   }) => {
     const reactHistory = useHistory();
     const params = useParams();
@@ -74,9 +75,10 @@ const BoardGame = React.memo(
     }, [match, setMatch, setPlaying, socket]);
 
     const emitSendMove = useCallback(
-      (updatedMatch) => {
+      (updatedMatch, rule) => {
         socket.emit('send-move', {
           match: updatedMatch,
+          rule
         });
       },
       [socket]
@@ -132,7 +134,7 @@ const BoardGame = React.memo(
               timeExp: timeExp,
             };
             setMatch(updatedMatch);
-            emitSendMove(updatedMatch);
+            emitSendMove(updatedMatch, rule);
             const response = await api.addMove(
               match._id,
               i,
@@ -239,8 +241,8 @@ const BoardGame = React.memo(
               Đến lượt bạn <img src={loading} />
             </div>
           ) : (
-            <div className="your-turn"></div>
-          )}
+              <div className="your-turn"></div>
+            )}
         </div>
         <table className="board">
           <tbody>{renderBoard()}</tbody>
