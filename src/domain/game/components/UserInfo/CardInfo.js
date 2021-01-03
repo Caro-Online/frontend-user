@@ -13,10 +13,14 @@ import api from '../../apiGame';
 
 import ximage from '../../../../shared/assets/images/x.png';
 import o from '../../../../shared/assets/images/o.png';
-import { StarFilled, TrophyFilled, ClockCircleTwoTone } from '@ant-design/icons';
+import {
+  StarFilled,
+  TrophyFilled,
+  ClockCircleTwoTone,
+} from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { getUserIdFromStorage } from '../../../../shared/utils/utils';
-import './UserInfo.css'
+import './UserInfo.css';
 
 const { Countdown } = Statistic;
 const { Meta } = Card;
@@ -61,7 +65,7 @@ function CardInfo({
             format="ss"
             suffix="s"
             prefix={<ClockCircleTwoTone />}
-            style={{ fontSize: "12px !important" }}
+            style={{ fontSize: '12px !important' }}
             onFinish={async () => {
               // Xử thua cho user đó
               // Gửi api update lại trận đấu
@@ -70,7 +74,9 @@ function CardInfo({
               setMatch(match);
               setDisable(true);
               // Emit check xem player nào out ra khỏi phòng trước đó => xóa player đó ra khỏi players trong room
-              socket.emit('check-player-out-during-play', { roomId: match.room });
+              socket.emit('check-player-out-during-play', {
+                roomId: match.room,
+              });
               // Emit sự kiện end-match để các client khác trong phòng update lại thông tin
               socket.emit('end-match', {
                 matchId: matchId,
@@ -110,16 +116,17 @@ function CardInfo({
     const userId = getUserIdFromStorage();
     if (player) {
       if (isMatchEnd && player.user._id === userId) {
-        const deadline = moment.utc(timeExp).valueOf();
+        const date = Date.now() + 20 * 1000;
+        const deadline = moment.utc(date).valueOf();
         //Nếu match kết thúc mới render
         return (
           <>
-            {visibleButton ?
+            {visibleButton ? (
               <div className="start-again">
                 <div>
                   <Countdown
                     value={deadline}
-                    prefix={<ClockCircleTwoTone style={{ fontSize: "23px" }} />}
+                    prefix={<ClockCircleTwoTone style={{ fontSize: '23px' }} />}
                     format="s"
                     suffix="s"
                     onFinish={async () => {
@@ -141,14 +148,14 @@ function CardInfo({
                   />
                 </div>
                 <div>
-                  <Button
-                    onClick={handleClickButtonStart}
-                    type="primary"
-                  >
+                  <Button onClick={handleClickButtonStart} type="primary">
                     Sẵn sàng
-                </Button>
+                  </Button>
                 </div>
-              </div> : ''}
+              </div>
+            ) : (
+              ''
+            )}
           </>
         );
       }
@@ -158,18 +165,20 @@ function CardInfo({
     isMatchEnd,
     player,
     roomId,
-    timeExp,
     visibleButton,
-    socket,
+    history,
   ]);
 
   const getCup = () => {
-    return player ?
+    return player ? (
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <TrophyFilled style={{ color: '#F1C40F', padding: "5px" }} />
+        <TrophyFilled style={{ color: '#F1C40F', padding: '5px' }} />
         <span>{player.user.cup}</span>
-      </div> : <div style={{ height: "20px" }}></div>
-  }
+      </div>
+    ) : (
+      <div style={{ height: '20px' }}></div>
+    );
+  };
 
   return (
     <Card
@@ -180,13 +189,27 @@ function CardInfo({
       }}
     >
       <Meta
-        avatar={<Avatar shape="square" style={{ width: '50px', height: '50px' }} src={player ? (player.imageUrl ? player.imageUrl : "https://picsum.photos/seed/picsum/50/50") : ""} />}
+        avatar={
+          <Avatar
+            shape="square"
+            style={{ width: '50px', height: '50px' }}
+            src={
+              player
+                ? player.imageUrl
+                  ? player.imageUrl
+                  : 'https://picsum.photos/seed/picsum/50/50'
+                : ''
+            }
+          />
+        }
         title={player ? player.user.name : 'Còn trống'}
         description={getCup()}
       />
       <div className="status-image">
         <div>{getStatus()}</div>
-        <div>< Avatar src={x ? ximage : o} /></div>
+        <div>
+          <Avatar src={x ? ximage : o} />
+        </div>
       </div>
       {getCountdownNext()}
       {renderButtonStart()}

@@ -108,7 +108,11 @@ const Rooms = ({ socket }) => {
     (values) => {
       const { roomPassword } = values;
       if (roomPassword !== realRoomPassword) setPasswordFail(true);
-      else history.push(`/room/${roomId}`);
+      else
+        history.push({
+          pathname: `/room/${roomId}`,
+          state: { haveEnterPassword: true },
+        });
     },
     [history, realRoomPassword, roomId]
   );

@@ -151,6 +151,9 @@ const Home = (props) => {
         .then((response) => {
           history.push({
             pathname: `/room/${response.room.roomId}`,
+            state: {
+              hihihi: true,
+            },
           });
           setIsLoading(false);
         })

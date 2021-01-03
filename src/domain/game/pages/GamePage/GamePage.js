@@ -156,6 +156,16 @@ const GamePage = React.memo((props) => {
         history.push('/');
         return;
       }
+      // Nếu không sử dụng chức năng nhập id, hoặc bấm tham gia bên rooms mà nhập id trên url để vào
+      if (room.password) {
+        if (!location.state) {
+          antMessage.info(
+            'Hãy vào phòng bằng cách sử dụng chức năng nhập id hoặc tham gia phòng'
+          );
+          history.replace('/rooms');
+          return;
+        }
+      }
       // Lấy thông tin match hiện tại đang chơi (nếu có) và set vào match
       setCurrentMatch(room._id);
       // Xét xem khi f5 lại user có phải player hay không, nếu ko có trong players thì add vào audiences

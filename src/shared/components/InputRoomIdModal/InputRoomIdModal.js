@@ -1,6 +1,18 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Typography, Alert, Form, Input, Button } from 'antd';
+import {
+  Typography,
+  Alert,
+  Form,
+  Input,
+  Button,
+  message as antMessage,
+} from 'antd';
+import {
+  EyeTwoTone,
+  EyeInvisibleOutlined,
+  LockOutlined,
+} from '@ant-design/icons';
 
 import Modal from '../Modal/Modal';
 
@@ -9,29 +21,57 @@ import apiGame from '../../../domain/game/apiGame';
 const { Title } = Typography;
 
 const InputRoomIdModal = (props) => {
-  const [roomNotFound, setRoomNotFound] = useState('');
-  const history = useHistory();
   const { show, onClose } = props;
+  const history = useHistory();
+  const [alertMessage, setAlertMessage] = useState(null);
+  const [roomHavePassword, setRoomHavePassword] = useState(false);
 
   const onCloseAlert = useCallback((e) => {
-    setRoomNotFound(false);
+    setAlertMessage(null);
   }, []);
 
   const onSubmitJoinRoomHandler = useCallback(
-    (values) => {
-      const { roomId } = values;
-      apiGame
-        .getRoomInfoById(roomId)
-        .then((res) => {
-          if (res.data.room) {
-            history.push(`/room/${roomId}`);
-          } else {
-            setRoomNotFound(true);
-          }
-        })
-        .catch((error) => {
-          setRoomNotFound(true);
-        });
+    async (values) => {
+      const { roomId, roomPassword } = values;
+      console.log(roomPassword);
+      let message, room;
+      try {
+        const response = await apiGame.getRoomInfoById(roomId);
+        message = response.data.message;
+        room = response.data.room;
+      } catch (err) {
+        console.log(err);
+        antMessage.error(err.message);
+        setAlertMessage(err.message);
+      }
+      console.log(room);
+      if (!room) {
+        setAlertMessage(message);
+        return;
+      }
+      if (!roomPassword) {
+        // Nếu phòng có mật khẩu
+        if (room.password) {
+          setRoomHavePassword(true);
+        } else {
+          // Nếu không có password
+          history.push({
+            pathname: `/room/${roomId}`,
+            state: { haveEnterPassword: true },
+          });
+        }
+      } else {
+        // So khớp mật khẩu
+        console.log(roomPassword, room.password);
+        if (roomPassword.toString() === room.password.toString()) {
+          history.push({
+            pathname: `/room/${roomId}`,
+            state: { haveEnterPassword: true },
+          });
+        } else {
+          setAlertMessage('Sai mật khẩu phòng');
+        }
+      }
     },
     [history]
   );
@@ -41,10 +81,10 @@ const InputRoomIdModal = (props) => {
       <Title className="create-room-header" level={2}>
         Nhập id phòng
       </Title>
-      {roomNotFound ? (
+      {alertMessage ? (
         <Alert
           message="Lỗi"
-          description="Phòng không tồn tại"
+          description={alertMessage}
           type="error"
           closable
           showIcon
@@ -73,6 +113,24 @@ const InputRoomIdModal = (props) => {
         >
           <Input type="text" placeholder="1K3n2S" style={{ width: '100%' }} />
         </Form.Item>
+        {roomHavePassword ? (
+          <Form.Item
+            label="Mật khẩu phòng"
+            name="roomPassword"
+            rules={[
+              { required: true, message: 'Mật khẩu không được bỏ trống!' },
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              placeholder="daylamatkhau"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+            />
+          </Form.Item>
+        ) : null}
+
         <Form.Item>
           <div
             style={{
