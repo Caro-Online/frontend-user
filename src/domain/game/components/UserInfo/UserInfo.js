@@ -121,6 +121,7 @@ function UserInfo({
           setDisable={setDisable}
           isMatchEnd={match ? (match.winner ? true : false) : false}
           onStartClick={onStartClick}
+          playersLength={players ? players.length : null}
         />
         <CardInfo
           player={players.length > 1 ? players[1] : null}
@@ -134,6 +135,7 @@ function UserInfo({
           roomId={roomId}
           isMatchEnd={match ? (match.winner ? true : false) : false}
           onStartClick={onStartClick}
+          playersLength={players ? players.length : null}
         />
         <Card className="join-game" style={{ width: '100%', height: '10%' }}>
           <Button

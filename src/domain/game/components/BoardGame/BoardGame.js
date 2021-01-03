@@ -145,13 +145,20 @@ const BoardGame = React.memo(
               antMessage.error(message);
             }
           }
-        }
-        else {
+        } else {
           setDisable(!disable);
         }
-      }
-      ,
-      [emitSendMove, getSquareValue, match, setMatch, countdownDuration, roomId]
+      },
+      [
+        emitSendMove,
+        getSquareValue,
+        match,
+        setMatch,
+        countdownDuration,
+        roomId,
+        disable,
+        setDisable,
+      ]
     );
 
     const getPreviousMove = useCallback(
@@ -183,7 +190,14 @@ const BoardGame = React.memo(
           />
         );
       },
-      [checkWinSquare, disable, getSquareValue, handleSquareClick, setDisable]
+      [
+        checkWinSquare,
+        disable,
+        getSquareValue,
+        handleSquareClick,
+        setDisable,
+        getPreviousMove,
+      ]
     );
 
     const renderBoardRow = useCallback(
@@ -225,8 +239,8 @@ const BoardGame = React.memo(
               Đến lượt bạn <img src={loading} />
             </div>
           ) : (
-              <div className="your-turn"></div>
-            )}
+            <div className="your-turn"></div>
+          )}
         </div>
         <table className="board">
           <tbody>{renderBoard()}</tbody>

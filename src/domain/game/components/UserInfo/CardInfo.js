@@ -1,14 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import moment from 'moment';
-import {
-  Col,
-  Card,
-  Avatar,
-  Statistic,
-  Button,
-  message as antMessage,
-} from 'antd';
+import { Card, Avatar, Statistic, Button, message as antMessage } from 'antd';
 import api from '../../apiGame';
 
 import ximage from '../../../../shared/assets/images/x.png';
@@ -19,8 +12,11 @@ import {
   ClockCircleTwoTone,
 } from '@ant-design/icons';
 import { connect } from 'react-redux';
-import { getUserIdFromStorage, getCupChangeMessage } from '../../../../shared/utils/utils';
-import './UserInfo.css'
+import {
+  getUserIdFromStorage,
+  getCupChangeMessage,
+} from '../../../../shared/utils/utils';
+import './UserInfo.css';
 
 const { Countdown } = Statistic;
 const { Meta } = Card;
@@ -37,6 +33,7 @@ function CardInfo({
   onStartClick,
   setMatch,
   setDisable,
+  playersLength,
 }) {
   const params = useParams();
   const history = useHistory();
@@ -71,7 +68,7 @@ function CardInfo({
               // Gửi api update lại trận đấu
               const response = await api.endMatch(matchId, player.user._id);
               const { match, cupDataChange } = response.data.endData;
-              getCupChangeMessage(match, cupDataChange)
+              getCupChangeMessage(match, cupDataChange);
               setMatch(match);
               setDisable(true);
               // Emit check xem player nào out ra khỏi phòng trước đó => xóa player đó ra khỏi players trong room
@@ -89,9 +86,7 @@ function CardInfo({
     }
     return <div></div>;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [x, xIsNext, timeExp, matchId, socket]);
-
-
+  }, [x, xIsNext, timeExp, matchId, socket, setDisable, setMatch, isMatchEnd]);
 
   const getStatus = useCallback(() => {
     if (player) {
@@ -117,10 +112,16 @@ function CardInfo({
   const renderButtonStart = useCallback(() => {
     //Nút chơi lại hiển thị khi ván chơi kết thúc
     const userId = getUserIdFromStorage();
+    console.log(playersLength);
+    if (playersLength) {
+      if (playersLength < 2) {
+        return null;
+      }
+    }
     if (player) {
       if (isMatchEnd && player.user._id === userId) {
-        const date = Date.now() + 20 * 1000;
-        const deadline = moment.utc(date).valueOf();
+        // const date = Date.now() + 20 * 1000;
+        const deadline = moment.utc(timeExp).valueOf();
         //Nếu match kết thúc mới render
         return (
           <>
@@ -133,7 +134,6 @@ function CardInfo({
                     format="s"
                     suffix="s"
                     onFinish={async () => {
-                      console.log('Helo there');
                       setVisibleButton(false);
                       const response = await api.updateRoomWhenPlayerNotReady(
                         roomId,
@@ -157,8 +157,8 @@ function CardInfo({
                 </div>
               </div>
             ) : (
-                ''
-              )}
+              ''
+            )}
           </>
         );
       }
@@ -170,6 +170,8 @@ function CardInfo({
     roomId,
     visibleButton,
     history,
+    timeExp,
+    playersLength,
   ]);
 
   const getCup = () => {
@@ -179,8 +181,8 @@ function CardInfo({
         <span>{player.user.cup}</span>
       </div>
     ) : (
-        <div style={{ height: '20px' }}></div>
-      );
+      <div style={{ height: '20px' }}></div>
+    );
   };
 
   return (
@@ -192,8 +194,19 @@ function CardInfo({
       }}
     >
       <Meta
-        avatar={<Avatar shape="square" style={{ width: '50px', height: '50px' }}
-          src={player ? (player.user.imageUrl ? player.user.imageUrl : "https://picsum.photos/seed/picsum/50/50") : ""} />}
+        avatar={
+          <Avatar
+            shape="square"
+            style={{ width: '50px', height: '50px' }}
+            src={
+              player
+                ? player.user.imageUrl
+                  ? player.user.imageUrl
+                  : 'https://picsum.photos/seed/picsum/50/50'
+                : ''
+            }
+          />
+        }
         title={player ? player.user.name : 'Còn trống'}
         description={getCup()}
       />

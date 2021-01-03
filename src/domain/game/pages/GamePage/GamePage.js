@@ -111,7 +111,7 @@ const GamePage = React.memo((props) => {
     };
     socket.on('match-start-update', matchStartUpdateListener);
     const haveWinnerListener = ({ updatedMatch, cupDataChange }) => {
-      console.log(cupDataChange)
+      console.log(cupDataChange);
       console.log('have winner');
       console.log(updatedMatch);
       setMatch({ ...updatedMatch });
