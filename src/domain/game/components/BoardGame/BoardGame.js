@@ -131,7 +131,11 @@ const BoardGame = React.memo(
             });
           }
         }
-      },
+        else {
+          setDisable(!disable);
+        }
+      }
+      ,
       [emitSendMove, getSquareValue, match, setMatch, countdownDuration, roomId]
     );
 
@@ -193,8 +197,8 @@ const BoardGame = React.memo(
               Đến lượt bạn <img src={loading} />
             </div>
           ) : (
-            <div className="your-turn"></div>
-          )}
+              <div className="your-turn"></div>
+            )}
         </div>
         <table className="board">
           <tbody>{renderBoard()}</tbody>

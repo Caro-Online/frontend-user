@@ -27,7 +27,7 @@ import TopUsers from '../../components/TopUsers/TopUsers';
 //Others
 import './GamePage.css';
 import api from '../../apiGame';
-import { getUserIdFromStorage } from '../../../../shared/utils/utils';
+import { getUserIdFromStorage, getCupChangeMessage } from '../../../../shared/utils/utils';
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -129,19 +129,7 @@ const GamePage = React.memo((props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
-  const getCupChangeMessage = (updatedMatch, cupDataChange) => {
-    console.log(cupDataChange)
-    const userId = getUserIdFromStorage();
-    for (let i = 0; i < updatedMatch.players.length; i++) {
-      if (updatedMatch.players[i]._id === userId) {
-        if (updatedMatch.players[i]._id === updatedMatch.winner) {
-          antMessage.success(`Bạn được cộng ${cupDataChange[0]} cúp`)
-        } else {
-          antMessage.warning(`Bạn bị trừ ${cupDataChange[1]} cúp`)
-        }
-      }
-    }
-  }
+
 
   const addAudience = useCallback(
     async () => {
