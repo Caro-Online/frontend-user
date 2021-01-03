@@ -11,6 +11,7 @@ import {
   // Card,
   Statistic,
   message as antMessage,
+
 } from 'antd';
 import { connect } from 'react-redux';
 import { FaTrophy, FaUsers, FaInfoCircle } from 'react-icons/fa';
@@ -107,14 +108,17 @@ const GamePage = React.memo((props) => {
       setMatch(res.data.match);
     };
     socket.on('match-start-update', matchStartUpdateListener);
-    const haveWinnerListener = ({ updatedMatch }) => {
+    const haveWinnerListener = ({ updatedMatch, cupDataChange }) => {
       console.log('have winner');
       setMatch({ ...updatedMatch });
+      getCupChangeMessage(updatedMatch, cupDataChange)
     };
     socket.on('have-winner', haveWinnerListener);
     const endMatchListener = ({ updatedMatch }) => {
       console.log('end match');
       setMatch({ ...updatedMatch });
+
+
     };
     socket.on('end-match', endMatchListener);
     return () => {
@@ -124,6 +128,20 @@ const GamePage = React.memo((props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
+
+  const getCupChangeMessage = (updatedMatch, cupDataChange) => {
+    console.log(cupDataChange)
+    const userId = getUserIdFromStorage();
+    for (let i = 0; i < updatedMatch.players.length; i++) {
+      if (updatedMatch.players[i]._id === userId) {
+        if (updatedMatch.players[i]._id === updatedMatch.winner) {
+          antMessage.success(`Bạn được cộng ${cupDataChange[0]} cúp`)
+        } else {
+          antMessage.warning(`Bạn bị trừ ${cupDataChange[1]} cúp`)
+        }
+      }
+    }
+  }
 
   const addAudience = useCallback(
     async () => {
