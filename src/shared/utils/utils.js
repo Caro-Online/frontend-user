@@ -1,3 +1,4 @@
+import { message as antMessage } from 'antd'
 export const removeItem = (array, id) => {
   let cloneArray = [...array];
   return cloneArray.filter((x) => x._id !== id);
@@ -66,3 +67,17 @@ export const removeExpirationDateFromStorage = () => {
 export const getExpirationDateFromStorage = () => {
   return localStorage.getItem("expirationDate");
 };
+
+export const getCupChangeMessage = (updatedMatch, cupDataChange) => {
+  console.log(updatedMatch.winner)
+  const userId = getUserIdFromStorage();
+  for (let i = 0; i < updatedMatch.players.length; i++) {
+    if (updatedMatch.players[i]._id === userId) {
+      if (updatedMatch.players[i]._id === updatedMatch.winner) {
+        antMessage.success(`Bạn được cộng ${cupDataChange[0]} cúp`)
+      } else {
+        antMessage.warning(`Bạn bị trừ ${cupDataChange[1]} cúp`)
+      }
+    }
+  }
+}

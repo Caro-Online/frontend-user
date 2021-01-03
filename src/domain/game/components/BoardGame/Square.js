@@ -4,7 +4,7 @@ import x from "../../../../shared/assets/images/x.png";
 import o from "../../../../shared/assets/images/o.png";
 const Square = ({ disable, setDisable, isWin, value, onClick }) => {
   const handleClick = () => {
-    if (!disable) {
+    if (!disable && value === null) {
       console.log("click");
       setDisable(!disable);
       return onClick();

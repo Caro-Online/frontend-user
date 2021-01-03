@@ -133,12 +133,12 @@ const OnlineUsers = ({ roomId, socket }) => {
                                 src={user.imageUrl}
                               />
                             ) : (
-                              <Avatar
-                                shape="circle"
-                                size={96}
-                                icon={<UserOutlined />}
-                              />
-                            )}
+                                <Avatar
+                                  shape="circle"
+                                  size={96}
+                                  icon={<UserOutlined />}
+                                />
+                              )}
                           </Badge>
                         </Col>
                         <Col
@@ -183,16 +183,16 @@ const OnlineUsers = ({ roomId, socket }) => {
                                   suffix="%"
                                 />
                               ) : (
-                                <Statistic
-                                  title="Tỉ lệ thắng"
-                                  value={
-                                    user.matchHaveWon / user.matchHavePlayed
-                                  }
-                                  precision={2}
-                                  valueStyle={{ color: '#3f8600' }}
-                                  suffix="%"
-                                />
-                              )}
+                                  <Statistic
+                                    title="Tỉ lệ thắng"
+                                    value={
+                                      user.matchHaveWon / user.matchHavePlayed * 100
+                                    }
+                                    precision={2}
+                                    valueStyle={{ color: '#3f8600' }}
+                                    suffix="%"
+                                  />
+                                )}
                             </Col>
                           </Row>
                         </Col>
@@ -207,8 +207,8 @@ const OnlineUsers = ({ roomId, socket }) => {
                         {user.imageUrl ? (
                           <Avatar shape="circle" src={user.imageUrl} />
                         ) : (
-                          <Avatar shape="circle" icon={<UserOutlined />} />
-                        )}
+                            <Avatar shape="circle" icon={<UserOutlined />} />
+                          )}
                       </Badge>
                     }
                     title={

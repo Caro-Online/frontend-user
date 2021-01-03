@@ -26,7 +26,10 @@ import TopUsers from '../../components/TopUsers/TopUsers';
 //Others
 import './GamePage.css';
 import api from '../../apiGame';
-import { getUserIdFromStorage } from '../../../../shared/utils/utils';
+import {
+  getUserIdFromStorage,
+  getCupChangeMessage,
+} from '../../../../shared/utils/utils';
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -107,10 +110,11 @@ const GamePage = React.memo((props) => {
       setMatch(res.data.match);
     };
     socket.on('match-start-update', matchStartUpdateListener);
-    const haveWinnerListener = ({ updatedMatch }) => {
+    const haveWinnerListener = ({ updatedMatch, cupDataChange }) => {
       console.log('have winner');
       console.log(updatedMatch);
       setMatch({ ...updatedMatch });
+      getCupChangeMessage(updatedMatch, cupDataChange);
     };
     socket.on('have-winner', haveWinnerListener);
     const endMatchListener = ({ updatedMatch }) => {
@@ -141,7 +145,7 @@ const GamePage = React.memo((props) => {
       antMessage.error(err);
       return null;
     }
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     async function doStuff() {
