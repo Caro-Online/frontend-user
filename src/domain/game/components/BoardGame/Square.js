@@ -2,9 +2,9 @@ import React from "react";
 import "./BoardGame.css";
 import x from "../../../../shared/assets/images/x.png";
 import o from "../../../../shared/assets/images/o.png";
-const Square = ({ disable, setDisable, isWin, value, onClick }) => {
+const Square = ({ disable, setDisable, isWin, value, onClick, isPrevious }) => {
   const handleClick = () => {
-    if (!disable) {
+    if (!disable && value === null) {
       console.log("click");
       setDisable(!disable);
       return onClick();
@@ -18,14 +18,23 @@ const Square = ({ disable, setDisable, isWin, value, onClick }) => {
     } else if (value === "O") {
       return <img alt="o" src={o} width="80%" height="80%" />;
     }
-    return "";
+    return <div style={{ width: "100%", height: "100%" }}></div>;
   };
+  const styles = {
+    square: {
+      '&:hover': {
+        backgroundColor: value ? "yellow" : "white",
+        cursor: value ? "pointer" : "no-drop"
+      },
+      backgroundColor: isWin ? "yellow" : (isPrevious ? "greenyellow" : "white")
+    }
+  }
 
   return (
     <td
-      className="square"
+      className='square'
       onClick={handleClick}
-      style={{ backgroundColor: isWin ? "yellow" : "" }}
+      style={styles.square}
     >
       {returnItem()}
     </td>

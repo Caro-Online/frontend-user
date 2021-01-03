@@ -146,8 +146,24 @@ const BoardGame = React.memo(
             }
           }
         }
-      },
+        else {
+          setDisable(!disable);
+        }
+      }
+      ,
       [emitSendMove, getSquareValue, match, setMatch, countdownDuration, roomId]
+    );
+
+    const getPreviousMove = useCallback(
+      (i) => {
+        if (match) {
+          if (match.history[match.history.length - 1] === i) {
+            return true;
+          }
+        }
+        return false;
+      },
+      [match]
     );
 
     const renderSquare = useCallback(
@@ -158,6 +174,7 @@ const BoardGame = React.memo(
           <Square
             key={i}
             index={i}
+            isPrevious={getPreviousMove(i)}
             isWin={isWin} // nếu ô nằm trong winraw thì highlight
             value={getSquareValue(i)}
             onClick={() => handleSquareClick(i)}
@@ -208,8 +225,8 @@ const BoardGame = React.memo(
               Đến lượt bạn <img src={loading} />
             </div>
           ) : (
-            <div className="your-turn"></div>
-          )}
+              <div className="your-turn"></div>
+            )}
         </div>
         <table className="board">
           <tbody>{renderBoard()}</tbody>

@@ -19,8 +19,8 @@ import {
   ClockCircleTwoTone,
 } from '@ant-design/icons';
 import { connect } from 'react-redux';
-import { getUserIdFromStorage } from '../../../../shared/utils/utils';
-import './UserInfo.css';
+import { getUserIdFromStorage, getCupChangeMessage } from '../../../../shared/utils/utils';
+import './UserInfo.css'
 
 const { Countdown } = Statistic;
 const { Meta } = Card;
@@ -70,7 +70,8 @@ function CardInfo({
               // Xử thua cho user đó
               // Gửi api update lại trận đấu
               const response = await api.endMatch(matchId, player.user._id);
-              const { match } = response.data;
+              const { match, cupDataChange } = response.data.endData;
+              getCupChangeMessage(match, cupDataChange)
               setMatch(match);
               setDisable(true);
               // Emit check xem player nào out ra khỏi phòng trước đó => xóa player đó ra khỏi players trong room
@@ -89,6 +90,8 @@ function CardInfo({
     return <div></div>;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [x, xIsNext, timeExp, matchId, socket]);
+
+
 
   const getStatus = useCallback(() => {
     if (player) {
@@ -154,8 +157,8 @@ function CardInfo({
                 </div>
               </div>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </>
         );
       }
@@ -176,8 +179,8 @@ function CardInfo({
         <span>{player.user.cup}</span>
       </div>
     ) : (
-      <div style={{ height: '20px' }}></div>
-    );
+        <div style={{ height: '20px' }}></div>
+      );
   };
 
   return (
@@ -189,19 +192,8 @@ function CardInfo({
       }}
     >
       <Meta
-        avatar={
-          <Avatar
-            shape="square"
-            style={{ width: '50px', height: '50px' }}
-            src={
-              player
-                ? player.imageUrl
-                  ? player.imageUrl
-                  : 'https://picsum.photos/seed/picsum/50/50'
-                : ''
-            }
-          />
-        }
+        avatar={<Avatar shape="square" style={{ width: '50px', height: '50px' }}
+          src={player ? (player.user.imageUrl ? player.user.imageUrl : "https://picsum.photos/seed/picsum/50/50") : ""} />}
         title={player ? player.user.name : 'Còn trống'}
         description={getCup()}
       />

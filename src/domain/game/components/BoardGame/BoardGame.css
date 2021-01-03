@@ -38,6 +38,10 @@
     font-family: 'Poppins';
     font-weight: bold;
     font-size: 1.0rem;
+    cursor: pointer;
+}
+.square:hover{
+    background-color: gray!important;
 }
 
 .square:focus {

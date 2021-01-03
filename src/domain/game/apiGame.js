@@ -1,6 +1,6 @@
 import { API } from '../../config';
 import axios from 'axios';
-import { getTokenFromStorage } from '../../shared/utils/utils';
+import { getTokenFromStorage, getUserIdFromStorage } from '../../shared/utils/utils';
 
 const getAllRoom = () => {
   const token = getTokenFromStorage();
@@ -52,7 +52,7 @@ const joinPlayerQueue = (userId, roomId) => {
   );
 };
 
-const joinRoomById = (roomId) => {};
+const joinRoomById = (roomId) => { };
 
 const getCurrentMatchByIdOfRoom = (roomId) => {
   const token = getTokenFromStorage();
@@ -126,6 +126,9 @@ const updatePlayerIsReady = (roomId, userId, isReady) => {
     config
   );
 };
+
+//No api
+
 
 const api = {
   getAllRoom,
