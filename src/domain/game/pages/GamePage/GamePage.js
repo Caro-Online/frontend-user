@@ -11,7 +11,6 @@ import {
   // Card,
   Statistic,
   message as antMessage,
-
 } from 'antd';
 import { connect } from 'react-redux';
 import { FaTrophy, FaUsers, FaInfoCircle } from 'react-icons/fa';
@@ -27,7 +26,10 @@ import TopUsers from '../../components/TopUsers/TopUsers';
 //Others
 import './GamePage.css';
 import api from '../../apiGame';
-import { getUserIdFromStorage, getCupChangeMessage } from '../../../../shared/utils/utils';
+import {
+  getUserIdFromStorage,
+  getCupChangeMessage,
+} from '../../../../shared/utils/utils';
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -113,14 +115,12 @@ const GamePage = React.memo((props) => {
       console.log('have winner');
       console.log(updatedMatch);
       setMatch({ ...updatedMatch });
-      getCupChangeMessage(updatedMatch, cupDataChange)
+      getCupChangeMessage(updatedMatch, cupDataChange);
     };
     socket.on('have-winner', haveWinnerListener);
     const endMatchListener = ({ updatedMatch }) => {
       console.log('end match');
       setMatch({ ...updatedMatch });
-
-
     };
     socket.on('end-match', endMatchListener);
     return () => {
@@ -146,7 +146,7 @@ const GamePage = React.memo((props) => {
       antMessage.error(err);
       return null;
     }
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     async function doStuff() {
