@@ -62,14 +62,14 @@ const getCurrentMatchByIdOfRoom = (roomId) => {
   return axios.get(`${API}/match/room/${roomId}`, config);
 };
 
-const addMove = (matchId, index, xIsNext) => {
+const addMove = (matchId, index, xIsNext, roomId) => {
   const token = getTokenFromStorage();
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
   return axios.post(
     `${API}/match/addmove`,
-    { matchId, index, xIsNext },
+    { matchId, index, xIsNext, roomId },
     config
   );
 };

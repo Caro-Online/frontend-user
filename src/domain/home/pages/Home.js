@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { SiHappycow } from "react-icons/si";
-import { useHistory, useLocation } from "react-router-dom";
+import React, { useCallback, useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { SiHappycow } from 'react-icons/si';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   Form,
   Input,
@@ -16,25 +16,25 @@ import {
   Row,
   Col,
   Space,
-} from "antd";
+} from 'antd';
 import {
   LockOutlined,
   EyeTwoTone,
   EyeInvisibleOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 
-import Modal from "../../../shared/components/Modal/Modal";
-import InputRoomIdModal from "../../../shared/components/InputRoomIdModal/InputRoomIdModal";
+import Modal from '../../../shared/components/Modal/Modal';
+import InputRoomIdModal from '../../../shared/components/InputRoomIdModal/InputRoomIdModal';
 
-import { API } from "../../../config";
-import "./Home.css";
+import { API } from '../../../config';
+import './Home.css';
 import {
   getUserIdFromStorage,
   getTokenFromStorage,
   getUsernameFromStorage,
-} from "../../../shared/utils/utils";
-import api from "../../game/apiGame";
-import { AiOutlineReload } from "react-icons/ai";
+} from '../../../shared/utils/utils';
+import api from '../../game/apiGame';
+import { AiOutlineReload } from 'react-icons/ai';
 const { Title, Text } = Typography;
 
 const { Option } = Select;
@@ -49,31 +49,43 @@ const Home = (props) => {
   const [openInputRoomIdModal, setOpenInputRoomIdModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [havePassword, setHavePassword] = useState(false);
-
   const [retry, setRetry] = useState(false);
-  const [tipContent, setTipContent] = useState("Đang tìm phòng...");
+  const [tipContent, setTipContent] = useState('Đang tìm phòng...');
+  const countDownDurationArray = useState([
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+  ])[0];
   useEffect(() => {
     if (location.state) {
       if (location.state.returnFromResetPassword)
-        message.success("Email đặt lại mật khẩu đã được gửi đi!");
+        message.success('Email đặt lại mật khẩu đã được gửi đi!');
       else if (location.state.returnFromUpdatePassword) {
-        message.success("Mật khẩu của bạn đã được thay đổi!");
+        message.success('Mật khẩu của bạn đã được thay đổi!');
       }
     }
   }, [location]);
 
   const onClickLoginButtonHandler = () => {
-    history.push("/login");
+    history.push('/login');
   };
 
   const onClickRegisterButtonHandler = () => {
-    history.push("/register");
+    history.push('/register');
   };
 
   const onClickPlayNowButtonHandler = () => {
     setShowDialog(true);
     setRetry(false);
-    setTipContent("Đang tìm phòng...");
+    setTipContent('Đang tìm phòng...');
     api
       .getRandomRoom()
       .then((res) => {
@@ -87,7 +99,7 @@ const Home = (props) => {
       })
       .catch((err) => {
         setIsLoading(false);
-        setTipContent("Hiện tại không còn phòng trống, vui lòng thử lại...");
+        setTipContent('Hiện tại không còn phòng trống, vui lòng thử lại...');
         setRetry(true);
         console.error(err);
       });
@@ -98,7 +110,7 @@ const Home = (props) => {
   };
 
   const onClickFindRoomsHandler = () => {
-    history.push("/rooms");
+    history.push('/rooms');
   };
 
   const onClickCreateRoomButtonHandler = () => {
@@ -119,18 +131,19 @@ const Home = (props) => {
 
   const onSubmitCreateRoomHandler = useCallback(
     (values) => {
-      const { name, rule, roomPassword } = values;
+      const { name, rule, roomPassword, countdownDuration } = values;
       setIsLoading(true);
       fetch(`${API}/room`, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({
           name,
           rule,
           userId: getUserIdFromStorage(),
           roomPassword,
+          countdownDuration,
         }),
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${getTokenFromStorage()}`,
         },
       })
@@ -138,9 +151,6 @@ const Home = (props) => {
         .then((response) => {
           history.push({
             pathname: `/room/${response.room.roomId}`,
-            state: {
-              fromCreateRoom: true,
-            },
           });
           setIsLoading(false);
         })
@@ -166,7 +176,7 @@ const Home = (props) => {
       </h2>
       <button
         className="login-btn"
-        style={{ marginBottom: "16px" }}
+        style={{ marginBottom: '16px' }}
         onClick={onClickLoginButtonHandler}
       >
         Đăng nhập
@@ -210,7 +220,7 @@ const Home = (props) => {
           Tạo phòng
         </Title>
         {isLoading ? (
-          <Spin style={{ fontSize: "64px" }} />
+          <Spin style={{ fontSize: '64px' }} />
         ) : (
           <Form
             name="normal_register"
@@ -223,20 +233,33 @@ const Home = (props) => {
               rules={[
                 {
                   required: true,
-                  message: "Tên phòng không được bỏ trống",
+                  message: 'Tên phòng không được bỏ trống',
                 },
               ]}
             >
               <Input
                 type="text"
                 placeholder="Phòng của tui"
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
               />
             </Form.Item>
             <Form.Item name="rule" label="Luật chơi" initialValue={true}>
               <Select>
                 <Option value={true}>Chặn hai đầu không thắng</Option>
                 <Option value={false}>Chặn hai đầu thắng</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="countdownDuration"
+              label="Thời gian cho một nước"
+              initialValue={20}
+            >
+              <Select>
+                {countDownDurationArray.map((cd) => (
+                  <Option key={cd} value={cd * 5}>
+                    {cd * 5} giây
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
 
@@ -253,7 +276,7 @@ const Home = (props) => {
                 label="Mật khẩu"
                 name="roomPassword"
                 rules={[
-                  { required: true, message: "Mật khẩu không được bỏ trống!" },
+                  { required: true, message: 'Mật khẩu không được bỏ trống!' },
                 ]}
               >
                 <Input.Password
@@ -269,9 +292,9 @@ const Home = (props) => {
             <Form.Item>
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
                 }}
               >
                 <Button
@@ -297,13 +320,13 @@ const Home = (props) => {
       <Modal show={showDialog}>
         <Row justify="center">
           <Space align="center">
-            <Col style={{ margin: "8px 0" }} span={24}>
+            <Col style={{ margin: '8px 0' }} span={24}>
               <Spin tip={tipContent}></Spin>
             </Col>
           </Space>
           <Col span={24}>
-            <Divider style={{ margin: "8px 0" }}></Divider>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Divider style={{ margin: '8px 0' }}></Divider>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button
                 type="primary"
                 block={!retry}
@@ -315,9 +338,9 @@ const Home = (props) => {
               {retry && (
                 <Button
                   style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     marginLeft: 8,
                   }}
                   type="primary"

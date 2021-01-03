@@ -135,7 +135,7 @@ function CardInfo({
                   const { success, message } = response.data;
                   if (success) {
                     // Cho user quay ve rooms => fire sự kiện leaveroom
-                    history.push('/rooms');
+                    history.replace('/rooms');
                   } else {
                     console.log(message);
                     antMessage.error(message);

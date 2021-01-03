@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -17,8 +17,18 @@ import loading from 'src/shared/assets/images/loading.svg';
 const boardSize = 17;
 
 const BoardGame = React.memo(
-  ({ players, match, socket, setMatch, disable, setDisable }) => {
+  ({
+    players,
+    match,
+    socket,
+    setMatch,
+    disable,
+    setDisable,
+    countdownDuration,
+  }) => {
     const reactHistory = useHistory();
+    const params = useParams();
+    const { roomId } = params;
 
     //Check đúng userId và lượt đi, mở ô cho đánh
     const setPlaying = useCallback(
@@ -38,10 +48,6 @@ const BoardGame = React.memo(
 
     useEffect(() => {
       // Nếu match start thì lắng nghe sự kiện receive-move
-      const matchStartListener = async ({ matchId }) => {
-        socket.on('receive-move', receiveMoveListener);
-      };
-
       const receiveMoveListener = ({ updatedMatch }) => {
         console.log('ReceiveMove');
         // Cập nhật lại match cho các client trong room
@@ -51,9 +57,9 @@ const BoardGame = React.memo(
         }
       };
 
-      socket.on('match-start', matchStartListener);
+      socket.on('receive-move', receiveMoveListener);
+
       return () => {
-        socket.off('match-start', matchStartListener);
         socket.off('receive-move', receiveMoveListener);
       };
     }, [socket, setMatch, setPlaying]);
@@ -113,9 +119,9 @@ const BoardGame = React.memo(
           //Nếu bước chưa tồn tại
           if (!getSquareValue(i)) {
             newHistory.push(i);
-            await api.addMove(match._id, i, !match.xIsNext); //add to db
+            await api.addMove(match._id, i, !match.xIsNext, roomId); //add to db
             emitSendMove(i); //socket emit
-            const date = new Date(Date.now() + 20 * 1000);
+            const date = new Date(Date.now() + countdownDuration * 1000);
             const timeExp = moment.utc(date).format();
             setMatch({
               ...match,
@@ -126,7 +132,7 @@ const BoardGame = React.memo(
           }
         }
       },
-      [emitSendMove, getSquareValue, match, setMatch]
+      [emitSendMove, getSquareValue, match, setMatch, countdownDuration, roomId]
     );
 
     const renderSquare = useCallback(
