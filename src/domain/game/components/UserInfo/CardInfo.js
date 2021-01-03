@@ -5,9 +5,10 @@ import api from '../../apiGame';
 
 import ximage from '../../../../shared/assets/images/x.png';
 import o from '../../../../shared/assets/images/o.png';
-import { StarFilled } from '@ant-design/icons';
+import { StarFilled, TrophyFilled, ClockCircleTwoTone } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { getUserIdFromStorage } from '../../../../shared/utils/utils';
+import './UserInfo.css'
 
 const { Countdown } = Statistic;
 const { Meta } = Card;
@@ -43,26 +44,29 @@ function CardInfo({
     const deadline = moment.utc(timeExp).valueOf();
     if (xIsNext === x) {
       return (
-        <Countdown
-          title="Thời gian còn lại"
-          value={deadline}
-          format="ss"
-          suffix="giây"
-          onFinish={async () => {
-            // Xử thua cho user đó
-            // Gửi api update lại trận đấu
-            const response = await api.endMatch(matchId, player.user._id);
-            const { match } = response.data;
-            setMatch(match);
-            setDisable(true);
-            // Emit check xem player nào out ra khỏi phòng trước đó => xóa player đó ra khỏi players trong room
-            socket.emit('check-player-out-during-play', { roomId: match.room });
-            // Emit sự kiện end-match để các client khác trong phòng update lại thông tin
-            socket.emit('end-match', {
-              matchId: matchId,
-            });
-          }}
-        />
+        <>
+          <Countdown
+            value={deadline}
+            format="ss"
+            suffix="s"
+            prefix={<ClockCircleTwoTone />}
+            style={{ fontSize: "12px !important" }}
+            onFinish={async () => {
+              // Xử thua cho user đó
+              // Gửi api update lại trận đấu
+              const response = await api.endMatch(matchId, player.user._id);
+              const { match } = response.data;
+              setMatch(match);
+              setDisable(true);
+              // Emit check xem player nào out ra khỏi phòng trước đó => xóa player đó ra khỏi players trong room
+              socket.emit('check-player-out-during-play', { roomId: match.room });
+              // Emit sự kiện end-match để các client khác trong phòng update lại thông tin
+              socket.emit('end-match', {
+                matchId: matchId,
+              });
+            }}
+          />
+        </>
       );
     }
     return <div></div>;
@@ -80,8 +84,6 @@ function CardInfo({
           return 'Đang đợi...';
         }
       }
-    } else {
-      return 'Còn trống';
     }
   }, [isPlaying, player]);
 
@@ -99,27 +101,42 @@ function CardInfo({
         //Nếu match kết thúc mới render
         return (
           <>
-            <Button
-              onClick={handleClickButtonStart}
-              type="primary"
-              style={{ display: visibleButton ? '' : 'none' }}
-            >
-              Sẵn sàng
-            </Button>
-            <Countdown
-              value={deadline}
-              prefix="Bạn còn "
-              format="ss"
-              suffix="giây để sẵn sàng"
-              onFinish={async () => {
-                console.log('Helo there');
-              }}
-            />
+            {visibleButton ?
+              <div className="start-again">
+                <div>
+                  <Countdown
+                    value={deadline}
+                    prefix={<ClockCircleTwoTone style={{ fontSize: "23px" }} />}
+                    format="s"
+                    suffix="s"
+                    onFinish={async () => {
+                      console.log('Helo there');
+                      setVisibleButton(false);
+                    }}
+                  />
+                </div>
+                <div>
+                  <Button
+                    onClick={handleClickButtonStart}
+                    type="primary"
+                  >
+                    Sẵn sàng
+                </Button>
+                </div>
+              </div> : ''}
           </>
         );
       }
     }
   };
+
+  const getCup = () => {
+    return player ?
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <TrophyFilled style={{ color: '#F1C40F', padding: "5px" }} />
+        <span>{player.user.cup}</span>
+      </div> : <div style={{ height: "20px" }}></div>
+  }
 
   return (
     <Card
@@ -130,13 +147,14 @@ function CardInfo({
       }}
     >
       <Meta
-        avatar={<Avatar src={x ? ximage : o} />}
-        title={player ? player.user.name : ''}
-        description={getStatus()}
+        avatar={<Avatar shape="square" style={{ width: '50px', height: '50px' }} src={player ? (player.imageUrl ? player.imageUrl : "https://picsum.photos/seed/picsum/50/50") : ""} />}
+        title={player ? player.user.name : 'Còn trống'}
+        description={getCup()}
       />
-      {/* {console.log(user)} */}
-      <img path="../../shared/assets/images/x.png" />
-      {getIconNext()}
+      <div className="status-image">
+        <div>{getStatus()}</div>
+        <div>< Avatar src={x ? ximage : o} /></div>
+      </div>
       {getCountdownNext()}
       {renderButtonStart()}
     </Card>

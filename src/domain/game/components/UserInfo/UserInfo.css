@@ -28,3 +28,39 @@
     align-items: center;
 }
 
+/* cardinfo css */
+.ant-statistic-content span {
+    font-size: 23px;
+}
+.ant-statistic-content{
+    display: flex;
+    flex:row;
+    align-items: center;
+}
+.ant-statistic-content-prefix span{
+    margin-bottom: 10px;
+}
+.start-again{
+    display: flex;
+    justify-items: start;
+    align-items: center;
+}
+.start-again button{
+    margin-left: 5px;
+}
+
+
+.start-again button{
+    font-size: 12px;
+    padding: 2px 4px !important;
+    height: 25px;
+}
+
+.status-image{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color:gray
+}
+
+
