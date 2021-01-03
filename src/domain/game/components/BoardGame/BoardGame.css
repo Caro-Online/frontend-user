@@ -41,7 +41,7 @@
     cursor: pointer;
 }
 .square:hover{
-    background-color: gray!important;
+    background-color: burlywood!important;
 }
 
 .square:focus {
