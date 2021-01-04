@@ -6,30 +6,17 @@
     display: table;
 }
 
-.board-row:after {
+/* .board-row:after {
     clear: both;
     content: "";
     display: table;
-}
+} */
 
 .status {
     margin-bottom: 10px;
 }
 
 .square {
-    /* display: table-cell;
-    background: #fff;
-    border: 1px solid #999;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 34px;
-    min-height: 28px !important;
-    min-width: 28px !important;
-    height: 28px;
-    width: 28px;
-    padding: 0;
-    text-align: center;
-    cursor: pointer; */
     display: table-cell;
     width: 1.8rem;
     height: 1.8rem;
@@ -41,7 +28,7 @@
     cursor: pointer;
 }
 .square:hover{
-    background-color: burlywood!important;
+    background-color: gainsboro!important;
 }
 
 .square:focus {
@@ -68,4 +55,18 @@
 }
 .game-info{
     height: 35px
+}
+
+@media only screen and (max-width: 740px) {
+    .square {
+    display: table-cell;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1.4px solid #999;
+    text-align: center;
+    font-family: 'Poppins';
+    font-weight: bold;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
 }

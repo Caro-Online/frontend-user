@@ -226,7 +226,7 @@ const GamePage = React.memo((props) => {
 
   let content = (
     <Row gutter={8}>
-      <Col className="game-board" span={12}>
+      <Col className="game-board" flex="4 0 440px">
         <BoardGame
           match={match}
           setMatch={setMatch}
@@ -239,7 +239,7 @@ const GamePage = React.memo((props) => {
           rule={room ? room.rule : null}
         />
       </Col>
-      <Col span={6}>
+      <Col flex="1 0 200px">
         <UserInfo
           socket={socket}
           roomId={roomId}
@@ -255,11 +255,8 @@ const GamePage = React.memo((props) => {
           setDisable={setDisable}
         />
       </Col>
-      <Col span={6}>
+      <Col flex="2 1 300px">
         <Tabs defaultActiveKey="2" type="card" size="middle">
-          <TabPane tab="Card Tab 1" key="1">
-            Content of card tab 1
-          </TabPane>
           <TabPane
             tab={
               <div className="tabpane-main">
@@ -290,13 +287,13 @@ const GamePage = React.memo((props) => {
                   layout="vertical"
                 >
                   <Descriptions.Item label="Tên phòng">
-                    <Text strong>{room.name}</Text>
+                    <Text strong>  {room.name}</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Số người trong phòng" span={2}>
                     <Statistic value={numPeopleInRoom}></Statistic>
                   </Descriptions.Item>
                   <Descriptions.Item label="Chủ phòng">
-                    <Text strong>Tam thoi de trong</Text>
+                    <Text strong>{room.players[0].user.name}</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>
@@ -331,7 +328,7 @@ const GamePage = React.memo((props) => {
                       level={5}
                       style={{ marginBottom: 0, fontSize: '14px' }}
                     >
-                      Người chơi online
+                      Trực tuyến
                     </Title>
                   </div>
                 }
@@ -347,7 +344,7 @@ const GamePage = React.memo((props) => {
                       level={5}
                       style={{ marginBottom: 0, fontSize: '14px' }}
                     >
-                      Người chơi hàng đầu
+                      BXH
                     </Title>
                   </div>
                 }

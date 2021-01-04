@@ -234,7 +234,7 @@ const BoardGame = React.memo(
     //   }
     // }
     return (
-      <div>
+      <div style={{ marginLeft: "5px" }}>
         <div className="game-info">
           {!disable ? (
             <div className="your-turn">
