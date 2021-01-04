@@ -22,8 +22,6 @@ const Chat = ({ room, socket }) => {
 
   useEffect(() => {
     const messageListener = (message) => {
-      console.log('Receive message');
-      console.log(message);
       setMessages((messages) => [...messages, message]);
     };
     if (socket) {
@@ -48,7 +46,6 @@ const Chat = ({ room, socket }) => {
       event.preventDefault();
 
       if (message) {
-        console.log('emit sendmessage');
         socket.emit(
           'sendMessage',
           { message, userId: getUserIdFromStorage() },

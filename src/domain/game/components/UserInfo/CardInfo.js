@@ -112,7 +112,6 @@ function CardInfo({
   const renderButtonStart = useCallback(() => {
     //Nút chơi lại hiển thị khi ván chơi kết thúc
     const userId = getUserIdFromStorage();
-    console.log(playersLength);
     if (playersLength) {
       if (playersLength < 2) {
         return null;
@@ -144,7 +143,6 @@ function CardInfo({
                         // Cho user quay ve rooms => fire sự kiện leaveroom
                         history.replace('/rooms');
                       } else {
-                        console.log(message);
                         antMessage.error(message);
                       }
                     }}

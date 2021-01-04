@@ -5,7 +5,6 @@ let socket;
 
 export const initSocket = (userId) => {
   socket = io(API, { query: { userId } });
-  console.log(socket);
   return socket;
 };
 

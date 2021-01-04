@@ -80,7 +80,6 @@ function UserInfo({
 
   useEffect(() => {
     let updatePlayerReadyListener = ({ room }) => {
-      console.log('update-player-ready');
       setPlayers(room.players);
     };
     if (socket) {

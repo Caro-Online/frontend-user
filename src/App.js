@@ -65,8 +65,8 @@ const App = (props) => {
   if (isAuthenticated) {
     invitationIO();
   }
-  console.log(1, `isAuthenticated`, isAuthenticated);
-  console.log(`REACT_APP_API_URL`, process.env.REACT_APP_API_URL);
+  // console.log(1, `isAuthenticated`, isAuthenticated);
+  // console.log(`REACT_APP_API_URL`, process.env.REACT_APP_API_URL);
   const onCancelInvitation = () => {
     setShowInvitation(false);
   };

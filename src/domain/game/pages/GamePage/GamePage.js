@@ -64,6 +64,23 @@ const GamePage = React.memo((props) => {
     });
   }, []);
 
+  const addAudience = useCallback(async () => {
+    const userId = getUserIdFromStorage();
+    try {
+      const response = await api.joinRoom(userId, roomId);
+      const { success, message, room } = response.data;
+      if (!success) {
+        antMessage.error(message);
+        return null;
+      }
+      return room;
+    } catch (err) {
+      console.log(err);
+      antMessage.error(err);
+      return null;
+    }
+  }, [roomId]);
+
   const getRoomInfo = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -89,75 +106,9 @@ const GamePage = React.memo((props) => {
   }, [roomId]);
 
   useEffect(() => {
-    const roomDataListener = ({ room }) => {
-      setAudiences(room.audiences);
-      setIdOfRoom(room._id);
-      setRoom(room);
-      setNumPeopleInRoom(room.players.length + room.audiences.length);
-      setPlayers(room.players);
-    };
-    if (socket) {
-      socket.on('room-data', roomDataListener);
-    }
-    return () => {
-      socket.off('room-data', roomDataListener);
-    };
-  }, [setPlayers, socket]);
-
-  useEffect(() => {
-    const matchStartUpdateListener = async ({ matchId }) => {
-      const res = await api.getMatchById(matchId);
-      setMatch(res.data.match);
-    };
-    socket.on('match-start-update', matchStartUpdateListener);
-    const haveWinnerListener = ({ updatedMatch, cupDataChange }) => {
-      console.log(cupDataChange);
-      console.log('have winner');
-      console.log(updatedMatch);
-      setMatch({ ...updatedMatch });
-      getCupChangeMessage(updatedMatch, cupDataChange);
-    };
-    socket.on('have-winner', haveWinnerListener);
-    const endMatchListener = ({ updatedMatch }) => {
-      console.log('end match');
-      setMatch({ ...updatedMatch });
-    };
-    socket.on('end-match', endMatchListener);
-    return () => {
-      socket.off('match-state-update', matchStartUpdateListener);
-      socket.off('have-winner', haveWinnerListener);
-      socket.off('end-match', endMatchListener);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
-
-  const addAudience = useCallback(async () => {
-    const userId = getUserIdFromStorage();
-    try {
-      const response = await api.joinRoom(userId, roomId);
-      const { success, message, room } = response.data;
-      if (!success) {
-        antMessage.error(message);
-        return null;
-      }
-      return room;
-    } catch (err) {
-      console.log(err);
-      antMessage.error(err);
-      return null;
-    }
-  }, [roomId]);
-
-  useEffect(() => {
     async function doStuff() {
       // Lấy thông tin của phòng về
       const room = await getRoomInfo();
-      // Nếu status của phòng là trống thì redirect về kèm message
-      if (room.status === 'EMPTY') {
-        antMessage.warning('Bạn không thể vào phòng này nữa');
-        history.push('/');
-        return;
-      }
       // Nếu không sử dụng chức năng nhập id, hoặc bấm tham gia bên rooms mà nhập id trên url để vào
       if (room.password) {
         if (!location.state) {
@@ -170,7 +121,7 @@ const GamePage = React.memo((props) => {
       }
       // Lấy thông tin match hiện tại đang chơi (nếu có) và set vào match
       setCurrentMatch(room._id);
-      // Xét xem khi f5 lại user có phải player hay không, nếu ko có trong players thì add vào audiences
+      // Xét xem khi f5 lại user có phải player đang chơi hay không, nếu ko có trong players thì add vào audiences
       const userId = getUserIdFromStorage();
       let userInPlayers = false;
       room.players.forEach((player) => {
@@ -219,6 +170,49 @@ const GamePage = React.memo((props) => {
       }
     };
   }, [getRoomInfo, addAudience, location, socket, setCurrentMatch, history]);
+
+  useEffect(() => {
+    const roomDataListener = ({ room }) => {
+      setAudiences(room.audiences);
+      setIdOfRoom(room._id);
+      setRoom(room);
+      setNumPeopleInRoom(room.players.length + room.audiences.length);
+      setPlayers(room.players);
+    };
+    if (socket) {
+      socket.on('room-data', roomDataListener);
+    }
+    return () => {
+      socket.off('room-data', roomDataListener);
+    };
+  }, [setPlayers, socket]);
+
+  useEffect(() => {
+    const matchStartUpdateListener = async ({ matchId }) => {
+      const res = await api.getMatchById(matchId);
+      setMatch(res.data.match);
+    };
+    socket.on('match-start-update', matchStartUpdateListener);
+    const haveWinnerListener = ({ updatedMatch, cupDataChange }) => {
+      console.log(cupDataChange);
+      console.log('have winner');
+      console.log(updatedMatch);
+      setMatch({ ...updatedMatch });
+      getCupChangeMessage(updatedMatch, cupDataChange);
+    };
+    socket.on('have-winner', haveWinnerListener);
+    const endMatchListener = ({ updatedMatch }) => {
+      console.log('end match');
+      setMatch({ ...updatedMatch });
+    };
+    socket.on('end-match', endMatchListener);
+    return () => {
+      socket.off('match-state-update', matchStartUpdateListener);
+      socket.off('have-winner', haveWinnerListener);
+      socket.off('end-match', endMatchListener);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
 
   // const jumpTo = useCallback((move) => {
   //   setLocationToJump(move);
@@ -287,13 +281,13 @@ const GamePage = React.memo((props) => {
                   layout="vertical"
                 >
                   <Descriptions.Item label="Tên phòng">
-                    <Text strong>  {room.name}</Text>
+                    <Text strong> {room.name}</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Số người trong phòng" span={2}>
                     <Statistic value={numPeopleInRoom}></Statistic>
                   </Descriptions.Item>
                   <Descriptions.Item label="Chủ phòng">
-                    <Text strong>{room.players[0].user.name}</Text>
+                    <Text strong>Tam thoi de trong</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>

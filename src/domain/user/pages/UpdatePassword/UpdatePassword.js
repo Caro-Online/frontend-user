@@ -37,7 +37,6 @@ const UpdatePassword = (props) => {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response);
         setIsLoading(false);
         setUserId(response.userId);
       })

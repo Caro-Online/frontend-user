@@ -33,7 +33,6 @@ const InputRoomIdModal = (props) => {
   const onSubmitJoinRoomHandler = useCallback(
     async (values) => {
       const { roomId, roomPassword } = values;
-      console.log(roomPassword);
       let message, room;
       try {
         const response = await apiGame.getRoomInfoById(roomId);
@@ -44,7 +43,6 @@ const InputRoomIdModal = (props) => {
         antMessage.error(err.message);
         setAlertMessage(err.message);
       }
-      console.log(room);
       if (!room) {
         setAlertMessage(message);
         return;
@@ -62,7 +60,6 @@ const InputRoomIdModal = (props) => {
         }
       } else {
         // So khớp mật khẩu
-        console.log(roomPassword, room.password);
         if (roomPassword.toString() === room.password.toString()) {
           history.push({
             pathname: `/room/${roomId}`,

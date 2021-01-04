@@ -1,9 +1,8 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 function PublicRoute({ isAuthenticated, children, ...rest }) {
-  console.log(isAuthenticated)
   return (
     <Route
       {...rest}
@@ -11,13 +10,13 @@ function PublicRoute({ isAuthenticated, children, ...rest }) {
         !isAuthenticated ? (
           children
         ) : (
-            <Redirect
-              to={{
-                pathname: '/',
-                state: { from: location },
-              }}
-            />
-          )
+          <Redirect
+            to={{
+              pathname: '/',
+              state: { from: location },
+            }}
+          />
+        )
       }
     />
   );
@@ -25,7 +24,7 @@ function PublicRoute({ isAuthenticated, children, ...rest }) {
 
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
   };
 };
 

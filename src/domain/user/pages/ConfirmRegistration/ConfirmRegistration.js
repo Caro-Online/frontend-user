@@ -25,7 +25,6 @@ const ConfirmRegistration = (props) => {
       .then((res) => res.json())
       .then((response) => {
         setIsLoading(false);
-        console.log(response);
         if (response.success) {
           setDone(true);
         }

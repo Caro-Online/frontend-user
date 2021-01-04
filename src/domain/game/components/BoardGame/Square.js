@@ -5,7 +5,6 @@ import o from "../../../../shared/assets/images/o.png";
 const Square = ({ disable, setDisable, isWin, value, onClick, isPrevious }) => {
   const handleClick = () => {
     if (!disable && value === null) {
-      console.log("click");
       setDisable(!disable);
       return onClick();
     }

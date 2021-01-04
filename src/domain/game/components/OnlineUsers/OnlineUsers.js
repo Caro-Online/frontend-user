@@ -44,7 +44,6 @@ const modifyUsersStatus = (users, data, setUsers, status) => {
 const OnlineUsers = ({ roomId, socket }) => {
   const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  console.log(`OnlineUsers`, window.history);
   useEffect(() => {
     let userOnlineListener, userOfflineListener;
     setIsLoading(true);

@@ -106,7 +106,6 @@ const BoardGame = React.memo(
           if (match.winRaw) {
             match.winRaw.forEach((sq) => {
               if (sq === i) {
-                console.log(i);
                 isWin = true; //nếu index có trong winraw trả về true
                 return;
               }
@@ -143,7 +142,6 @@ const BoardGame = React.memo(
             ); //add to db
             const { match: returnMatch, message } = response.data;
             if (!returnMatch) {
-              console.log(message);
               antMessage.error(message);
             }
           }

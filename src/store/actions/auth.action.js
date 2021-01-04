@@ -3,8 +3,8 @@ import {
   signinWithGoogle,
   signinWithFacebook,
   updateStatusToOnline,
-} from "../../domain/user/apiUser";
-import * as actionTypes from "./actionTypes";
+} from '../../domain/user/apiUser';
+import * as actionTypes from './actionTypes';
 import {
   setTokenToStorage,
   setExpirationDateToStorage,
@@ -12,7 +12,7 @@ import {
   getTokenFromStorage,
   getUserIdFromStorage,
   getExpirationDateFromStorage,
-} from "../../shared/utils/utils";
+} from '../../shared/utils/utils';
 
 const processResponseWhenLoginSuccess = (dispatch, response) => {
   if (response.data) {
@@ -142,30 +142,17 @@ export const authCheckState = () => {
         );
         updateStatusToOnline(userId)
           .then((response) => {
-            if (response.data.success) {
-              console.log("Update status success");
-            } else {
-              console.log("Update status failed");
-            }
+            // if (response.data.success) {
+            //   console.log('Update status success');
+            // } else {
+            //   console.log('Update status failed');
+            // }
           })
           .catch((error) => {
             console.log(error);
           });
         dispatch(setSocket(userId));
         dispatch(setIsAutoLogin(false));
-        console.log(userId);
-        console.log("AutoLogin success");
-        // let socket = initSocket(getUserIdFromStorage());
-        // console.log('Emit user online');
-        // socket.emit(
-        //   'user-online',
-        //   { userId: getUserIdFromStorage() },
-        //   (error) => {
-        //     if (error) {
-        //       alert(error);
-        //     }
-        //   }
-        // );
       }
     }
   };
