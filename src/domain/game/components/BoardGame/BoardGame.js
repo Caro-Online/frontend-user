@@ -7,12 +7,8 @@ import moment from 'moment';
 import Square from './Square';
 
 import './BoardGame.css';
-import { getSocket } from '../../../../shared/utils/socket.io-client';
-import gameService from './gameService';
-import { updateNextPlayer } from '../../../../store/actions/game.action';
 import { getUserIdFromStorage } from '../../../../shared/utils/utils';
 import api from '../../apiGame';
-import { forEach, map } from 'lodash';
 import loading from 'src/shared/assets/images/loading.svg';
 
 const boardSize = 17;

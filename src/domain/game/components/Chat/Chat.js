@@ -10,7 +10,6 @@ import Messages from './Messages/Messages';
 
 //Others
 import './Chat.css';
-import { getSocket } from '../../../../shared/utils/socket.io-client';
 import {
   getUserIdFromStorage,
   getUsernameFromStorage,

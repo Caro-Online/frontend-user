@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button } from "antd";
 import { ImUserPlus } from "react-icons/im";
 // import { getSocket } from "../../../../shared/utils/socket.io-client";
-import { getSocket } from "src/shared/utils/socket.io-client";
 import { invitationSocketEmit } from "./api";
 import {
   getUsernameFromStorage,

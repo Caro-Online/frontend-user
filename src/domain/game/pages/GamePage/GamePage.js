@@ -286,8 +286,8 @@ const GamePage = React.memo((props) => {
                   <Descriptions.Item label="Số người trong phòng" span={2}>
                     <Statistic value={numPeopleInRoom}></Statistic>
                   </Descriptions.Item>
-                  <Descriptions.Item label="Chủ phòng">
-                    <Text strong>Tam thoi de trong</Text>
+                  <Descriptions.Item label="Thời gian 1 nước">
+                    <Text strong>{room.countdownDuration} giây</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>

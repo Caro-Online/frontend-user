@@ -1,23 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Card, Avatar, Button } from 'antd';
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { Card, Button } from 'antd';
+
 import CardInfo from './CardInfo';
 
 import api from '../../apiGame';
 import './UserInfo.css';
 import { getUserById } from '../../../user/apiUser';
-import { getSocket } from '../../../../shared/utils/socket.io-client';
-import {
-  removeItem,
-  getUserIdFromStorage,
-} from '../../../../shared/utils/utils';
-import { connect } from 'react-redux';
-
-const { Meta } = Card;
+import { getUserIdFromStorage } from '../../../../shared/utils/utils';
 
 function UserInfo({
   socket,
