@@ -1,7 +1,7 @@
 header {
     padding: 0 2rem !important;
-    margin-bottom: 2vh !important;
 }
+
 
 /* .main-header {
     position: fixed;
@@ -36,12 +36,12 @@ header {
 
 @media only screen and (max-width: 500px) {
     .logo {
-    font-size: 1rem;
-    height: 100%;
-    display: flex;
-    align-items: center;
+        font-size: 1rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
     }
-    .ant-layout-header{
+    .ant-layout-header {
         padding: 5px !important;
     }
 }

@@ -16,6 +16,7 @@ import PublicRoute from "./shared/components/Route/PublicRoute";
 import MainHeader from "./shared/components/MainHeader/MainHeader";
 import Home from "./domain/home/pages/Home";
 import GamePage from "./domain/game/pages/GamePage/GamePage";
+import History from "./domain/user/pages/History";
 import { invitationSocket } from "src/shared/components/Invitation/api";
 import { InvitationDialog } from "src/shared/components/Invitation";
 require("dotenv").config();
@@ -95,6 +96,9 @@ const App = (props) => {
       <PrivateRoute path="/logout" exact>
         <Logout />
       </PrivateRoute>
+      <PrivateRoute path="/history" exact>
+        <History />
+      </PrivateRoute>
       <PrivateRoute path="/rooms" exact>
         <Rooms />
       </PrivateRoute>
@@ -119,23 +123,13 @@ const App = (props) => {
         onJoin={onJoinRoom}
       />
       <Suspense fallback={<LoadingOutlined style={{ fontSize: 100 }} spin />}>
-        <Content style={{ backgroundColor: "white" }}>{routes}</Content>
+        <Content style={{ backgroundColor: "white", display: "contents" }}>
+          {routes}
+        </Content>
       </Suspense>
-      {/* <Footer
-        style={{
-          textAlign: "center",
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-        }}
-      >
-        Powered by HHH Team ©2020
-      </Footer> */}
     </Layout>
   );
 };
-
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.token !== null,

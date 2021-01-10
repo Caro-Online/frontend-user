@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation, useHistory, useParams } from 'react-router-dom';
-import { message as antMessage } from 'antd';
-import { connect } from 'react-redux';
-import moment from 'moment';
+import React, { useState, useEffect, useCallback } from "react";
+import { useLocation, useHistory, useParams } from "react-router-dom";
+import { message as antMessage } from "antd";
+import { connect } from "react-redux";
+import moment from "moment";
 
-import Square from './Square';
+import Square from "./Square";
 
-import './BoardGame.css';
-import { getUserIdFromStorage } from '../../../../shared/utils/utils';
-import api from '../../apiGame';
-import loading from 'src/shared/assets/images/loading.svg';
+import "./BoardGame.css";
+import { getUserIdFromStorage } from "../../../../shared/utils/utils";
+import api from "../../apiGame";
+import loading from "src/shared/assets/images/loading.svg";
 
-const boardSize = 17;
+export const boardSize = 17;
 
 const BoardGame = React.memo(
   ({
@@ -22,7 +22,7 @@ const BoardGame = React.memo(
     disable,
     setDisable,
     countdownDuration,
-    rule
+    rule,
   }) => {
     const reactHistory = useHistory();
     const params = useParams();
@@ -47,7 +47,7 @@ const BoardGame = React.memo(
     useEffect(() => {
       // Nếu match start thì lắng nghe sự kiện receive-move
       const receiveMoveListener = ({ updatedMatch }) => {
-        console.log('ReceiveMove');
+        console.log("ReceiveMove");
         // Cập nhật lại match cho các client trong room
         setMatch({ ...updatedMatch });
         if (!updatedMatch.winner) {
@@ -55,10 +55,10 @@ const BoardGame = React.memo(
         }
       };
 
-      socket.on('receive-move', receiveMoveListener);
+      socket.on("receive-move", receiveMoveListener);
 
       return () => {
-        socket.off('receive-move', receiveMoveListener);
+        socket.off("receive-move", receiveMoveListener);
       };
     }, [socket, setMatch, setPlaying]);
 
@@ -72,9 +72,9 @@ const BoardGame = React.memo(
 
     const emitSendMove = useCallback(
       (updatedMatch, rule) => {
-        socket.emit('send-move', {
+        socket.emit("send-move", {
           match: updatedMatch,
-          rule
+          rule,
         });
       },
       [socket]
@@ -85,7 +85,7 @@ const BoardGame = React.memo(
         if (match) {
           for (let k = 0; k < match.history.length; k++) {
             if (match.history[k] === i) {
-              return k % 2 === 0 ? 'X' : 'O';
+              return k % 2 === 0 ? "X" : "O";
             }
           }
           return null;
@@ -235,8 +235,8 @@ const BoardGame = React.memo(
               Đến lượt bạn <img src={loading} />
             </div>
           ) : (
-              <div className="your-turn"></div>
-            )}
+            <div className="your-turn"></div>
+          )}
         </div>
         <table className="board">
           <tbody>{renderBoard()}</tbody>
