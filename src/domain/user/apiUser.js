@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { API } from '../../config';
-import { getTokenFromStorage } from '../../shared/utils/utils';
+import axios from "axios";
+import { API } from "../../config";
+import { getTokenFromStorage } from "../../shared/utils/utils";
 
 export const login = (user) => {
   return axios.post(`${API}/user/auth/login`, user);
@@ -42,3 +42,11 @@ export const getOnlineUsers = () => {
 // export const updateStatusToOnline = (userId) => {
 //   return axios.put(`${API}/user/${userId}/update-status`);
 // };
+
+export const getMatchHistoryByUserId = (userId) => {
+  const token = getTokenFromStorage();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.get(`${API}/match/user/${userId}`, config);
+};

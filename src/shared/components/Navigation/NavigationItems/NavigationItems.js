@@ -1,20 +1,30 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Menu, Button, Dropdown, Avatar } from 'antd';
-import { CaretDownOutlined, LogoutOutlined } from '@ant-design/icons';
-
-import './NavigationItems.css';
+import React from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { Menu, Button, Dropdown, Avatar } from "antd";
+import { CaretDownOutlined, LogoutOutlined } from "@ant-design/icons";
+import { GiMatchTip } from "react-icons/gi";
+import "./NavigationItems.css";
 import {
   getUsernameFromStorage,
   getUserImageUrlFromStorage,
-} from '../../../utils/utils';
+} from "../../../utils/utils";
 
 const menu = (
   <Menu>
     <Menu.Item>
       <Link
-        style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+        style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+        rel="noopener noreferrer"
+        to="/history"
+      >
+        <GiMatchTip style={{ marginRight: 5 }} />
+        Lịch sử trận đấu
+      </Link>
+    </Menu.Item>
+    <Menu.Item>
+      <Link
+        style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
         rel="noopener noreferrer"
         to="/logout"
       >
@@ -33,7 +43,7 @@ const NavigationItems = (props) => {
         <Button
           type="primary"
           style={{
-            marginRight: '4px',
+            marginRight: "4px",
           }}
         >
           Đăng nhập
@@ -56,26 +66,26 @@ const NavigationItems = (props) => {
           shape="round"
           type="primary"
           style={{
-            marginRight: '4px',
-            padding: '4px 19px 4px  4px',
-            display: 'flex',
-            alignItems: 'center',
+            marginRight: "4px",
+            padding: "4px 19px 4px  4px",
+            display: "flex",
+            alignItems: "center",
           }}
         >
           {getUserImageUrlFromStorage() ? (
             <Avatar src={getUserImageUrlFromStorage()} />
           ) : (
-              <Avatar
-                style={{
-                  color: '#f56a00',
-                  backgroundColor: '#fde3cf',
-                  height: '30px',
-                  marginRight: '4px',
-                }}
-              >
-                {getUsernameFromStorage().split(' ')[0][0]}
-              </Avatar>
-            )}
+            <Avatar
+              style={{
+                color: "#f56a00",
+                backgroundColor: "#fde3cf",
+                height: "30px",
+                marginRight: "4px",
+              }}
+            >
+              {getUsernameFromStorage().split(" ")[0][0]}
+            </Avatar>
+          )}
           {getUsernameFromStorage()}
         </Button>
         <Dropdown overlay={menu} placement="bottomRight" arrow>
@@ -84,8 +94,8 @@ const NavigationItems = (props) => {
             shape="circle"
             type="gray"
             style={{
-              marginRight: '4px',
-              paddingTop: '0px',
+              marginRight: "4px",
+              paddingTop: "0px",
             }}
           >
             <CaretDownOutlined />
