@@ -10,7 +10,6 @@ const History = () => {
   const [matches, setMatches, isLoadingMatches] = useMatchedHistoryApi(userId);
   const [match, setMatch] = useState(null);
   const getMatchDetail = (match) => {
-    console.log(match);
     // const match = matches?.find((match) => match._id === matchId);
     setMatch(match);
   };

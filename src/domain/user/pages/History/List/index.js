@@ -11,6 +11,9 @@ import {
   Divider,
 } from "antd";
 
+import { getUserIdFromStorage } from "src/shared/utils/utils";
+import xImg from "src/shared/assets/images/x.png";
+import oImg from "src/shared/assets/images/o.png";
 import { CaretRightOutlined } from "@ant-design/icons";
 import "./List.css";
 import moment from "moment";
@@ -23,7 +26,16 @@ const HistoryList = ({ matches, isLoading, onClickMatch }) => {
     const y = (iHistory % boardSize) + 1;
     return (
       <span style={{ display: "flex", justifyContent: "space-between" }}>
-        Nước {index + 1}
+        <span>
+          <img
+            alt="x"
+            src={index % 2 ? oImg : xImg}
+            style={{ marginRight: 8 }}
+            width="20px"
+            height="80%"
+          />
+          Nước {index + 1}
+        </span>
         <strong>
           ({x},{y})
         </strong>
@@ -33,6 +45,13 @@ const HistoryList = ({ matches, isLoading, onClickMatch }) => {
   const onClickDetail = (e, match) => {
     console.log("onClickDetail", match);
     onClickMatch(match);
+  };
+  const showCurrentStep = (match, iHistory) => {
+    const history = match?.history;
+    const currentMatch = Object.assign({}, match, {
+      history: history.slice(0, iHistory + 1),
+    });
+    onClickMatch(currentMatch);
   };
   return (
     <div>
@@ -71,15 +90,24 @@ const HistoryList = ({ matches, isLoading, onClickMatch }) => {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    padding: "0 8px 0",
+                    padding: "0 8px 8px",
                   }}
                 >
-                  <Tag color="volcano" style={{ borderRadius: 8 }}>
-                    <strong>Thua</strong>
-                  </Tag>
-                  <Tag color="green" style={{ borderRadius: 8 }}>
-                    <strong>Thắng</strong>
-                  </Tag>
+                  {match?.winner ? (
+                    match?.winner === getUserIdFromStorage() ? (
+                      <Tag color="green" style={{ borderRadius: 8 }}>
+                        <strong>Thắng</strong>
+                      </Tag>
+                    ) : (
+                      <Tag color="volcano" style={{ borderRadius: 8 }}>
+                        <strong>Thua</strong>
+                      </Tag>
+                    )
+                  ) : (
+                    <Tag style={{ borderRadius: 8 }}>
+                      <strong>Hoà</strong>
+                    </Tag>
+                  )}
                   <span>{`${match?.history?.length} nước`}</span>
                 </div>
                 <List
@@ -88,6 +116,7 @@ const HistoryList = ({ matches, isLoading, onClickMatch }) => {
                     <List.Item
                       key={`history-${index}-${iHistory}`}
                       class="item-list"
+                      onClick={(e) => showCurrentStep(match, iHistory)}
                     >
                       <List.Item.Meta title={convertToXY(iHistory, history)} />
                     </List.Item>
