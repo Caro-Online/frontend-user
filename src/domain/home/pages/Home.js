@@ -286,7 +286,11 @@ const Home = (props) => {
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     placeholder="daylamatkhau"
                     iconRender={(visible) =>
-                      visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+
+                      visible ?
+                        <EyeTwoTone />
+                        : <EyeInvisibleOutlined />
+
                     }
                   />
                 </Form.Item>

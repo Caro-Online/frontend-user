@@ -266,9 +266,9 @@ const Rooms = ({ socket }) => {
     onFilter: (value, record) =>
       record[dataIndex]
         ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : '',
     onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
@@ -284,16 +284,15 @@ const Rooms = ({ socket }) => {
           textToHighlight={text ? text.toString() : ''}
         />
       ) : (
-        text
-      ),
+          text
+        ),
   });
 
   const columns = [
     {
       title: (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <FaGamepad size="24" style={{ marginRight: '8px' }} />
-          <Title level={3} style={{ marginBottom: 0 }}>
+          <Title level={5} style={{ marginBottom: 0 }}>
             Tên phòng
           </Title>
         </div>
@@ -306,8 +305,7 @@ const Rooms = ({ socket }) => {
     {
       title: (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <GiRuleBook size="24" style={{ marginRight: '8px' }} />
-          <Title level={3} style={{ marginBottom: 0 }}>
+          <Title level={5} style={{ marginBottom: 0 }}>
             Luật chơi
           </Title>
         </div>
@@ -332,12 +330,11 @@ const Rooms = ({ socket }) => {
     },
     {
       title: (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <GrStatusInfo size="24" style={{ marginRight: '8px' }} />
-          <Title level={3} style={{ marginBottom: 0 }}>
+        <div style={{ display: 'flex', flex: "row", alignItems: 'center' }}>
+          <Title level={5} style={{ marginBottom: 0 }}>
             Trạng thái
           </Title>
-        </div>
+        </div >
       ),
       dataIndex: 'status',
       key: 'status',
@@ -362,18 +359,17 @@ const Rooms = ({ socket }) => {
               <CgPlayPauseR style={{ fontSize: '32px' }} color="orange" />
             </Tooltip>
           ) : (
-            <Tooltip title="Đang chơi">
-              <CgPlayButtonR style={{ fontSize: '32px' }} color="green" />
-            </Tooltip>
-          )}{' '}
+              <Tooltip title="Đang chơi">
+                <CgPlayButtonR style={{ fontSize: '32px' }} color="green" />
+              </Tooltip>
+            )}{' '}
         </div>
       ),
     },
     {
       title: (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <FaUsers size="24" style={{ marginRight: '8px' }} />
-          <Title level={3} style={{ marginBottom: 0 }}>
+          <Title level={5} style={{ marginBottom: 0 }}>
             Số người
           </Title>
         </div>
@@ -387,14 +383,7 @@ const Rooms = ({ socket }) => {
       },
     },
     {
-      title: (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <FaPlay size="24" style={{ marginRight: '8px' }} />
-          <Title level={3} style={{ marginBottom: 0 }}>
-            Hành động
-          </Title>
-        </div>
-      ),
+
       key: 'action',
       render: (text, record) => {
         return (
@@ -417,15 +406,15 @@ const Rooms = ({ socket }) => {
                 </Button>
               </Badge>
             ) : (
-              <Button
-                onClick={() => {
-                  history.push(`/room/${record.roomId}`);
-                }}
-                icon={<FiLogIn style={{ marginRight: '8px' }} />}
-              >
-                Tham gia
-              </Button>
-            )}
+                <Button
+                  onClick={() => {
+                    history.push(`/room/${record.roomId}`);
+                  }}
+                  icon={<FiLogIn style={{ marginRight: '8px' }} />}
+                >
+                  Tham gia
+                </Button>
+              )}
           </>
         );
       },
@@ -455,57 +444,57 @@ const Rooms = ({ socket }) => {
         {isLoading ? (
           <Spin style={{ fontSize: '64px' }} />
         ) : (
-          <Form
-            name="normal_register"
-            className="create-room-form"
-            onFinish={onSubmitInputPasswordHandler}
-          >
-            <Form.Item name="roomId" hidden initialValue={roomId}>
-              <Input type="hidden" value={roomId} />
-            </Form.Item>
-            <Form.Item
-              label="Mật khẩu"
-              name="roomPassword"
-              rules={[
-                { required: true, message: 'Mật khẩu không được bỏ trống!' },
-              ]}
+            <Form
+              name="normal_register"
+              className="create-room-form"
+              onFinish={onSubmitInputPasswordHandler}
             >
-              <Input.Password
-                prefix={<LockOutlined className="site-form-item-icon" />}
-                placeholder="daylamatkhau"
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
-              />
-            </Form.Item>
-
-            <Form.Item>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                }}
+              <Form.Item name="roomId" hidden initialValue={roomId}>
+                <Input type="hidden" value={roomId} />
+              </Form.Item>
+              <Form.Item
+                label="Mật khẩu"
+                name="roomPassword"
+                rules={[
+                  { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                ]}
               >
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="create-room-button"
+                <Input.Password
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  placeholder="daylamatkhau"
+                  iconRender={(visible) =>
+                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  }
+                />
+              </Form.Item>
+
+              <Form.Item>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                  }}
                 >
-                  Tham gia
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="create-room-button"
+                  >
+                    Tham gia
                 </Button>
-                <Button
-                  type="danger"
-                  htmlType="button"
-                  onClick={closeInputPasswordModal}
-                  style={{ marginLeft: '8px' }}
-                >
-                  Hủy
+                  <Button
+                    type="danger"
+                    htmlType="button"
+                    onClick={closeInputPasswordModal}
+                    style={{ marginLeft: '8px' }}
+                  >
+                    Hủy
                 </Button>
-              </div>
-            </Form.Item>
-          </Form>
-        )}
+                </div>
+              </Form.Item>
+            </Form>
+          )}
       </Modal>
       <InputRoomIdModal
         show={openInputRoomIdModal}
@@ -528,46 +517,36 @@ const Rooms = ({ socket }) => {
                 onClick={onClickJoinRoomByIdHandler}
               >
                 Tham gia phòng bằng id
-              </Button>,
-              <Button
-                key="1"
-                type="primary"
-                shape="round"
-                size="large"
-                style={{ display: 'flex', alignItems: 'center' }}
-                icon={<PlayCircleOutlined />}
-              >
-                Chơi ngay
-              </Button>,
+              </Button>
             ]}
           >
             <Descriptions size="small" column={3}>
               <Descriptions.Item
                 label={
-                  <Title level={5} style={{ marginBottom: 0 }}>
-                    Tổng số phòng
-                  </Title>
+                  <div style={{ marginBottom: 0 }}>
+                    Tổng phòng
+                  </div>
                 }
               >
-                <Statistic value={rooms.length} />
+                {rooms.length}
               </Descriptions.Item>
               <Descriptions.Item
                 label={
-                  <Title level={5} style={{ marginBottom: 0 }}>
-                    Số phòng đang chờ
-                  </Title>
+                  <div style={{ marginBottom: 0 }}>
+                    Đang chờ
+                  </div>
                 }
               >
-                <Statistic value={waitingRooms.length} />
+                {waitingRooms.length}
               </Descriptions.Item>
               <Descriptions.Item
                 label={
-                  <Title level={5} style={{ marginBottom: 0 }}>
-                    Số phòng đang chơi
-                  </Title>
+                  <div style={{ marginBottom: 0 }}>
+                    Đang chơi
+                  </div>
                 }
               >
-                <Statistic value={playingRooms.length} />
+                {playingRooms.length}
               </Descriptions.Item>
             </Descriptions>
           </PageHeader>
