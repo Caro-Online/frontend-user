@@ -1,6 +1,9 @@
-import { API } from '../../config';
-import axios from 'axios';
-import { getTokenFromStorage, getUserIdFromStorage } from '../../shared/utils/utils';
+import { API } from "../../config";
+import axios from "axios";
+import {
+  getTokenFromStorage,
+  getUserIdFromStorage,
+} from "../../shared/utils/utils";
 
 const getAllRoom = () => {
   const token = getTokenFromStorage();
@@ -21,6 +24,9 @@ const getRandomRoom = () => {
   const token = getTokenFromStorage();
   const config = {
     headers: { Authorization: `Bearer ${token}` },
+    params: {
+      userId: getUserIdFromStorage(),
+    },
   };
   return axios.get(`${API}/room/random`, config);
 };
@@ -52,7 +58,7 @@ const joinPlayerQueue = (userId, roomId) => {
   );
 };
 
-const joinRoomById = (roomId) => { };
+const joinRoomById = (roomId) => {};
 
 const getCurrentMatchByIdOfRoom = (roomId) => {
   const token = getTokenFromStorage();
@@ -128,7 +134,6 @@ const updatePlayerIsReady = (roomId, userId, isReady) => {
 };
 
 //No api
-
 
 const api = {
   getAllRoom,
