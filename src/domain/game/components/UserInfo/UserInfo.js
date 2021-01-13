@@ -53,7 +53,8 @@ function UserInfo({
         socket.emit('match-start', { match: resp.data.match });
         setMatch(resp.data.match);
         setShowButton(false);
-        api.updateRoomStatus(roomId, 'PLAYING'); //update lại trạng thái của room là playing
+        await api.updateRoomStatus(roomId, 'PLAYING'); //update lại trạng thái của room là playing
+
       }
     }
   }, [
