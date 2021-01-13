@@ -2,6 +2,7 @@ import React from "react";
 import { ImUserPlus } from "react-icons/im";
 import { Button, Spin, Divider, Row, Col, Space, Statistic } from "antd";
 import Modal from "../../../shared/components/Modal/Modal";
+import "./invitation.css";
 const { Countdown } = Statistic;
 const InvitationDialog = ({ value, data, onCancel, onJoin }) => {
   const onClickJoin = () => {
@@ -43,7 +44,7 @@ const InvitationDialog = ({ value, data, onCancel, onJoin }) => {
                   (
                   <Countdown
                     valueStyle={{
-                      fontSize: 13,
+                      fontSize: 8,
                       fontWeight: 600,
                       color: "gray",
                     }}
