@@ -1,6 +1,9 @@
 import { API } from '../../config';
 import axios from 'axios';
-import { getTokenFromStorage, getUserIdFromStorage } from '../../shared/utils/utils';
+import {
+  getTokenFromStorage,
+  getUserIdFromStorage,
+} from '../../shared/utils/utils';
 
 const getAllRoom = () => {
   const token = getTokenFromStorage();
@@ -52,7 +55,7 @@ const joinPlayerQueue = (userId, roomId) => {
   );
 };
 
-const joinRoomById = (roomId) => { };
+const joinRoomById = (roomId) => {};
 
 const getCurrentMatchByIdOfRoom = (roomId) => {
   const token = getTokenFromStorage();
@@ -74,12 +77,16 @@ const addMove = (matchId, index, xIsNext, roomId) => {
   );
 };
 
-const createMatch = (roomId, players) => {
+const createMatch = (roomId, players, countdownDuration) => {
   const token = getTokenFromStorage();
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-  return axios.post(`${API}/match`, { roomId, players }, config);
+  return axios.post(
+    `${API}/match`,
+    { roomId, players, countdownDuration },
+    config
+  );
 };
 
 const getMatchById = (matchId) => {
@@ -128,7 +135,6 @@ const updatePlayerIsReady = (roomId, userId, isReady) => {
 };
 
 //No api
-
 
 const api = {
   getAllRoom,
