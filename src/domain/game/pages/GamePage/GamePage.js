@@ -13,6 +13,7 @@ import {
   message as antMessage,
 } from 'antd';
 import { connect } from 'react-redux';
+import { cloneDeep } from 'lodash';
 import { FaTrophy, FaUsers, FaInfoCircle } from 'react-icons/fa';
 
 // Components
@@ -181,7 +182,7 @@ const GamePage = React.memo((props) => {
       setNumPeopleInRoom(room.players.length + room.audiences.length);
       setPlayers(room.players);
       if (room.players.length < 2) {
-        setMatch(null)
+        setMatch(null);
       }
     };
     if (socket) {
@@ -198,26 +199,30 @@ const GamePage = React.memo((props) => {
       setMatch(match);
     };
     socket.on('match-start-update', matchStartUpdateListener);
-    const haveWinnerListener = ({ updatedMatch, cupDataChange, matchPlayers }) => {
+    const haveWinnerListener = ({
+      updatedMatch,
+      cupDataChange,
+      matchPlayers,
+    }) => {
       console.log(cupDataChange);
       console.log('have winner');
       console.log(updatedMatch);
       setMatch({ ...updatedMatch });
       getCupChangeMessage(updatedMatch, cupDataChange);
-      let newPlayers = Object.assign([], players);
+      // let newPlayers = Object.assign([], players);
+      let newPlayers = cloneDeep(players);
       console.log(matchPlayers);
       newPlayers[0].isReady = false;
       newPlayers[0].user = matchPlayers[0];
       newPlayers[1].isReady = false;
       newPlayers[1].user = matchPlayers[1];
-      console.log(newPlayers)
+      console.log(newPlayers);
       setPlayers(newPlayers);
     };
     socket.on('have-winner', haveWinnerListener);
     const endMatchListener = ({ updatedMatch }) => {
       console.log('end match');
       setMatch({ ...updatedMatch });
-
     };
     socket.on('end-match', endMatchListener);
     return () => {
@@ -225,7 +230,6 @@ const GamePage = React.memo((props) => {
       socket.off('have-winner', haveWinnerListener);
       socket.off('end-match', endMatchListener);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket, players, setPlayers]);
 
   // const jumpTo = useCallback((move) => {
