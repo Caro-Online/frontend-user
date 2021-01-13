@@ -44,14 +44,14 @@ const HistoryList = ({ matches, isLoading, onClickMatch }) => {
   };
   const onClickDetail = (e, match) => {
     console.log("onClickDetail", match);
-    onClickMatch(match);
+    onClickMatch(match, match.history.length);
   };
   const showCurrentStep = (match, iHistory) => {
     const history = match?.history;
     const currentMatch = Object.assign({}, match, {
       history: history.slice(0, iHistory + 1),
     });
-    onClickMatch(currentMatch);
+    onClickMatch(currentMatch, match.history.length);
   };
   return (
     <div>
@@ -64,70 +64,70 @@ const HistoryList = ({ matches, isLoading, onClickMatch }) => {
             <Spin />
           </div>
         ) : (
-          <Collapse
-            accordion
-            bordered={false}
-            defaultActiveKey={["0"]}
-            expandIcon={({ isActive }) => (
-              <CaretRightOutlined rotate={isActive ? 90 : 0} />
-            )}
-            className="site-collapse-custom-collapse"
-          >
-            {matches?.map((match, index) => (
-              <Panel
-                header={
-                  <div onClick={(e) => onClickDetail(e, match)}>
-                    Trận đấu:{" "}
-                    <strong>
-                      {moment(match?.createdAt).format("h:mm MMM Do YY ")}
-                    </strong>
-                  </div>
-                }
-                key={index}
-                className="site-collapse-custom-panel"
-                onClick={(e) => onClickDetail(e, match)}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "0 8px 8px",
-                  }}
+            <Collapse
+              accordion
+              bordered={false}
+              defaultActiveKey={["0"]}
+              expandIcon={({ isActive }) => (
+                <CaretRightOutlined rotate={isActive ? 90 : 0} />
+              )}
+              className="site-collapse-custom-collapse"
+            >
+              {matches?.map((match, index) => (
+                <Panel
+                  header={
+                    <div onClick={(e) => onClickDetail(e, match)}>
+                      Trận đấu:{" "}
+                      <strong>
+                        {moment(match?.createdAt).format("h:mm MMM Do YY ")}
+                      </strong>
+                    </div>
+                  }
+                  key={index}
+                  className="site-collapse-custom-panel"
+                  onClick={(e) => onClickDetail(e, match)}
                 >
-                  {match?.winner ? (
-                    match?.winner === getUserIdFromStorage() ? (
-                      <Tag color="green" style={{ borderRadius: 8 }}>
-                        <strong>Thắng</strong>
-                      </Tag>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "0 8px 8px",
+                    }}
+                  >
+                    {match?.winner ? (
+                      match?.winner === getUserIdFromStorage() ? (
+                        <Tag color="green" style={{ borderRadius: 8 }}>
+                          <strong>Thắng</strong>
+                        </Tag>
+                      ) : (
+                          <Tag color="volcano" style={{ borderRadius: 8 }}>
+                            <strong>Thua</strong>
+                          </Tag>
+                        )
                     ) : (
-                      <Tag color="volcano" style={{ borderRadius: 8 }}>
-                        <strong>Thua</strong>
-                      </Tag>
-                    )
-                  ) : (
-                    <Tag style={{ borderRadius: 8 }}>
-                      <strong>Hoà</strong>
-                    </Tag>
-                  )}
-                  <span>{`${match?.history?.length} nước`}</span>
-                </div>
-                <List
-                  dataSource={match?.history}
-                  renderItem={(history, iHistory) => (
-                    <List.Item
-                      key={`history-${index}-${iHistory}`}
-                      class="item-list"
-                      onClick={(e) => showCurrentStep(match, iHistory)}
-                    >
-                      <List.Item.Meta title={convertToXY(iHistory, history)} />
-                    </List.Item>
-                  )}
-                ></List>
-              </Panel>
-            ))}
-          </Collapse>
-        )}
+                        <Tag style={{ borderRadius: 8 }}>
+                          <strong>Hoà</strong>
+                        </Tag>
+                      )}
+                    <span>{`${match?.history?.length} nước`}</span>
+                  </div>
+                  <List
+                    dataSource={match?.history}
+                    renderItem={(history, iHistory) => (
+                      <List.Item
+                        key={`history-${index}-${iHistory}`}
+                        class="item-list"
+                        onClick={(e) => showCurrentStep(match, iHistory)}
+                      >
+                        <List.Item.Meta title={convertToXY(iHistory, history)} />
+                      </List.Item>
+                    )}
+                  ></List>
+                </Panel>
+              ))}
+            </Collapse>
+          )}
       </div>
     </div>
   );
