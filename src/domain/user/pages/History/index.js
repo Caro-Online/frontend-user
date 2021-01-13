@@ -14,15 +14,50 @@ const History = () => {
   const userId = getUserIdFromStorage();
   const [matches, setMatches, isLoadingMatches] = useMatchedHistoryApi(userId);
   const [match, setMatch] = useState(null);
-  const [players, setPlayers] = useState([])
-  const [historyMatchLength, setHistoryMatchLength] = useState('')
+  const [historyMatchLength, setHistoryMatchLength] = useState(null)
 
   const getMatchDetail = (match, historyLength) => {
     // const match = matches?.find((match) => match._id === matchId);
     setMatch(match);
-    setPlayers(match.players)
     setHistoryMatchLength(historyLength)
   }
+
+  const returnCard = (match, player, index) => (
+    <Card
+      key={index}
+      style={{
+        width: '100%',
+        height: '150px',
+        padding: '3px',
+      }}
+    >
+      <Meta
+        avatar={
+          <Avatar
+            shape="square"
+            style={{ width: '50px', height: '50px' }}
+            src={player.imageUrl ?
+              player.imageUrl
+              : 'https://picsum.photos/seed/picsum/50/50'
+            }
+          />
+        }
+        title={`${player.name} ${player._id === userId ? '(Bạn)' : ''} `}
+        description={player._id === match.winner ?
+          <Tag color="green" style={{ borderRadius: 8 }}>
+            <strong>Thắng</strong>
+          </Tag> :
+          <Tag color="red" style={{ borderRadius: 8 }}>
+            <strong>Thua</strong>
+          </Tag>}
+      />
+      <div className="status-image">
+        <div>
+          <Avatar src={index === 0 ? ximage : o} />
+        </div>
+      </div>
+    </Card>
+  )
 
 
   return (
@@ -33,45 +68,14 @@ const History = () => {
       gutter={[16, 16]}
     >
       <Col className="content-center" flex="4 0 440px">
-        <Board match={match} historyMatchLength={historyMatchLength} />
+        <Board match={match ? match : (matches ? matches[0] : null)}
+          historyMatchLength={historyMatchLength ? historyMatchLength :
+            (matches ? matches[0].history.length : null)} />
       </Col>
       <Col flex="1 0 200px">
-        {players.map((player, index) => (
-          <Card
-            key={index}
-            style={{
-              width: '100%',
-              height: '150px',
-              padding: '3px',
-            }}
-          >
-            <Meta
-              avatar={
-                <Avatar
-                  shape="square"
-                  style={{ width: '50px', height: '50px' }}
-                  src={player.imageUrl ?
-                    player.imageUrl
-                    : 'https://picsum.photos/seed/picsum/50/50'
-                  }
-                />
-              }
-              title={`${player.name} ${player._id === userId ? '(Bạn)' : ''} `}
-              description={player._id === match.winner ?
-                <Tag color="green" style={{ borderRadius: 8 }}>
-                  <strong>Thắng</strong>
-                </Tag> :
-                <Tag color="red" style={{ borderRadius: 8 }}>
-                  <strong>Thua</strong>
-                </Tag>}
-            />
-            <div className="status-image">
-              <div>
-                <Avatar src={index === 0 ? ximage : o} />
-              </div>
-            </div>
-          </Card>
-        ))}
+        {match ? match.players.map((player, index) => (returnCard(match, player, index))) :
+          matches ? matches[0].players.map((player, index) => (returnCard(matches[0], player, index))) : ''
+        }
       </Col>
       <Col flex="1 0 300px">
         <List
