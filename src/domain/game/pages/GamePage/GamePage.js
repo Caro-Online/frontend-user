@@ -188,9 +188,9 @@ const GamePage = React.memo((props) => {
   }, [setPlayers, socket]);
 
   useEffect(() => {
-    const matchStartUpdateListener = async ({ matchId }) => {
-      const res = await api.getMatchById(matchId);
-      setMatch(res.data.match);
+    const matchStartUpdateListener = async ({ match }) => {
+      //const res = await api.getMatchById(matchId);
+      setMatch(match);
     };
     socket.on('match-start-update', matchStartUpdateListener);
     const haveWinnerListener = ({ updatedMatch, cupDataChange }) => {
