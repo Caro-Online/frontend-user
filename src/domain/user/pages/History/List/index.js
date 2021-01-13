@@ -78,7 +78,9 @@ const HistoryList = ({ matches, isLoading, onClickMatch }) => {
                 header={
                   <div onClick={(e) => onClickDetail(e, match)}>
                     Trận đấu:{" "}
-                    <strong>{moment().format("h:mm MMM Do YY ")}</strong>
+                    <strong>
+                      {moment(match?.createdAt).format("h:mm MMM Do YY ")}
+                    </strong>
                   </div>
                 }
                 key={index}
