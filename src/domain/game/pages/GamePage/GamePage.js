@@ -120,7 +120,9 @@ const GamePage = React.memo((props) => {
         }
       }
       // Lấy thông tin match hiện tại đang chơi (nếu có) và set vào match
-      setCurrentMatch(room._id);
+      if (room.players.length > 1) {
+        setCurrentMatch(room._id);
+      }
       // Xét xem khi f5 lại user có phải player đang chơi hay không, nếu ko có trong players thì add vào audiences
       const userId = getUserIdFromStorage();
       let userInPlayers = false;
@@ -178,6 +180,9 @@ const GamePage = React.memo((props) => {
       setRoom(room);
       setNumPeopleInRoom(room.players.length + room.audiences.length);
       setPlayers(room.players);
+      if (room.players.length < 2) {
+        setMatch(null)
+      }
     };
     if (socket) {
       socket.on('room-data', roomDataListener);
@@ -199,11 +204,17 @@ const GamePage = React.memo((props) => {
       console.log(updatedMatch);
       setMatch({ ...updatedMatch });
       getCupChangeMessage(updatedMatch, cupDataChange);
+      let newPlayers = Object.assign([], players);
+      newPlayers[0].isReady = false;
+      newPlayers[1].isReady = false;
+      console.log(newPlayers)
+      setPlayers(newPlayers);
     };
     socket.on('have-winner', haveWinnerListener);
     const endMatchListener = ({ updatedMatch }) => {
       console.log('end match');
       setMatch({ ...updatedMatch });
+
     };
     socket.on('end-match', endMatchListener);
     return () => {
@@ -212,7 +223,7 @@ const GamePage = React.memo((props) => {
       socket.off('end-match', endMatchListener);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [socket, players, setPlayers]);
 
   // const jumpTo = useCallback((move) => {
   //   setLocationToJump(move);
