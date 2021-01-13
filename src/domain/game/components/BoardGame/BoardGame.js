@@ -51,16 +51,16 @@ const BoardGame = React.memo(
         // Cập nhật lại match cho các client trong room
         setMatch({ ...updatedMatch });
         if (!updatedMatch.winner) {
-          setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
+          //setPlaying(!updatedMatch.xIsNext); //check userId vaf xIsNext
+          setDisable(true)
         }
       };
 
       socket.on("receive-move", receiveMoveListener);
-
       return () => {
         socket.off("receive-move", receiveMoveListener);
       };
-    }, [socket, setMatch, setPlaying]);
+    }, [socket, match, setMatch, setPlaying]);
 
     useEffect(() => {
       if (match) {
@@ -120,7 +120,7 @@ const BoardGame = React.memo(
           //Nếu bước chưa tồn tại
           if (!getSquareValue(i)) {
             newHistory.push(i);
-            const date = new Date(Date.now() + countdownDuration * 1000);
+            const date = new Date(Date.now() + (countdownDuration + 1) * 1000);
             const timeExp = moment.utc(date).format();
             const updatedMatch = {
               ...match,
@@ -136,6 +136,7 @@ const BoardGame = React.memo(
               !match.xIsNext,
               roomId
             ); //add to db
+
             const { match: returnMatch, message } = response.data;
             if (!returnMatch) {
               antMessage.error(message);
@@ -235,8 +236,8 @@ const BoardGame = React.memo(
               Đến lượt bạn <img src={loading} />
             </div>
           ) : (
-            <div className="your-turn"></div>
-          )}
+              <div className="your-turn"></div>
+            )}
         </div>
         <table className="board">
           <tbody>{renderBoard()}</tbody>

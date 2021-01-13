@@ -80,12 +80,16 @@ const addMove = (matchId, index, xIsNext, roomId) => {
   );
 };
 
-const createMatch = (roomId, players) => {
+const createMatch = (roomId, players, countdownDuration) => {
   const token = getTokenFromStorage();
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
-  return axios.post(`${API}/match`, { roomId, players }, config);
+  return axios.post(
+    `${API}/match`,
+    { roomId, players, countdownDuration },
+    config
+  );
 };
 
 const getMatchById = (matchId) => {

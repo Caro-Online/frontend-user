@@ -90,7 +90,7 @@ function CardInfo({
 
   const getStatus = useCallback(() => {
     if (player) {
-      if (isPlaying) {
+      if (isPlaying && !isMatchEnd) {
         return 'Đang chơi';
       } else {
         if (player.isReady) {
@@ -100,7 +100,7 @@ function CardInfo({
         }
       }
     }
-  }, [isPlaying, player]);
+  }, [isPlaying, isMatchEnd, player]);
 
   const handleClickButtonStart = useCallback(() => {
     // Tắt hiển thị nút sẵn sàng
@@ -155,8 +155,8 @@ function CardInfo({
                 </div>
               </div>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </>
         );
       }
@@ -179,8 +179,8 @@ function CardInfo({
         <span>{player.user.cup}</span>
       </div>
     ) : (
-      <div style={{ height: '20px' }}></div>
-    );
+        <div style={{ height: '20px' }}></div>
+      );
   };
 
   return (

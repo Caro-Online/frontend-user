@@ -12,7 +12,7 @@ import {
   Statistic,
   Typography,
 } from 'antd';
-import { LoadingOutlined, UserOutlined } from '@ant-design/icons';
+import { LeftOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
 import { ImUserPlus } from 'react-icons/im';
 import { FaGamepad, FaCalendarAlt, FaTrophy } from 'react-icons/fa';
 import _ from 'lodash';
@@ -31,13 +31,21 @@ import { connect } from 'react-redux';
 const { Text } = Typography;
 
 const modifyUsersStatus = (users, data, setUsers, status) => {
-  const modifyUsers = _.cloneDeep(users);
-  const index = modifyUsers.findIndex(
-    (user) => user._id.toString() === data.userId.toString()
+  let modifyUsers = _.cloneDeep(users);
+  modifyUsers = modifyUsers.filter(
+    (user) => user._id.toString() !== data.userId.toString()
   );
-  const modifyUser = _.cloneDeep(modifyUsers[index]);
-  modifyUser.status = status;
-  modifyUsers[index] = modifyUser;
+  setUsers(modifyUsers);
+};
+
+const newUserOnline = async (users, user, setUsers) => {
+  let modifyUsers = _.cloneDeep(users);
+  const Year = user.createdAt.split('-')[0];
+  const createdMonth = user.createdAt.split('-')[1];
+  const createdDay = user.createdAt.split('-')[2].split('T')[0];
+  const date = [createdDay, createdMonth, Year];
+  user = { ...user, createdAt: date.join('/') };
+  modifyUsers = [...modifyUsers, user];
   setUsers(modifyUsers);
 };
 
@@ -55,7 +63,7 @@ const OnlineUsers = ({ roomId, socket }) => {
       },
     })
       .then((res) => res.json())
-      .then((response) => {
+      .then(async (response) => {
         if (!response.success) {
           setIsLoading(false);
         } else {
@@ -68,8 +76,8 @@ const OnlineUsers = ({ roomId, socket }) => {
           });
           setIsLoading(false);
           setUsers(users);
-          userOnlineListener = (data) => {
-            modifyUsersStatus(users, data, setUsers, 'ONLINE');
+          userOnlineListener = ({ user }) => {
+            newUserOnline(users, user, setUsers);
           };
           socket.on('user-online', userOnlineListener);
           userOfflineListener = (data) => {
@@ -132,12 +140,12 @@ const OnlineUsers = ({ roomId, socket }) => {
                                 src={user.imageUrl}
                               />
                             ) : (
-                                <Avatar
-                                  shape="circle"
-                                  size={96}
-                                  icon={<UserOutlined />}
-                                />
-                              )}
+                              <Avatar
+                                shape="circle"
+                                size={96}
+                                icon={<UserOutlined />}
+                              />
+                            )}
                           </Badge>
                         </Col>
                         <Col
@@ -182,16 +190,17 @@ const OnlineUsers = ({ roomId, socket }) => {
                                   suffix="%"
                                 />
                               ) : (
-                                  <Statistic
-                                    title="Tỉ lệ thắng"
-                                    value={
-                                      user.matchHaveWon / user.matchHavePlayed * 100
-                                    }
-                                    precision={2}
-                                    valueStyle={{ color: '#3f8600' }}
-                                    suffix="%"
-                                  />
-                                )}
+                                <Statistic
+                                  title="Tỉ lệ thắng"
+                                  value={
+                                    (user.matchHaveWon / user.matchHavePlayed) *
+                                    100
+                                  }
+                                  precision={2}
+                                  valueStyle={{ color: '#3f8600' }}
+                                  suffix="%"
+                                />
+                              )}
                             </Col>
                           </Row>
                         </Col>
@@ -206,8 +215,8 @@ const OnlineUsers = ({ roomId, socket }) => {
                         {user.imageUrl ? (
                           <Avatar shape="circle" src={user.imageUrl} />
                         ) : (
-                            <Avatar shape="circle" icon={<UserOutlined />} />
-                          )}
+                          <Avatar shape="circle" icon={<UserOutlined />} />
+                        )}
                       </Badge>
                     }
                     title={

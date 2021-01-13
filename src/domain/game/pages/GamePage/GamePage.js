@@ -13,6 +13,7 @@ import {
   message as antMessage,
 } from 'antd';
 import { connect } from 'react-redux';
+import { cloneDeep } from 'lodash';
 import { FaTrophy, FaUsers, FaInfoCircle } from 'react-icons/fa';
 
 // Components
@@ -120,7 +121,9 @@ const GamePage = React.memo((props) => {
         }
       }
       // Lấy thông tin match hiện tại đang chơi (nếu có) và set vào match
-      setCurrentMatch(room._id);
+      if (room.players.length > 1) {
+        setCurrentMatch(room._id);
+      }
       // Xét xem khi f5 lại user có phải player đang chơi hay không, nếu ko có trong players thì add vào audiences
       const userId = getUserIdFromStorage();
       let userInPlayers = false;
@@ -178,6 +181,9 @@ const GamePage = React.memo((props) => {
       setRoom(room);
       setNumPeopleInRoom(room.players.length + room.audiences.length);
       setPlayers(room.players);
+      if (room.players.length < 2) {
+        setMatch(null);
+      }
     };
     if (socket) {
       socket.on('room-data', roomDataListener);
@@ -188,17 +194,30 @@ const GamePage = React.memo((props) => {
   }, [setPlayers, socket]);
 
   useEffect(() => {
-    const matchStartUpdateListener = async ({ matchId }) => {
-      const res = await api.getMatchById(matchId);
-      setMatch(res.data.match);
+    const matchStartUpdateListener = async ({ match }) => {
+      //const res = await api.getMatchById(matchId);
+      setMatch(match);
     };
     socket.on('match-start-update', matchStartUpdateListener);
-    const haveWinnerListener = ({ updatedMatch, cupDataChange }) => {
+    const haveWinnerListener = ({
+      updatedMatch,
+      cupDataChange,
+      matchPlayers,
+    }) => {
       console.log(cupDataChange);
       console.log('have winner');
       console.log(updatedMatch);
       setMatch({ ...updatedMatch });
       getCupChangeMessage(updatedMatch, cupDataChange);
+      // let newPlayers = Object.assign([], players);
+      let newPlayers = cloneDeep(players);
+      console.log(matchPlayers);
+      newPlayers[0].isReady = false;
+      newPlayers[0].user = matchPlayers[0];
+      newPlayers[1].isReady = false;
+      newPlayers[1].user = matchPlayers[1];
+      console.log(newPlayers);
+      setPlayers(newPlayers);
     };
     socket.on('have-winner', haveWinnerListener);
     const endMatchListener = ({ updatedMatch }) => {
@@ -211,8 +230,7 @@ const GamePage = React.memo((props) => {
       socket.off('have-winner', haveWinnerListener);
       socket.off('end-match', endMatchListener);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [socket, players, setPlayers]);
 
   // const jumpTo = useCallback((move) => {
   //   setLocationToJump(move);
@@ -250,7 +268,7 @@ const GamePage = React.memo((props) => {
         />
       </Col>
       <Col flex="2 1 300px">
-        <Tabs defaultActiveKey="2" type="card" size="middle">
+        <Tabs defaultActiveKey="2" type="card" size="middle"  >
           <TabPane
             tab={
               <div className="tabpane-main">
@@ -327,8 +345,11 @@ const GamePage = React.memo((props) => {
                   </div>
                 }
                 key="1"
+
               >
-                <OnlineUsers roomId={room?.roomId} />
+                <div style={{ height: "75vh", overflow: "auto" }} >
+                  <OnlineUsers roomId={room?.roomId} style={{ height: "85vh" }} />
+                </div>
               </TabPane>
               <TabPane
                 tab={
@@ -344,7 +365,9 @@ const GamePage = React.memo((props) => {
                 }
                 key="2"
               >
-                <TopUsers roomId={room?.roomId} />
+                <div style={{ height: "75vh", overflow: "auto" }}>
+                  <TopUsers roomId={room?.roomId} />
+                </div>
               </TabPane>
             </Tabs>
           </TabPane>

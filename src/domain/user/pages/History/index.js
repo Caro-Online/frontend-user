@@ -20,10 +20,10 @@ const History = () => {
       className="history-content"
       gutter={[16, 16]}
     >
-      <Col className="content-center" span={18}>
+      <Col className="content-center" flex="2 0 440px">
         <Board match={match} />
       </Col>
-      <Col span={6}>
+      <Col flex="1 0 250px">
         <List
           matches={matches}
           isLoading={isLoadingMatches}

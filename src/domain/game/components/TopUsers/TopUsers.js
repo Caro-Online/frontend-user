@@ -32,13 +32,24 @@ const { Text } = Typography;
 
 // const abortController = new AbortController();
 
-const modifyUsersStatus = (users, data, setUsers, status) => {
+const userOffline = (users, data, setUsers) => {
   const modifyUsers = _.cloneDeep(users);
   const index = modifyUsers.findIndex(
     (user) => user._id.toString() === data.userId.toString()
   );
   const modifyUser = _.cloneDeep(modifyUsers[index]);
-  modifyUser.status = status;
+  modifyUser.status = 'OFFLINE';
+  modifyUsers[index] = modifyUser;
+  setUsers(modifyUsers);
+};
+
+const userOnline = (users, data, setUsers) => {
+  const modifyUsers = _.cloneDeep(users);
+  const index = modifyUsers.findIndex(
+    (user) => user._id.toString() === data.user._id.toString()
+  );
+  const modifyUser = _.cloneDeep(modifyUsers[index]);
+  modifyUser.status = 'ONLINE';
   modifyUsers[index] = modifyUser;
   setUsers(modifyUsers);
 };
@@ -72,11 +83,11 @@ const TopUsers = ({ socket }) => {
           setIsLoading(false);
           setUsers(users);
           userOnlineListener = (data) => {
-            modifyUsersStatus(users, data, setUsers, 'ONLINE');
+            userOnline(users, data, setUsers);
           };
           socket.on('user-online', userOnlineListener);
           userOfflineListener = (data) => {
-            modifyUsersStatus(users, data, setUsers, 'OFFLINE');
+            userOffline(users, data, setUsers);
           };
           socket.on('user-offline', userOfflineListener);
         }
@@ -142,12 +153,12 @@ const TopUsers = ({ socket }) => {
                               src={user.imageUrl}
                             />
                           ) : (
-                            <Avatar
-                              shape="circle"
-                              size={96}
-                              icon={<UserOutlined />}
-                            />
-                          )}
+                              <Avatar
+                                shape="circle"
+                                size={96}
+                                icon={<UserOutlined />}
+                              />
+                            )}
                         </Badge>
                       </Col>
                       <Col span={18} style={{ width: '100%', height: '100%' }}>
@@ -189,17 +200,17 @@ const TopUsers = ({ socket }) => {
                                 suffix="%"
                               />
                             ) : (
-                              <Statistic
-                                title="Tỉ lệ thắng"
-                                value={
-                                  (user.matchHaveWon / user.matchHavePlayed) *
-                                  100
-                                }
-                                precision={2}
-                                valueStyle={{ color: '#3f8600' }}
-                                suffix="%"
-                              />
-                            )}
+                                <Statistic
+                                  title="Tỉ lệ thắng"
+                                  value={
+                                    (user.matchHaveWon / user.matchHavePlayed) *
+                                    100
+                                  }
+                                  precision={2}
+                                  valueStyle={{ color: '#3f8600' }}
+                                  suffix="%"
+                                />
+                              )}
                           </Col>
                         </Row>
                       </Col>
@@ -214,8 +225,8 @@ const TopUsers = ({ socket }) => {
                       {user.imageUrl ? (
                         <Avatar shape="circle" src={user.imageUrl} />
                       ) : (
-                        <Avatar shape="circle" icon={<UserOutlined />} />
-                      )}
+                          <Avatar shape="circle" icon={<UserOutlined />} />
+                        )}
                     </Badge>
                   }
                   title={
@@ -233,112 +244,112 @@ const TopUsers = ({ socket }) => {
                 />
               </Popover>
             ) : (
-              <Popover
-                placement="left"
-                content={
-                  <div className="popover-container">
-                    <Row gutter={8} style={{ width: '100%', height: '100%' }}>
-                      <Col span={6}>
-                        <Badge
-                          status="danger"
-                          offset={[-10, 80]}
-                          style={{ width: '12px', height: '12px' }}
-                        >
-                          {user.imageUrl ? (
-                            <Avatar
-                              shape="circle"
-                              size={96}
-                              src={user.imageUrl}
-                            />
-                          ) : (
-                            <Avatar
-                              shape="circle"
-                              size={96}
-                              icon={<UserOutlined />}
-                            />
-                          )}
-                        </Badge>
-                      </Col>
-                      <Col span={18} style={{ width: '100%', height: '100%' }}>
-                        <h3>{user.name}</h3>
-                        <Row>
-                          <Col span={14}>
-                            <Statistic
-                              title="Ngày tham gia"
-                              value={Date.now()}
-                              formatter={(value) => (
-                                <span>{user.createdAt}</span>
-                              )}
-                              prefix={<FaCalendarAlt fontSize={14} />}
-                            />
-                          </Col>
-                          <Col span={10}>
-                            <Statistic
-                              title="Số cúp"
-                              value={user.cup}
-                              prefix={<FaTrophy />}
-                            />
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col span={14}>
-                            <Statistic
-                              title="Số trận đã chơi"
-                              value={user.matchHavePlayed}
-                              prefix={<FaGamepad />}
-                            />
-                          </Col>
-                          <Col span={10}>
-                            {user.matchHavePlayed === 0 ? (
-                              <Statistic
-                                title="Tỉ lệ thắng"
-                                value={0}
-                                precision={2}
-                                valueStyle={{ color: '#3f8600' }}
-                                suffix="%"
+                <Popover
+                  placement="left"
+                  content={
+                    <div className="popover-container">
+                      <Row gutter={8} style={{ width: '100%', height: '100%' }}>
+                        <Col span={6}>
+                          <Badge
+                            status="danger"
+                            offset={[-10, 80]}
+                            style={{ width: '12px', height: '12px' }}
+                          >
+                            {user.imageUrl ? (
+                              <Avatar
+                                shape="circle"
+                                size={96}
+                                src={user.imageUrl}
                               />
                             ) : (
+                                <Avatar
+                                  shape="circle"
+                                  size={96}
+                                  icon={<UserOutlined />}
+                                />
+                              )}
+                          </Badge>
+                        </Col>
+                        <Col span={18} style={{ width: '100%', height: '100%' }}>
+                          <h3>{user.name}</h3>
+                          <Row>
+                            <Col span={14}>
                               <Statistic
-                                title="Tỉ lệ thắng"
-                                value={user.matchHaveWon / user.matchHavePlayed}
-                                precision={2}
-                                valueStyle={{ color: '#3f8600' }}
-                                suffix="%"
+                                title="Ngày tham gia"
+                                value={Date.now()}
+                                formatter={(value) => (
+                                  <span>{user.createdAt}</span>
+                                )}
+                                prefix={<FaCalendarAlt fontSize={14} />}
                               />
-                            )}
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </div>
-                }
-                trigger="hover"
-              >
-                <List.Item.Meta
-                  avatar={
-                    <Badge status="error" offset={[-5, 30]}>
-                      {user.imageUrl ? (
-                        <Avatar shape="circle" src={user.imageUrl} />
-                      ) : (
-                        <Avatar shape="circle" icon={<UserOutlined />} />
-                      )}
-                    </Badge>
+                            </Col>
+                            <Col span={10}>
+                              <Statistic
+                                title="Số cúp"
+                                value={user.cup}
+                                prefix={<FaTrophy />}
+                              />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col span={14}>
+                              <Statistic
+                                title="Số trận đã chơi"
+                                value={user.matchHavePlayed}
+                                prefix={<FaGamepad />}
+                              />
+                            </Col>
+                            <Col span={10}>
+                              {user.matchHavePlayed === 0 ? (
+                                <Statistic
+                                  title="Tỉ lệ thắng"
+                                  value={0}
+                                  precision={2}
+                                  valueStyle={{ color: '#3f8600' }}
+                                  suffix="%"
+                                />
+                              ) : (
+                                  <Statistic
+                                    title="Tỉ lệ thắng"
+                                    value={user.matchHaveWon * 100}
+                                    precision={2}
+                                    valueStyle={{ color: '#3f8600' }}
+                                    suffix="%"
+                                  />
+                                )}
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                    </div>
                   }
-                  title={
-                    <Text strong>
-                      {user.name}
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <FaTrophy
-                          size="18"
-                          style={{ marginRight: '8px', color: '#f5af19' }}
-                        />
-                        <Text strong>{user.cup}</Text>
-                      </div>
-                    </Text>
-                  }
-                />
-              </Popover>
-            )}
+                  trigger="hover"
+                >
+                  <List.Item.Meta
+                    avatar={
+                      <Badge status="error" offset={[-5, 30]}>
+                        {user.imageUrl ? (
+                          <Avatar shape="circle" src={user.imageUrl} />
+                        ) : (
+                            <Avatar shape="circle" icon={<UserOutlined />} />
+                          )}
+                      </Badge>
+                    }
+                    title={
+                      <Text strong>
+                        {user.name}
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <FaTrophy
+                            size="18"
+                            style={{ marginRight: '8px', color: '#f5af19' }}
+                          />
+                          <Text strong>{user.cup}</Text>
+                        </div>
+                      </Text>
+                    }
+                  />
+                </Popover>
+              )}
           </List.Item>
         )}
       />

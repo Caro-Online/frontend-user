@@ -45,15 +45,16 @@ function UserInfo({
       setPlayers([...players, { user: response1.data.user, isReady: true }]);
       // Nếu có 2 người trong players thì bắt đầu game luôn
       if (players.length + 1 === 2) {
-        const resp = await api.createMatch(idOfRoom, [
-          players[0].user._id,
-          userId,
-        ]);
-        await api.updateRoomStatus(roomId, 'PLAYING'); //update lại trạng thái của room là playing
+        const resp = await api.createMatch(
+          idOfRoom,
+          [players[0].user._id, userId],
+          room.countdownDuration
+        );
+        // Thằng vào sau emit match start
+        socket.emit('match-start', { match: resp.data.match });
         setMatch(resp.data.match);
         setShowButton(false);
-        // Thằng vào sau emit match start
-        socket.emit('match-start', { matchId: resp.data.match._id });
+        await api.updateRoomStatus(roomId, 'PLAYING'); //update lại trạng thái của room là playing
       }
     }
   }, [

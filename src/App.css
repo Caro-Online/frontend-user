@@ -21,3 +21,6 @@ header {
 .logo {
     min-width: 8rem;
 }
+.ant-layout {
+    background-color: white !important;
+}
