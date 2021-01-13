@@ -79,6 +79,7 @@ function CardInfo({
               socket.emit('end-match', {
                 matchId: matchId,
               });
+              console.log('In here');
             }}
           />
         </>
@@ -155,8 +156,8 @@ function CardInfo({
                 </div>
               </div>
             ) : (
-                ''
-              )}
+              ''
+            )}
           </>
         );
       }
@@ -179,8 +180,8 @@ function CardInfo({
         <span>{player.user.cup}</span>
       </div>
     ) : (
-        <div style={{ height: '20px' }}></div>
-      );
+      <div style={{ height: '20px' }}></div>
+    );
   };
 
   return (
