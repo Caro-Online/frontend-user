@@ -35,6 +35,7 @@ function CardInfo({
   setDisable,
   playersLength,
 }) {
+  const userId = getUserIdFromStorage();
   const params = useParams();
   const history = useHistory();
   const { roomId } = params;
@@ -156,8 +157,8 @@ function CardInfo({
                 </div>
               </div>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </>
         );
       }
@@ -180,8 +181,8 @@ function CardInfo({
         <span>{player.user.cup}</span>
       </div>
     ) : (
-      <div style={{ height: '20px' }}></div>
-    );
+        <div style={{ height: '20px' }}></div>
+      );
   };
 
   return (
@@ -206,7 +207,7 @@ function CardInfo({
             }
           />
         }
-        title={player ? player.user.name : 'Còn trống'}
+        title={player ? (`${player.user.name} ${player.user._id === userId ? '(Bạn)' : ''}`) : 'Còn trống'}
         description={getCup()}
       />
       <div className="status-image">

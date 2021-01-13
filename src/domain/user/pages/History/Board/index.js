@@ -3,7 +3,7 @@ import { Space, Button } from "antd";
 import { boardSize } from "src/domain/game/components/BoardGame/BoardGame";
 import Square from "./Square";
 import "./Board.css";
-const Board = ({ match }) => {
+const Board = ({ match, historyMatchLength }) => {
   const getPreviousMove = useCallback(
     (i) => {
       if (match) {
@@ -29,9 +29,30 @@ const Board = ({ match }) => {
     },
     [match]
   );
-  const renderSquare = useCallback((i) => {
-    let isWin = 0;
 
+  let checkWinSquare = useCallback(
+    (i) => {
+      let isWin = false;
+      if (match) {
+        if (match.winRaw) {
+          match.winRaw.forEach((sq) => {
+            if (sq === i) {
+              isWin = true; //nếu index có trong winraw trả về true
+              return;
+            }
+          });
+        }
+      }
+      return isWin;
+    },
+    [match]
+  );
+
+  const renderSquare = useCallback((i) => {
+    let isWin;
+    if (historyMatchLength === match?.history.length) {
+      isWin = checkWinSquare(i);
+    }
     return (
       <Square
         key={i}
