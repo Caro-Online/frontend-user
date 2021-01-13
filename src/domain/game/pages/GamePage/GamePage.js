@@ -198,15 +198,18 @@ const GamePage = React.memo((props) => {
       setMatch(match);
     };
     socket.on('match-start-update', matchStartUpdateListener);
-    const haveWinnerListener = ({ updatedMatch, cupDataChange }) => {
+    const haveWinnerListener = ({ updatedMatch, cupDataChange, matchPlayers }) => {
       console.log(cupDataChange);
       console.log('have winner');
       console.log(updatedMatch);
       setMatch({ ...updatedMatch });
       getCupChangeMessage(updatedMatch, cupDataChange);
       let newPlayers = Object.assign([], players);
+      console.log(matchPlayers);
       newPlayers[0].isReady = false;
+      newPlayers[0].user = matchPlayers[0];
       newPlayers[1].isReady = false;
+      newPlayers[1].user = matchPlayers[1];
       console.log(newPlayers)
       setPlayers(newPlayers);
     };
