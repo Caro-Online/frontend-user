@@ -32,13 +32,24 @@ const { Text } = Typography;
 
 // const abortController = new AbortController();
 
-const modifyUsersStatus = (users, data, setUsers, status) => {
+const userOffline = (users, data, setUsers) => {
   const modifyUsers = _.cloneDeep(users);
   const index = modifyUsers.findIndex(
     (user) => user._id.toString() === data.userId.toString()
   );
   const modifyUser = _.cloneDeep(modifyUsers[index]);
-  modifyUser.status = status;
+  modifyUser.status = 'OFFLINE';
+  modifyUsers[index] = modifyUser;
+  setUsers(modifyUsers);
+};
+
+const userOnline = (users, data, setUsers) => {
+  const modifyUsers = _.cloneDeep(users);
+  const index = modifyUsers.findIndex(
+    (user) => user._id.toString() === data.user._id.toString()
+  );
+  const modifyUser = _.cloneDeep(modifyUsers[index]);
+  modifyUser.status = 'ONLINE';
   modifyUsers[index] = modifyUser;
   setUsers(modifyUsers);
 };
@@ -72,11 +83,11 @@ const TopUsers = ({ socket }) => {
           setIsLoading(false);
           setUsers(users);
           userOnlineListener = (data) => {
-            modifyUsersStatus(users, data, setUsers, 'ONLINE');
+            userOnline(users, data, setUsers);
           };
           socket.on('user-online', userOnlineListener);
           userOfflineListener = (data) => {
-            modifyUsersStatus(users, data, setUsers, 'OFFLINE');
+            userOffline(users, data, setUsers);
           };
           socket.on('user-offline', userOfflineListener);
         }
