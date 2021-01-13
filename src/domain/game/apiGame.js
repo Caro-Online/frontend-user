@@ -1,9 +1,9 @@
-import { API } from '../../config';
-import axios from 'axios';
+import { API } from "../../config";
+import axios from "axios";
 import {
   getTokenFromStorage,
   getUserIdFromStorage,
-} from '../../shared/utils/utils';
+} from "../../shared/utils/utils";
 
 const getAllRoom = () => {
   const token = getTokenFromStorage();
@@ -24,6 +24,9 @@ const getRandomRoom = () => {
   const token = getTokenFromStorage();
   const config = {
     headers: { Authorization: `Bearer ${token}` },
+    params: {
+      userId: getUserIdFromStorage(),
+    },
   };
   return axios.get(`${API}/room/random`, config);
 };
