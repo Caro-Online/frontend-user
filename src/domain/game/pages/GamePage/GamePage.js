@@ -268,7 +268,7 @@ const GamePage = React.memo((props) => {
         />
       </Col>
       <Col flex="2 1 300px">
-        <Tabs defaultActiveKey="2" type="card" size="middle">
+        <Tabs defaultActiveKey="2" type="card" size="middle"  >
           <TabPane
             tab={
               <div className="tabpane-main">
@@ -345,8 +345,11 @@ const GamePage = React.memo((props) => {
                   </div>
                 }
                 key="1"
+
               >
-                <OnlineUsers roomId={room?.roomId} />
+                <div style={{ height: "75vh", overflow: "auto" }} >
+                  <OnlineUsers roomId={room?.roomId} style={{ height: "85vh" }} />
+                </div>
               </TabPane>
               <TabPane
                 tab={
@@ -362,7 +365,9 @@ const GamePage = React.memo((props) => {
                 }
                 key="2"
               >
-                <TopUsers roomId={room?.roomId} />
+                <div style={{ height: "75vh", overflow: "auto" }}>
+                  <TopUsers roomId={room?.roomId} />
+                </div>
               </TabPane>
             </Tabs>
           </TabPane>
