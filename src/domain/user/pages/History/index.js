@@ -99,6 +99,26 @@ const History = () => {
     </Card>
   )
 
+  const getChats = (room) => (
+    < Card
+      style={{
+        width: '100%',
+        height: '200px',
+        padding: '3px',
+        overflow: 'auto'
+      }}
+    >
+      <Meta
+        title="   Lịch sử trò chuyện"
+      />
+      <div className="room-info">
+        {room.chat.map(message => (
+          <div key={message._id} className="room-info-item">
+            <span> {message.user.name}:</span> {message.content}</div>
+        ))}
+      </div>
+    </Card >)
+
 
   return (
     <Row
@@ -112,13 +132,16 @@ const History = () => {
           historyMatchLength={historyMatchLength ? historyMatchLength :
             (matches ? matches[0].history.length : null)} />
       </Col>
-      <Col flex="1 0 200px">
+      <Col flex="1 0 200px" style={{ marginTop: "10px" }}>
         {match ? getRoomInfo(match.room) : (matches ? getRoomInfo(matches[0].room) : '')}
         {match ? match.players.map((player, index) => (returnCard(match, player, index))) :
           matches ? matches[0].players.map((player, index) => (returnCard(matches[0], player, index))) : ''
         }
+        {match ? getChats(match.room) :
+          (matches ? getChats(matches[0].room) : '')
+        }
       </Col>
-      <Col flex="1 0 300px">
+      <Col flex="1 0 300px" style={{ height: '100%', overflow: 'auto' }}>
         <List
           matches={matches}
           isLoading={isLoadingMatches}
