@@ -60,7 +60,7 @@ const Chat = ({ room, socket, match }) => {
         }
       }
     },
-    [message, socket]
+    [message, socket, match]
   );
 
   return (
