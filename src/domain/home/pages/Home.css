@@ -1,6 +1,6 @@
 .home-container {
     margin: 0 auto;
-    margin-top: 16px;
+    margin-top: 40px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -23,8 +23,7 @@
 }
 
 .menu-button {
-    margin: 0;
-    padding: 0;
+    margin: 8px;
     display: block;
     cursor: pointer;
     outline: none;
@@ -39,6 +38,7 @@
     background-size: 100% 100%;
     box-shadow: 0 0 0 7px var(--light) inset;
     margin-bottom: 15px;
+    min-width: 400px;
 }
 
 .menu-button:hover {
@@ -162,9 +162,17 @@
 }
 
 .wellcome {
-    font-size: 30px;
-    font-weight: bold;
+    font-size: 1.3rem;
+    padding: 8px;
+    margin-top: 16px;
     margin-bottom: 10px;
+}
+
+.btn-game-group {
+    display: flex;
+    max-width: 900px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 @media only screen and (max-width: 500px) {
