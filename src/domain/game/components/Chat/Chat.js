@@ -1,23 +1,23 @@
 //Library
-import React, { useCallback, useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { MessageFilled } from "@ant-design/icons";
+import React, { useCallback, useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { MessageFilled } from '@ant-design/icons';
 
 //Components
-import InfoBar from "./InfoBar/InfoBar";
-import InputMessage from "./InputMessage/InputMessage";
-import Messages from "./Messages/Messages";
+import InfoBar from './InfoBar/InfoBar';
+import InputMessage from './InputMessage/InputMessage';
+import Messages from './Messages/Messages';
 
 //Others
-import "./Chat.css";
+import './Chat.css';
 import {
   getUserIdFromStorage,
   getUsernameFromStorage,
-} from "../../../../shared/utils/utils";
+} from '../../../../shared/utils/utils';
 
-const Chat = ({ room, socket }) => {
+const Chat = ({ room, socket, match }) => {
   const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const messageListener = (message) => {
@@ -33,10 +33,10 @@ const Chat = ({ room, socket }) => {
         };
       });
       setMessages([...responseMessages]);
-      socket.on("message", messageListener);
+      socket.on('message', messageListener);
     }
     return () => {
-      socket.off("message", messageListener);
+      socket.off('message', messageListener);
     };
   }, [socket, room.chat]);
 
@@ -45,11 +45,19 @@ const Chat = ({ room, socket }) => {
       event.preventDefault();
 
       if (message) {
-        socket.emit(
-          "sendMessage",
-          { message, userId: getUserIdFromStorage() },
-          () => setMessage("")
-        );
+        if (!match) {
+          socket.emit(
+            'sendMessage',
+            { message, userId: getUserIdFromStorage() },
+            () => setMessage('')
+          );
+        } else {
+          socket.emit(
+            'sendMessage',
+            { message, userId: getUserIdFromStorage(), matchId: match._id },
+            () => setMessage('')
+          );
+        }
       }
     },
     [message, socket]
@@ -57,10 +65,6 @@ const Chat = ({ room, socket }) => {
 
   return (
     <div className="chat-container">
-      {/* <div className="chat-container__header">
-        <MessageFilled className="chat-container__messageicon" />
-        Trò chuyện
-      </div> */}
       <div className="chat-container__body">
         <div className="chat-container__chatbox">
           <div className="chat-container__tab-content">
