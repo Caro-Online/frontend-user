@@ -7,3 +7,20 @@
     justify-content: center;
     align-items: center;
 }
+.room-info{
+    margin-top: 15px;
+    padding: 5px;
+}
+.room-info-item{
+    font-size:0.8rem;
+}
+.room-info-item span{
+    font-size:0.9rem;
+    font-weight: bold;
+    padding-right: 5px;
+}
+.status-match{
+    display:flex !important;
+    flex: auto;
+    justify-content: space-around !important;
+}

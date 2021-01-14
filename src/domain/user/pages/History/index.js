@@ -6,6 +6,7 @@ import List from "./List";
 import { getMatchHistoryByUserId } from "../../apiUser";
 import { getUserIdFromStorage } from "src/shared/utils/utils";
 import { Card, Avatar, Tag } from 'antd';
+import { TrophyFilled } from '@ant-design/icons';
 import ximage from 'src/shared/assets/images/x.png';
 import o from 'src/shared/assets/images/o.png';
 const { Meta } = Card;
@@ -43,18 +44,57 @@ const History = () => {
           />
         }
         title={`${player.name} ${player._id === userId ? '(Bạn)' : ''} `}
-        description={player._id === match.winner ?
-          <Tag color="green" style={{ borderRadius: 8 }}>
-            <strong>Thắng</strong>
-          </Tag> :
-          <Tag color="red" style={{ borderRadius: 8 }}>
-            <strong>Thua</strong>
-          </Tag>}
+        description={getCup(player)}
+
       />
       <div className="status-image">
-        <div>
-          <Avatar src={index === 0 ? ximage : o} />
+        <div className="status-match">
+          <div > <div>Kết quả:</div>
+            <div >{player._id === match.winner ?
+              <Tag color="green" style={{ borderRadius: 8 }}>
+                <strong>Thắng</strong>
+              </Tag> :
+              <Tag color="red" style={{ borderRadius: 8 }}>
+                <strong>Thua</strong>
+              </Tag>}
+            </div>
+          </div>
+          <div>
+            <div>Nước đi: </div>
+            <Avatar src={index === 0 ? ximage : o} />
+          </div>
+
         </div>
+      </div>
+    </Card>
+  )
+  const getCup = (player) => {
+    return player ? (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <TrophyFilled style={{ color: '#F1C40F', padding: '5px' }} />
+        <span>{player.cup}</span>
+      </div>
+    ) : (
+        <div style={{ height: '20px' }}></div>
+      );
+  };
+
+  const getRoomInfo = (room) => (
+    <Card
+      style={{
+        width: '100%',
+        height: '150px',
+        padding: '3px',
+      }}
+    >
+      <Meta
+        title="   Thông tin phòng"
+      />
+      <div className="room-info">
+        <div className="room-info-item"><span>ID : </span>{room.roomId}</div>
+        <div className="room-info-item"><span>Tên phòng : </span>{room.name}</div>
+        <div className="room-info-item"><span>Luật : </span>{room.rule ? 'Chặn 2 đầu' : 'Không chặn 2 đầu'}</div>
+        <div className="room-info-item"><span>Thời gian 1 nước đi : </span>{room.countdownDuration} giây</div>
       </div>
     </Card>
   )
@@ -73,6 +113,7 @@ const History = () => {
             (matches ? matches[0].history.length : null)} />
       </Col>
       <Col flex="1 0 200px">
+        {match ? getRoomInfo(match.room) : (matches ? getRoomInfo(matches[0].room) : '')}
         {match ? match.players.map((player, index) => (returnCard(match, player, index))) :
           matches ? matches[0].players.map((player, index) => (returnCard(matches[0], player, index))) : ''
         }
