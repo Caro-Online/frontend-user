@@ -1,195 +1,193 @@
 .home-container {
-  margin: 0 auto;
-  margin-top: 16px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    margin: 0 auto;
+    margin-top: 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 :root {
-  --background: #e5ffb3;
-  --background-accent: #dbf8a3;
-  --background-accent-2: #bde66e;
-  --light: #92de34;
-  --dark: #69bc22;
-  --text: #025600;
+    --background: #e5ffb3;
+    --background-accent: #dbf8a3;
+    --background-accent-2: #bde66e;
+    --light: #92de34;
+    --dark: #69bc22;
+    --text: #025600;
+}
+
+.image-login {
+    max-width: 30rem;
+    margin-top: 16px;
 }
 
 .menu-button {
-  margin: 0;
-  padding: 0;
-  display: block;
-  cursor: pointer;
-  outline: none;
-  border: none;
-  background-color: var(--light);
-  width: 400px;
-  height: 70px;
-  border-radius: 30px;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text);
-  background-size: 100% 100%;
-  box-shadow: 0 0 0 7px var(--light) inset;
-  margin-bottom: 15px;
+    margin: 8px;
+    display: block;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background-color: var(--light);
+    width: 400px;
+    height: 70px;
+    border-radius: 30px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    background-size: 100% 100%;
+    box-shadow: 0 0 0 7px var(--light) inset;
+    margin-bottom: 15px;
+    min-width: 400px;
 }
 
 .menu-button:hover {
-  background-image: linear-gradient(
-    145deg,
-    transparent 10%,
-    var(--dark) 10% 20%,
-    transparent 20% 30%,
-    var(--dark) 30% 40%,
-    transparent 40% 50%,
-    var(--dark) 50% 60%,
-    transparent 60% 70%,
-    var(--dark) 70% 80%,
-    transparent 80% 90%,
-    var(--dark) 90% 100%
-  );
-  animation: background 3s linear infinite;
+    background-image: linear-gradient( 145deg, transparent 10%, var(--dark) 10% 20%, transparent 20% 30%, var(--dark) 30% 40%, transparent 40% 50%, var(--dark) 50% 60%, transparent 60% 70%, var(--dark) 70% 80%, transparent 80% 90%, var(--dark) 90% 100%);
+    animation: background 3s linear infinite;
 }
 
 @keyframes background {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 400px 0;
-  }
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 400px 0;
+    }
 }
 
 .login-btn {
-  font-family: Hack, monospace;
-  background: #bbff00;
-  color: #1d1d1d;
-  cursor: pointer;
-  font-size: 2em;
-  padding: 1.5rem;
-  border: 0;
-  transition: all 0.5s;
-  border-radius: 10px;
-  width: auto;
-  position: relative;
-  outline: none;
-  min-width: 250px;
+    font-family: Hack, monospace;
+    background: #40A9FF;
+    color: whitesmoke;
+    cursor: pointer;
+    font-size: 2em;
+    padding: 1rem;
+    border: 0;
+    transition: all 0.5s;
+    border-radius: 10px;
+    width: auto;
+    position: relative;
+    outline: none;
+    min-width: 30rem;
 }
 
 .login-btn:active {
-  outline: none;
+    outline: none;
 }
 
 .login-btn::after {
-  content: '\f2f6';
-  font-family: 'Font Awesome 5 Free';
-  font-weight: 900;
-  position: absolute;
-  left: 80%;
-  top: 54%;
-  right: 0;
-  bottom: 0;
-  opacity: 0;
-  transform: translate(-50%, -50%);
+    content: '\f2f6';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    opacity: 0;
+    transform: translate(-50%, -50%);
 }
 
 .login-btn:hover {
-  background: #2b2bff;
-  transition: all 0.5s;
-  border-radius: 10px;
-  box-shadow: 0px 6px 15px #0000ff61;
-  padding: 1.5rem 3rem 1.5rem 1.5rem;
-  color: #ffffff;
+    background: #2b2bff;
+    transition: all 0.5s;
+    border-radius: 10px;
+    box-shadow: 0px 6px 15px #0000ff61;
+    padding: 1.5rem 3rem 1.5rem 1.5rem;
+    color: #ffffff;
 }
 
 .login-btn:hover::after {
-  opacity: 1;
-  transition: all 0.5s;
-  color: #ffffff;
+    opacity: 1;
+    transition: all 0.5s;
+    color: #ffffff;
 }
 
 .register-btn {
-  font-family: Hack, monospace;
-  background: #d3d3d3;
-  color: #2c2c2c;
-  cursor: pointer;
-  font-size: 2em;
-  padding: 1.5rem;
-  border: 0;
-  transition: all 0.5s;
-  border-radius: 10px;
-  width: auto;
-  position: relative;
-  min-width: 250px;
-  outline: none;
+    font-family: Hack, monospace;
+    color: #40A9FF;
+    cursor: pointer;
+    font-size: 2em;
+    padding: 1rem;
+    border: 0;
+    transition: all 0.5s;
+    border-radius: 10px;
+    width: auto;
+    position: relative;
+    min-width: 250px;
+    border: 2px solid #40A9FF;
+    background-color: transparent;
 }
 
 .register-btn:active {
-  outline: none;
+    outline: none;
 }
 
 .register-btn::after {
-  content: '\f234';
-  font-family: 'Font Awesome 5 Free';
-  font-weight: 900;
-  position: absolute;
-  left: 80%;
-  top: 54%;
-  right: 0;
-  bottom: 0;
-  opacity: 0;
-  transform: translate(-50%, -50%);
+    content: '\f234';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    opacity: 0;
+    transform: translate(-50%, -50%);
 }
 
 .register-btn:hover {
-  background: #2b2bff;
-  transition: all 0.5s;
-  border-radius: 10px;
-  box-shadow: 0px 6px 15px #0000ff61;
-  padding: 1.5rem 3rem 1.5rem 1.5rem;
-  color: #ffffff;
+    background: #2b2bff;
+    transition: all 0.5s;
+    border-radius: 10px;
+    box-shadow: 0px 6px 15px #0000ff61;
+    padding: 1.5rem 3rem 1.5rem 1.5rem;
+    color: whitesmoke;
 }
 
 .register-btn:hover::after {
-  opacity: 1;
-  transition: all 0.5s;
-  color: #ffffff;
+    opacity: 1;
+    transition: all 0.5s;
+    color: #ffffff;
 }
 
 .create-room-header {
-  text-align: center;
-  margin: 0 auto;
+    text-align: center;
+    margin: 0 auto;
 }
 
 .abort-create-room-button {
-  margin-left: 8px;
+    margin-left: 8px;
 }
 
-.my-modal{
+.my-modal {
     left: 20%!important;
     width: 60%!important;
-  }
-.wellcome{
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 10px;
+}
+
+.wellcome {
+    font-size: 1.3rem;
+    padding: 8px;
+    margin-top: 16px;
+    margin-bottom: 10px;
+}
+
+.btn-game-group {
+    display: flex;
+    max-width: 900px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 @media only screen and (max-width: 500px) {
-  .wellcome{
-    font-size: 3.2vw;
-  }
-  .my-modal{
-    top: 10%!important;
-    left: 10%!important;
-    width: 80%!important;
-  }
-  .menu-button{
-      width: 60vw;
-      height: 12vw;
-      font-size: 4.2vw;
-      margin-bottom: 3vw;
-  }
+    .wellcome {
+        font-size: 3.2vw;
+    }
+    .my-modal {
+        top: 10%!important;
+        left: 10%!important;
+        width: 80%!important;
+    }
+    .menu-button {
+        width: 60vw;
+        height: 12vw;
+        font-size: 4.2vw;
+        margin-bottom: 3vw;
+    }
 }

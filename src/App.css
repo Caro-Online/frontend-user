@@ -21,6 +21,29 @@ header {
 .logo {
     min-width: 8rem;
 }
+
 .ant-layout {
     background-color: white !important;
+    height: 100vh;
+}
+
+
+/* -----  Google Font  -----*/
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700');
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,600,700');
+body,
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    line-height: 24px;
+    color: #9E9E9E;
+    font-size: 14px;
+    /* font-family: 'Poppins', sans-serif; */
+    font-weight: 400;
+    letter-spacing: 0.5px;
 }

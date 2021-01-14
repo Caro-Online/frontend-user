@@ -1,17 +1,18 @@
-import React from 'react';
+import React from "react";
 
-import { FaUsers } from 'react-icons/fa';
+import { FaUsers } from "react-icons/fa";
 
 // import onlineIcon from '../../icons/onlineIcon.png';
 // import closeIcon from '../../icons/closeIcon.png';
 
-import './InfoBar.css';
+import "./InfoBar.css";
 
 const InfoBar = ({ room }) => (
   <div className="infoBar">
     <div className="leftInnerContainer">
       {/* <img className="onlineIcon" src={onlineIcon} alt="online icon" /> */}
-      <FaUsers style={{ fontSize: '24px' }} />
+      <FaUsers style={{ fontSize: "24px", marginRight: 8 }} />
+      <span style={{ fontSize: "14px" }}>Trò chuyện</span>
     </div>
     <div className="rightInnerContainer">
       {/* <a href="/"><img src={closeIcon} alt="close icon" /></a> */}

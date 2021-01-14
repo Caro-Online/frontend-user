@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { SiHappycow } from 'react-icons/si';
-import { useHistory, useLocation } from 'react-router-dom';
+import React, { useCallback, useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { SiHappycow } from "react-icons/si";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   Form,
   Input,
@@ -16,25 +16,27 @@ import {
   Row,
   Col,
   Space,
-} from 'antd';
+} from "antd";
 import {
   LockOutlined,
   EyeTwoTone,
   EyeInvisibleOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
-import Modal from '../../../shared/components/Modal/Modal';
-import InputRoomIdModal from '../../../shared/components/InputRoomIdModal/InputRoomIdModal';
-
-import { API } from '../../../config';
-import './Home.css';
+import x from "src/shared/assets/images/x.png";
+import o from "src/shared/assets/images/o.png";
+import Modal from "../../../shared/components/Modal/Modal";
+import InputRoomIdModal from "../../../shared/components/InputRoomIdModal/InputRoomIdModal";
+import LoginImage from "src/shared/assets/images/login.svg";
+import { API } from "../../../config";
+import "./Home.css";
 import {
   getUserIdFromStorage,
   getTokenFromStorage,
   getUsernameFromStorage,
-} from '../../../shared/utils/utils';
-import api from '../../game/apiGame';
-import { AiOutlineReload } from 'react-icons/ai';
+} from "../../../shared/utils/utils";
+import api from "../../game/apiGame";
+import { AiOutlineReload } from "react-icons/ai";
 const { Title, Text } = Typography;
 
 const { Option } = Select;
@@ -50,7 +52,7 @@ const Home = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [havePassword, setHavePassword] = useState(false);
   const [retry, setRetry] = useState(false);
-  const [tipContent, setTipContent] = useState('Đang tìm phòng...');
+  const [tipContent, setTipContent] = useState("Đang tìm phòng...");
   const countDownDurationArray = useState([
     1,
     2,
@@ -67,25 +69,25 @@ const Home = (props) => {
   useEffect(() => {
     if (location.state) {
       if (location.state.returnFromResetPassword)
-        message.success('Email đặt lại mật khẩu đã được gửi đi!');
+        message.success("Email đặt lại mật khẩu đã được gửi đi!");
       else if (location.state.returnFromUpdatePassword) {
-        message.success('Mật khẩu của bạn đã được thay đổi!');
+        message.success("Mật khẩu của bạn đã được thay đổi!");
       }
     }
   }, [location]);
 
   const onClickLoginButtonHandler = () => {
-    history.push('/login');
+    history.push("/login");
   };
 
   const onClickRegisterButtonHandler = () => {
-    history.push('/register');
+    history.push("/register");
   };
 
   const onClickPlayNowButtonHandler = () => {
     setShowDialog(true);
     setRetry(false);
-    setTipContent('Đang tìm phòng...');
+    setTipContent("Đang tìm phòng...");
     api
       .getRandomRoom()
       .then((res) => {
@@ -99,7 +101,7 @@ const Home = (props) => {
       })
       .catch((err) => {
         setIsLoading(false);
-        setTipContent('Hiện tại không còn phòng trống, vui lòng thử lại...');
+        setTipContent("Hiện tại không còn phòng trống, vui lòng thử lại...");
         setRetry(true);
         console.error(err);
       });
@@ -110,7 +112,7 @@ const Home = (props) => {
   };
 
   const onClickFindRoomsHandler = () => {
-    history.push('/rooms');
+    history.push("/rooms");
   };
 
   const onClickCreateRoomButtonHandler = () => {
@@ -134,7 +136,7 @@ const Home = (props) => {
       const { name, rule, roomPassword, countdownDuration } = values;
       setIsLoading(true);
       fetch(`${API}/room`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           name,
           rule,
@@ -143,7 +145,7 @@ const Home = (props) => {
           countdownDuration,
         }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${getTokenFromStorage()}`,
         },
       })
@@ -171,169 +173,189 @@ const Home = (props) => {
 
   let content = (
     <div className="home-container">
-      <h2>
-        <SiHappycow />
-        <SiHappycow />
-        <SiHappycow />
-        Chào mừng bạn, hãy đăng nhập để chơi
-      </h2>
-      <button
-        className="login-btn"
-        style={{ marginBottom: '16px' }}
-        onClick={onClickLoginButtonHandler}
+      <img className="image-login" src={LoginImage} alt="LoginImage" />
+      <div style={{ padding: 16, display: "flex", flexDirection: "column" }}>
+        <button
+          className="login-btn"
+          style={{ marginBottom: "16px" }}
+          onClick={onClickLoginButtonHandler}
+        >
+          Đăng nhập
+        </button>
+        <button className="register-btn" onClick={onClickRegisterButtonHandler}>
+          Đăng ký
+        </button>
+      </div>
+      <div
+        style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
       >
-        Đăng nhập
-      </button>
-      <button className="register-btn" onClick={onClickRegisterButtonHandler}>
-        Đăng ký
-      </button>
+        <img alt="o" src={o} width="24px" height="24px" />
+        <img alt="x" src={x} width="24px" height="24px" />
+        <h5 style={{ marginBottom: 0, marginRight: 8, marginLeft: 8 }}>
+          Chào mừng bạn, hãy đăng nhập để chơi
+        </h5>
+        <img alt="o" src={o} width="24px" height="24px" />
+        <img alt="x" src={x} width="24px" height="24px" />
+      </div>
     </div>
   );
 
   if (isAuthenticated) {
     content = (
       <div className="home-container">
-        <div className="wellcome" >Chào mừng, {getUsernameFromStorage()}</div>
-        <button
-          className="menu-button"
-          onClick={onClickPlayNowButtonHandler}
-        >
-          Chơi ngay
-        </button>
-        <button className="menu-button" onClick={onClickFindRoomsHandler}>
-          Tìm phòng
-        </button>
-        <button className="menu-button" onClick={onClickJoinRoomHandler}>
-          Tham gia phòng
-        </button>
-        <button
-          className="menu-button"
-          onClick={onClickCreateRoomButtonHandler}
-        >
-          Tạo phòng
-        </button>
+        <div>
+          <img alt="o" src={o} width="150px" height="150px" />
+          <img alt="x" src={x} width="150px" height="150px" />
+        </div>
+        <div className="wellcome">
+          Chào mừng,
+          <span
+            style={{
+              fontWeight: "bold",
+            }}
+          >
+            {getUsernameFromStorage()}
+          </span>
+        </div>
+        <div class="btn-game-group">
+          <button className="menu-button" onClick={onClickPlayNowButtonHandler}>
+            Chơi ngay
+          </button>
+          <button className="menu-button" onClick={onClickFindRoomsHandler}>
+            Tìm phòng
+          </button>
+          <button className="menu-button" onClick={onClickJoinRoomHandler}>
+            Tham gia phòng
+          </button>
+          <button
+            className="menu-button"
+            onClick={onClickCreateRoomButtonHandler}
+          >
+            Tạo phòng
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <>
-      <Modal className="modal-home" show={openCreateRoomModal} modalClosed={closeCreateRoomModal}>
+      <Modal
+        className="modal-home"
+        show={openCreateRoomModal}
+        modalClosed={closeCreateRoomModal}
+      >
         <Title className="create-room-header" level={4}>
           Tạo phòng
         </Title>
         {isLoading ? (
-          <Spin style={{ fontSize: '64px' }} />
+          <Spin style={{ fontSize: "64px" }} />
         ) : (
-            <Form
-              name="normal_register"
-              className="create-room-form"
-              onFinish={onSubmitCreateRoomHandler}
+          <Form
+            name="normal_register"
+            className="create-room-form"
+            onFinish={onSubmitCreateRoomHandler}
+          >
+            <Form.Item
+              label="Tên phòng"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: "Tên phòng không được bỏ trống",
+                },
+              ]}
             >
+              <Input
+                type="text"
+                placeholder="Phòng của tui"
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+            <Form.Item name="rule" label="Luật chơi" initialValue={true}>
+              <Select>
+                <Option value={true}>Chặn hai đầu</Option>
+                <Option value={false}>Không chặn hai đầu</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="countdownDuration"
+              label="Thời gian cho một nước"
+              initialValue={20}
+            >
+              <Select>
+                {countDownDurationArray.map((cd) => (
+                  <Option key={cd} value={cd * 5}>
+                    {cd * 5} giây
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="havePassword"
+              label="Đặt mật khẩu"
+              valuePropName="checked"
+            >
+              <Switch onChange={onSwitchChange} />
+            </Form.Item>
+
+            {havePassword ? (
               <Form.Item
-                label="Tên phòng"
-                name="name"
+                label="Mật khẩu"
+                name="roomPassword"
                 rules={[
-                  {
-                    required: true,
-                    message: 'Tên phòng không được bỏ trống',
-                  },
+                  { required: true, message: "Mật khẩu không được bỏ trống!" },
                 ]}
               >
-                <Input
-                  type="text"
-                  placeholder="Phòng của tui"
-                  style={{ width: '100%' }}
+                <Input.Password
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  placeholder="daylamatkhau"
+                  iconRender={(visible) =>
+                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  }
                 />
               </Form.Item>
-              <Form.Item name="rule" label="Luật chơi" initialValue={true}>
-                <Select>
-                  <Option value={true}>Chặn hai đầu</Option>
-                  <Option value={false}>Không chặn hai đầu</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item
-                name="countdownDuration"
-                label="Thời gian cho một nước"
-                initialValue={20}
+            ) : null}
+
+            <Form.Item>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                }}
               >
-                <Select>
-                  {countDownDurationArray.map((cd) => (
-                    <Option key={cd} value={cd * 5}>
-                      {cd * 5} giây
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                name="havePassword"
-                label="Đặt mật khẩu"
-                valuePropName="checked"
-              >
-                <Switch onChange={onSwitchChange} />
-              </Form.Item>
-
-              {havePassword ? (
-                <Form.Item
-                  label="Mật khẩu"
-                  name="roomPassword"
-                  rules={[
-                    { required: true, message: 'Mật khẩu không được bỏ trống!' },
-                  ]}
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="create-room-button"
                 >
-                  <Input.Password
-                    prefix={<LockOutlined className="site-form-item-icon" />}
-                    placeholder="daylamatkhau"
-                    iconRender={(visible) =>
-
-                      visible ?
-                        <EyeTwoTone />
-                        : <EyeInvisibleOutlined />
-
-                    }
-                  />
-                </Form.Item>
-              ) : null}
-
-              <Form.Item>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                  }}
+                  Tạo
+                </Button>
+                <Button
+                  type="danger"
+                  htmlType="button"
+                  onClick={closeCreateRoomModal}
+                  className="abort-create-room-button"
                 >
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    className="create-room-button"
-                  >
-                    Tạo
+                  Hủy
                 </Button>
-                  <Button
-                    type="danger"
-                    htmlType="button"
-                    onClick={closeCreateRoomModal}
-                    className="abort-create-room-button"
-                  >
-                    Hủy
-                </Button>
-                </div>
-              </Form.Item>
-            </Form>
-          )}
+              </div>
+            </Form.Item>
+          </Form>
+        )}
       </Modal>
       <Modal show={showDialog}>
         <Row justify="center">
           <Space align="center">
-            <Col style={{ margin: '8px 0' }} span={24}>
+            <Col style={{ margin: "8px 0" }} span={24}>
               <Spin tip={tipContent}></Spin>
             </Col>
           </Space>
           <Col span={24}>
-            <Divider style={{ margin: '8px 0' }}></Divider>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Divider style={{ margin: "8px 0" }}></Divider>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <Button
                 type="primary"
                 block={!retry}
@@ -345,9 +367,9 @@ const Home = (props) => {
               {retry && (
                 <Button
                   style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                     marginLeft: 8,
                   }}
                   type="primary"
