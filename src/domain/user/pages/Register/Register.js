@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import {
   Card,
   Typography,
@@ -9,7 +9,7 @@ import {
   Alert,
   Spin,
   message,
-} from 'antd';
+} from "antd";
 import {
   UserOutlined,
   LockOutlined,
@@ -17,11 +17,11 @@ import {
   EyeInvisibleOutlined,
   EyeTwoTone,
   LoadingOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
-import 'antd/dist/antd.css';
-import './Register.css';
-import { API } from '../../../../config';
+import "antd/dist/antd.css";
+import "./Register.css";
+import { API } from "../../../../config";
 
 const { Title } = Typography;
 
@@ -36,10 +36,10 @@ const Register = (props) => {
     try {
       setIsLoading(true);
       const res = await fetch(`${API}/user/auth/register`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ name, email, password }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       const response = await res.json();
@@ -49,9 +49,9 @@ const Register = (props) => {
       } else {
         setIsLoading(false);
         message.success(
-          'Email xác nhận đã được gửi đi. Hãy kiểm tra email của bạn!'
+          "Email xác nhận đã được gửi đi. Hãy kiểm tra email của bạn!"
         );
-        history.push('/login');
+        history.push("/login");
       }
     } catch (error) {
       console.log(error);
@@ -62,9 +62,9 @@ const Register = (props) => {
 
   return (
     <>
-      <Link to="/" className="caro-online">
+      {/* <Link to="/" className="caro-online">
         <Title>CaroOnline</Title>
-      </Link>
+      </Link> */}
       <Card className="card" title="Đăng ký">
         {authError ? (
           <Alert
@@ -73,7 +73,7 @@ const Register = (props) => {
             type="error"
             closable
             showIcon
-            style={{ marginBottom: '16px' }}
+            style={{ marginBottom: "16px" }}
           />
         ) : null}
         {isLoading ? (
@@ -92,7 +92,7 @@ const Register = (props) => {
               rules={[
                 {
                   required: true,
-                  message: 'Tên không được bỏ trống!',
+                  message: "Tên không được bỏ trống!",
                 },
               ]}
             >
@@ -107,7 +107,7 @@ const Register = (props) => {
               rules={[
                 {
                   required: true,
-                  message: 'Email không được bỏ trống!',
+                  message: "Email không được bỏ trống!",
                 },
               ]}
             >
@@ -122,17 +122,17 @@ const Register = (props) => {
               rules={[
                 {
                   required: true,
-                  message: 'Mật khẩu không được bỏ trống!',
+                  message: "Mật khẩu không được bỏ trống!",
                 },
                 {
                   pattern: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*/,
                   message:
-                    'Mật khẩu phải bao gồm 1 chữ thường, 1 số và 1 chữ hoa!',
+                    "Mật khẩu phải bao gồm 1 chữ thường, 1 số và 1 chữ hoa!",
                 },
                 {
                   min: 6,
                   max: 32,
-                  message: 'Mật khẩu phải từ 6 đến 32 ký tự!',
+                  message: "Mật khẩu phải từ 6 đến 32 ký tự!",
                 },
               ]}
             >
@@ -153,7 +153,7 @@ const Register = (props) => {
               >
                 Đăng ký
               </Button>
-              <div style={{ textAlign: 'center' }}>
+              <div style={{ textAlign: "right", marginTop: 8 }}>
                 Hoặc <Link to="/login">Đăng nhập!</Link>
               </div>
             </Form.Item>

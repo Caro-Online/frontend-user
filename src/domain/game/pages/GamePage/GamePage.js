@@ -1,6 +1,6 @@
 //Library
-import React, { useCallback, useEffect, useState } from 'react';
-import { useParams, useLocation, useHistory } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from "react";
+import { useParams, useLocation, useHistory } from "react-router-dom";
 import {
   Row,
   Col,
@@ -11,26 +11,26 @@ import {
   // Card,
   Statistic,
   message as antMessage,
-} from 'antd';
-import { connect } from 'react-redux';
-import { cloneDeep } from 'lodash';
-import { FaTrophy, FaUsers, FaInfoCircle } from 'react-icons/fa';
+} from "antd";
+import { connect } from "react-redux";
+import { cloneDeep } from "lodash";
+import { FaTrophy, FaUsers, FaInfoCircle } from "react-icons/fa";
 
 // Components
-import BoardGame from '../../components/BoardGame/BoardGame';
-import UserInfo from '../../components/UserInfo/UserInfo';
+import BoardGame from "../../components/BoardGame/BoardGame";
+import UserInfo from "../../components/UserInfo/UserInfo";
 // import History from '../../components/History/History';
-import Chat from '../../components/Chat/Chat';
-import OnlineUsers from '../../components/OnlineUsers/OnlineUsers';
-import TopUsers from '../../components/TopUsers/TopUsers';
+import Chat from "../../components/Chat/Chat";
+import OnlineUsers from "../../components/OnlineUsers/OnlineUsers";
+import TopUsers from "../../components/TopUsers/TopUsers";
 
 //Others
-import './GamePage.css';
-import api from '../../apiGame';
+import "./GamePage.css";
+import api from "../../apiGame";
 import {
   getUserIdFromStorage,
   getCupChangeMessage,
-} from '../../../../shared/utils/utils';
+} from "../../../../shared/utils/utils";
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -114,9 +114,9 @@ const GamePage = React.memo((props) => {
       if (room.password) {
         if (!location.state) {
           antMessage.info(
-            'Hãy vào phòng bằng cách sử dụng chức năng nhập id hoặc tham gia phòng'
+            "Hãy vào phòng bằng cách sử dụng chức năng nhập id hoặc tham gia phòng"
           );
-          history.replace('/rooms');
+          history.replace("/rooms");
           return;
         }
       }
@@ -150,7 +150,7 @@ const GamePage = React.memo((props) => {
       // Emit lai thong tin phong cho cac client khac
       if (socket) {
         socket.emit(
-          'join',
+          "join",
           {
             userId: getUserIdFromStorage(),
             roomId: room.roomId,
@@ -167,7 +167,7 @@ const GamePage = React.memo((props) => {
     return () => {
       // Khi người dùng thoát khỏi room thì emit sự kiện leave room
       if (socket) {
-        socket.emit('leave-room', {
+        socket.emit("leave-room", {
           userId: getUserIdFromStorage(),
         });
       }
@@ -186,10 +186,10 @@ const GamePage = React.memo((props) => {
       }
     };
     if (socket) {
-      socket.on('room-data', roomDataListener);
+      socket.on("room-data", roomDataListener);
     }
     return () => {
-      socket.off('room-data', roomDataListener);
+      socket.off("room-data", roomDataListener);
     };
   }, [setPlayers, socket]);
 
@@ -198,14 +198,14 @@ const GamePage = React.memo((props) => {
       //const res = await api.getMatchById(matchId);
       setMatch(match);
     };
-    socket.on('match-start-update', matchStartUpdateListener);
+    socket.on("match-start-update", matchStartUpdateListener);
     const haveWinnerListener = ({
       updatedMatch,
       cupDataChange,
       matchPlayers,
     }) => {
       console.log(cupDataChange);
-      console.log('have winner');
+      console.log("have winner");
       console.log(updatedMatch);
       setMatch({ ...updatedMatch });
       getCupChangeMessage(updatedMatch, cupDataChange);
@@ -219,16 +219,16 @@ const GamePage = React.memo((props) => {
       console.log(newPlayers);
       setPlayers(newPlayers);
     };
-    socket.on('have-winner', haveWinnerListener);
+    socket.on("have-winner", haveWinnerListener);
     const endMatchListener = ({ updatedMatch }) => {
-      console.log('end match');
+      console.log("end match");
       setMatch({ ...updatedMatch });
     };
-    socket.on('end-match', endMatchListener);
+    socket.on("end-match", endMatchListener);
     return () => {
-      socket.off('match-state-update', matchStartUpdateListener);
-      socket.off('have-winner', haveWinnerListener);
-      socket.off('end-match', endMatchListener);
+      socket.off("match-state-update", matchStartUpdateListener);
+      socket.off("have-winner", haveWinnerListener);
+      socket.off("end-match", endMatchListener);
     };
   }, [socket, players, setPlayers]);
 
@@ -267,13 +267,13 @@ const GamePage = React.memo((props) => {
           setDisable={setDisable}
         />
       </Col>
-      <Col flex="2 1 300px">
-        <Tabs defaultActiveKey="2" type="card" size="middle"  >
+      <Col flex="2 1 300px" style={{ maxWidth: 400 }}>
+        <Tabs defaultActiveKey="2" type="card" size="middle">
           <TabPane
             tab={
               <div className="tabpane-main">
                 <FaInfoCircle size="24" />
-                <Title level={5} style={{ marginBottom: 0, fontSize: '14px' }}>
+                <Title level={5} style={{ marginBottom: 0, fontSize: "14px" }}>
                   Phòng
                 </Title>
               </div>
@@ -284,13 +284,13 @@ const GamePage = React.memo((props) => {
             {room ? (
               <>
                 <Descriptions
-                  style={{ marginTop: '8px' }}
+                  style={{ marginTop: "8px" }}
                   title={
                     <div className="tabpane-sub">
-                      <FaInfoCircle size="24" style={{ marginRight: '8px' }} />
+                      <FaInfoCircle size="24" style={{ marginRight: "8px" }} />
                       <Title
                         level={5}
-                        style={{ marginBottom: 0, fontSize: '14px' }}
+                        style={{ marginBottom: 0, fontSize: "14px" }}
                       >
                         Thông tin phòng
                       </Title>
@@ -309,7 +309,7 @@ const GamePage = React.memo((props) => {
                   </Descriptions.Item>
                   <Descriptions.Item label="Luật chơi">
                     <Text strong>
-                      {room.rule ? 'Chặn 2 đầu' : 'Không chặn 2 đầu'}
+                      {room.rule ? "Chặn 2 đầu" : "Không chặn 2 đầu"}
                     </Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Id phòng">
@@ -324,7 +324,7 @@ const GamePage = React.memo((props) => {
             tab={
               <div className="tabpane-main">
                 <FaUsers size="24" />
-                <Title level={5} style={{ marginBottom: 0, fontSize: '14px' }}>
+                <Title level={5} style={{ marginBottom: 0, fontSize: "14px" }}>
                   Các kỳ thủ
                 </Title>
               </div>
@@ -335,29 +335,31 @@ const GamePage = React.memo((props) => {
               <TabPane
                 tab={
                   <div className="tabpane-sub">
-                    <FaUsers size="24" style={{ marginRight: '8px' }} />
+                    <FaUsers size="24" style={{ marginRight: "8px" }} />
                     <Title
                       level={5}
-                      style={{ marginBottom: 0, fontSize: '14px' }}
+                      style={{ marginBottom: 0, fontSize: "14px" }}
                     >
                       Trực tuyến
                     </Title>
                   </div>
                 }
                 key="1"
-
               >
-                <div style={{ height: "75vh", overflow: "auto" }} >
-                  <OnlineUsers roomId={room?.roomId} style={{ height: "85vh" }} />
+                <div style={{ height: "75vh", overflow: "auto" }}>
+                  <OnlineUsers
+                    roomId={room?.roomId}
+                    style={{ height: "85vh" }}
+                  />
                 </div>
               </TabPane>
               <TabPane
                 tab={
                   <div className="tabpane-sub">
-                    <FaTrophy size="24" style={{ marginRight: '8px' }} />
+                    <FaTrophy size="24" style={{ marginRight: "8px" }} />
                     <Title
                       level={5}
-                      style={{ marginBottom: 0, fontSize: '14px' }}
+                      style={{ marginBottom: 0, fontSize: "14px" }}
                     >
                       BXH
                     </Title>
@@ -377,7 +379,7 @@ const GamePage = React.memo((props) => {
   );
 
   if (isLoading) {
-    content = <Spin style={{ fontSize: '64px' }} />;
+    content = <Spin style={{ fontSize: "64px" }} />;
   }
 
   if (notFound) {
