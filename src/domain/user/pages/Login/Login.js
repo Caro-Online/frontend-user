@@ -1,10 +1,10 @@
-import React, { useEffect, useCallback } from 'react';
-import { connect } from 'react-redux';
-import { Form, Input, Button, Alert, Spin, message } from 'antd';
-import { Link, useHistory } from 'react-router-dom';
-import { Card, Typography } from 'antd';
-import FacebookLogin from 'react-facebook-login';
-import GoogleLogin from 'react-google-login';
+import React, { useEffect, useCallback } from "react";
+import { connect } from "react-redux";
+import { Form, Input, Button, Alert, Spin, message } from "antd";
+import { Link, useHistory } from "react-router-dom";
+import { Card, Typography } from "antd";
+import FacebookLogin from "react-facebook-login";
+import GoogleLogin from "react-google-login";
 import {
   MailOutlined,
   LoadingOutlined,
@@ -13,10 +13,10 @@ import {
   EyeTwoTone,
   GooglePlusOutlined,
   FacebookOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
-import './Login.css';
-import * as actions from '../../../../store/actions';
+import "./Login.css";
+import * as actions from "../../../../store/actions";
 
 const { Title } = Typography;
 
@@ -49,8 +49,8 @@ const Login = (props) => {
 
   useEffect(() => {
     if (authRedirectPath) {
-      history.push('/');
-      message.success('Đăng nhập thành công');
+      history.push("/");
+      message.success("Đăng nhập thành công");
       onResetAuthRedirectPath();
     }
   }, [authRedirectPath, history, onResetAuthRedirectPath]);
@@ -89,9 +89,9 @@ const Login = (props) => {
   return (
     <>
       {/* {redirect} */}
-      <Link to="/" className="caro-online">
+      {/* <Link to="/" className="caro-online">
         <Title>CaroOnline</Title>
-      </Link>
+      </Link> */}
       <Card
         className="card"
         title="Đăng Nhập"
@@ -106,7 +106,7 @@ const Login = (props) => {
             closable
             showIcon
             onClose={onCloseAlert}
-            style={{ marginBottom: '16px' }}
+            style={{ marginBottom: "16px" }}
           />
         ) : null}
         {loading ? (
@@ -119,7 +119,7 @@ const Login = (props) => {
             <Form.Item
               name="email"
               rules={[
-                { required: true, message: 'Email không được bỏ trống!' },
+                { required: true, message: "Email không được bỏ trống!" },
               ]}
             >
               <Input
@@ -132,7 +132,7 @@ const Login = (props) => {
             <Form.Item
               name="password"
               rules={[
-                { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                { required: true, message: "Mật khẩu không được bỏ trống!" },
               ]}
             >
               <Input.Password
@@ -162,7 +162,7 @@ const Login = (props) => {
                   </Button>
                 )}
                 onSuccess={responseSuccessGoogle}
-                cookiePolicy={'single_host_origin'}
+                cookiePolicy={"single_host_origin"}
               />
               <FacebookLogin
                 appId="891593248045556"
