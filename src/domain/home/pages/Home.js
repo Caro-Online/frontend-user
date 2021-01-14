@@ -203,22 +203,39 @@ const Home = (props) => {
   if (isAuthenticated) {
     content = (
       <div className="home-container">
-        <div className="wellcome">Chào mừng, {getUsernameFromStorage()}</div>
-        <button className="menu-button" onClick={onClickPlayNowButtonHandler}>
-          Chơi ngay
-        </button>
-        <button className="menu-button" onClick={onClickFindRoomsHandler}>
-          Tìm phòng
-        </button>
-        <button className="menu-button" onClick={onClickJoinRoomHandler}>
-          Tham gia phòng
-        </button>
-        <button
-          className="menu-button"
-          onClick={onClickCreateRoomButtonHandler}
-        >
-          Tạo phòng
-        </button>
+        <div className="img-home">
+          <img alt="o" src={o} width="150px" height="150px" />
+          <img alt="x" src={x} width="150px" height="150px" />
+        </div>
+        <div className="wellcome">
+          Chào mừng,
+          <span
+            style={{
+              marginLeft: 8,
+              fontWeight: "bold",
+              color: "lightblue",
+            }}
+          >
+            {getUsernameFromStorage()}
+          </span>
+        </div>
+        <div className="btn-game-group">
+          <button className="menu-button" onClick={onClickPlayNowButtonHandler}>
+            Chơi ngay
+          </button>
+          <button className="menu-button" onClick={onClickFindRoomsHandler}>
+            Tìm phòng
+          </button>
+          <button className="menu-button" onClick={onClickJoinRoomHandler}>
+            Tham gia phòng
+          </button>
+          <button
+            className="menu-button"
+            onClick={onClickCreateRoomButtonHandler}
+          >
+            Tạo phòng
+          </button>
+        </div>
       </div>
     );
   }

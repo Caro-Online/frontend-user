@@ -17,20 +17,25 @@
     --text: #025600;
 }
 
+.img-home {
+    margin-top: 16px;
+    padding: 16px;
+}
+
 .image-login {
     max-width: 30rem;
     margin-top: 16px;
 }
 
 .menu-button {
-    margin: 0;
-    padding: 0;
+    margin: 8px;
     display: block;
     cursor: pointer;
     outline: none;
     border: none;
     background-color: var(--light);
     width: 400px;
+    min-width: 300px;
     height: 70px;
     border-radius: 30px;
     font-size: 1.5rem;
@@ -161,9 +166,15 @@
     width: 60%!important;
 }
 
+.btn-game-group {
+    display: flex;
+    max-width: 900px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .wellcome {
-    font-size: 30px;
-    font-weight: bold;
+    font-size: 1.2em;
     margin-bottom: 10px;
 }
 
