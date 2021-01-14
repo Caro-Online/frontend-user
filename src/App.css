@@ -27,6 +27,14 @@ header {
     height: 100vh;
 }
 
+.ant-col{
+    padding:0 !important;
+}
+.ant-row{
+    margin-left: 0px !important;
+    margin-right: 0px!important;
+}
+
 
 /* -----  Google Font  -----*/
 
