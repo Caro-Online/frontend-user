@@ -138,9 +138,9 @@ const History = () => {
         {match ? match.players.map((player, index) => (returnCard(match, player, index))) :
           matches.length > 0 ? matches[0].players.map((player, index) => (returnCard(matches[0], player, index))) : ''
         }
-        {/* {match ? getChats(match) :
+        {match ? getChats(match) :
           (matches.length > 0 ? getChats(matches[0]) : '')
-        } */}
+        }
       </Col>
       <Col flex="1 0 300px" style={{ height: '100%', overflow: 'auto' }}>
         <List
