@@ -48,9 +48,10 @@ const History = () => {
 
       />
       <div className="status-image">
+        {console.log(match)}
         <div className="status-match">
           <div > <div>Kết quả:</div>
-            <div >{player._id === match.winner ?
+            <div >{player._id === match.winner._id ?
               <Tag color="green" style={{ borderRadius: 8 }}>
                 <strong>Thắng</strong>
               </Tag> :
