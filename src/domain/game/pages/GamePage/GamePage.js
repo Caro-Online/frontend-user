@@ -268,7 +268,7 @@ const GamePage = React.memo((props) => {
         />
       </Col>
       <Col flex="2 1 300px">
-        <Tabs defaultActiveKey="2" type="card" size="middle" >
+        <Tabs defaultActiveKey="2" type="card" size="middle">
           <TabPane
             tab={
               <div className="tabpane-main">
@@ -316,7 +316,7 @@ const GamePage = React.memo((props) => {
                     <Text strong>{room.roomId}</Text>
                   </Descriptions.Item>
                 </Descriptions>
-                <Chat room={room} />
+                <Chat room={room} match={match} />
               </>
             ) : null}
           </TabPane>
@@ -346,10 +346,12 @@ const GamePage = React.memo((props) => {
                   </div>
                 }
                 key="1"
-
               >
-                <div style={{ height: "75vh", overflow: "auto" }} >
-                  <OnlineUsers roomId={room?.roomId} style={{ height: "85vh" }} />
+                <div style={{ height: '75vh', overflow: 'auto' }}>
+                  <OnlineUsers
+                    roomId={room?.roomId}
+                    style={{ height: '85vh' }}
+                  />
                 </div>
               </TabPane>
               <TabPane
@@ -366,7 +368,7 @@ const GamePage = React.memo((props) => {
                 }
                 key="2"
               >
-                <div style={{ height: "75vh", overflow: "auto" }}>
+                <div style={{ height: '75vh', overflow: 'auto' }}>
                   <TopUsers roomId={room?.roomId} />
                 </div>
               </TabPane>
