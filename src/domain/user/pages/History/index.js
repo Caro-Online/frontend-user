@@ -99,7 +99,7 @@ const History = () => {
     </Card>
   )
 
-  const getChats = (room) => (
+  const getChats = (match) => (
     < Card
       style={{
         width: '100%',
@@ -112,7 +112,7 @@ const History = () => {
         title="   Lịch sử trò chuyện"
       />
       <div className="room-info">
-        {room.chat.map(message => (
+        {match.chat.map(message => (
           <div key={message._id} className="room-info-item">
             <span> {message.user.name}:</span> {message.content}</div>
         ))}
@@ -128,18 +128,19 @@ const History = () => {
       gutter={[16, 16]}
     >
       <Col className="content-center" flex="4 0 440px">
-        <Board match={match ? match : (matches ? matches[0] : null)}
+
+        <Board match={match ? match : (matches.length > 0 ? matches[0] : null)}
           historyMatchLength={historyMatchLength ? historyMatchLength :
-            (matches ? matches[0].history.length : null)} />
+            (matches.length > 0 ? matches[0].history.length : null)} />
       </Col>
       <Col flex="1 0 200px" style={{ marginTop: "10px" }}>
-        {match ? getRoomInfo(match.room) : (matches ? getRoomInfo(matches[0].room) : '')}
+        {match ? getRoomInfo(match.room) : (matches.length > 0 ? getRoomInfo(matches[0].room) : '')}
         {match ? match.players.map((player, index) => (returnCard(match, player, index))) :
-          matches ? matches[0].players.map((player, index) => (returnCard(matches[0], player, index))) : ''
+          matches.length > 0 ? matches[0].players.map((player, index) => (returnCard(matches[0], player, index))) : ''
         }
-        {match ? getChats(match.room) :
-          (matches ? getChats(matches[0].room) : '')
-        }
+        {/* {match ? getChats(match) :
+          (matches.length > 0 ? getChats(matches[0]) : '')
+        } */}
       </Col>
       <Col flex="1 0 300px" style={{ height: '100%', overflow: 'auto' }}>
         <List
@@ -153,7 +154,7 @@ const History = () => {
 };
 export default History;
 export const useMatchedHistoryApi = (userId) => {
-  const [matches, setMatches] = useState();
+  const [matches, setMatches] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
