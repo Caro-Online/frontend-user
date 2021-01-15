@@ -77,10 +77,12 @@ const OnlineUsers = ({ roomId, socket }) => {
           setIsLoading(false);
           setUsers(users);
           userOnlineListener = ({ user }) => {
+            console.log('USERONLINE');
             newUserOnline(users, user, setUsers);
           };
           socket.on('user-online', userOnlineListener);
           userOfflineListener = (data) => {
+            console.log('SUKIEN USEROFFLINE');
             modifyUsersStatus(users, data, setUsers, 'OFFLINE');
           };
           socket.on('user-offline', userOfflineListener);
